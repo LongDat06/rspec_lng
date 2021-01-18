@@ -5,12 +5,26 @@
 
 # Read more: https://github.com/cyu/rack-cors
 
-# Rails.application.config.middleware.insert_before 0, Rack::Cors do
-#   allow do
-#     origins 'example.com'
-#
-#     resource '*',
-#       headers: :any,
-#       methods: [:get, :post, :put, :patch, :delete, :options, :head]
-#   end
-# end
+Rails.application.config.middleware.insert_before 0, Rack::Cors do
+  allow do
+    origins *ENV['ALLOW_CORS_DOMAIN'].split(',')
+
+    # Only allow a request for a specific host
+    resource '*',
+        headers: :any,
+        :methods => [:get, :post, :delete, :put, :patch, :options, :head], expose: ['ETag', 'Link'],
+        :credentials => true
+  end
+
+  allow do
+    origins '*'
+
+    resource '/cors',
+             :headers => :any,
+             :methods => [:post]
+
+    resource '*',
+             :headers => :any,
+             :methods => [:get, :post, :delete, :put, :patch, :options, :head]
+  end
+end

@@ -1,3 +1,8 @@
 Ais::Engine.routes.draw do
-  root to: 'welcome#index'
+  namespace :v1 do
+    resources :trackings, only: [:index]
+    resources :latest_positions, only: [:index]
+    resources :vessels, only: [:create]
+    resources :plan_routes, only: [:index]
+  end
 end

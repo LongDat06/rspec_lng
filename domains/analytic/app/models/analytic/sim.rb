@@ -8,10 +8,10 @@ module Analytic
 
     index({ jsmea_mac_cargotk_bor_include_fv: 1 }, { sparse: true })
     index({ jsmea_mac_cargotk_bor_exclude_fv: 1 }, { sparse: true })
+    index({ jsmea_mac_mainturb_load: 1 }, { sparse: true })
+    index({ jsmea_mac_mainturb_revolution: 1 }, { sparse: true })
+    index({ jsmea_mac_boiler_total_flowcounter_foc: 1 }, { sparse: true })
+    index({ jsmea_mac_dieselgeneratorset_total_flowcounter_foc: 1 }, { sparse: true })
 
-    scope :boil_off_rate, -> {
-      where(:jsmea_mac_cargotk_bor_include_fv.exists => true)
-      .or(:jsmea_mac_cargotk_bor_exclude_fv.exists => true)
-    }
   end
 end

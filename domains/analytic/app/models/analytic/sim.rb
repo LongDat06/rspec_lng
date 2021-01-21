@@ -12,6 +12,12 @@ module Analytic
     index({ jsmea_mac_mainturb_revolution: 1 }, { sparse: true })
     index({ jsmea_mac_boiler_total_flowcounter_foc: 1 }, { sparse: true })
     index({ jsmea_mac_dieselgeneratorset_total_flowcounter_foc: 1 }, { sparse: true })
+    index({ jsmea_mac_boiler_fo_flow_ave: 1 }, { sparse: true })
+    index({ jsmea_mac_boiler_fg_flow_ave: 1 }, { sparse: true })
+    index({ jsmea_mac_dieselgeneratorset_fo_flow_ave: 1 }, { sparse: true })
+    index({ jsmea_mac_dieselgeneratorset_fg_flow_ave: 1 }, { sparse: true })
+    index({ jsmea_mac_forcingvaporizer_gas_out_flow_ave: 1 }, { sparse: true })
+    index({ jsmea_mac_boilerdumpstmcontvalve_opening: 1 }, { sparse: true })
 
   end
 end

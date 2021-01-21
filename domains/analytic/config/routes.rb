@@ -3,6 +3,7 @@ Analytic::Engine.routes.draw do
     namespace :charts do
       resources :boil_off_rate, only: [:index]
       resources :stage_trend1, only: [:index]
+      resources :stage_trend21, only: [:index]
     end
   end
 end

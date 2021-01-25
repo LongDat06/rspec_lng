@@ -5,6 +5,7 @@ Analytic::Engine.routes.draw do
       resources :stage_trend1, only: [:index]
       resources :stage_trend21, only: [:index]
       resources :tank_volume, only: [:index]
+      resources :tank_equator, only: [:index]
     end
   end
 end

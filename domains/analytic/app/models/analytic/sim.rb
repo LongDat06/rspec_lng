@@ -23,6 +23,11 @@ module Analytic
     index({ jsmea_mac_cargotk3_volume_percent: 1 }, { sparse: true })
     index({ jsmea_mac_cargotk4_volume_percent: 1 }, { sparse: true })
     index({ jsmea_mac_cargotk_total_volume_ave: 1 }, { sparse: true })
+    index({ jsmea_mac_cargotk1_equator_temp: 1 }, { sparse: true })
+    index({ jsmea_mac_cargotk2_equator_temp: 1 }, { sparse: true })
+    index({ jsmea_mac_cargotk3_equator_temp: 1 }, { sparse: true })
+    index({ jsmea_mac_cargotk4_equator_temp: 1 }, { sparse: true })
+
 
   end
 end

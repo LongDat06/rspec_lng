@@ -2,7 +2,7 @@ Ais::Engine.routes.draw do
   namespace :v1 do
     resources :trackings, only: [:index]
     resources :latest_positions, only: [:index]
-    resources :vessels, only: [:create]
+    resources :vessels, only: [:create, :index]
     resources :plan_routes, only: [:index]
   end
 end

@@ -20,6 +20,8 @@ require 'capistrano/rake'
 require 'capistrano/rbenv'   
 require 'capistrano/puma'
 require 'capistrano/puma/nginx'
+require 'whenever/capistrano'
+require 'capistrano/sidekiq'
 
 install_plugin Capistrano::Puma
 install_plugin Capistrano::Puma::Daemon

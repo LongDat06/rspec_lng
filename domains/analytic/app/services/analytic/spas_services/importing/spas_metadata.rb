@@ -1,10 +1,9 @@
 module Analytic
-  module SimServices
+  module SpasServices
     module Importing
-      class SimMetadata
+      class SpasMetadata
         ROW_STATIC_COLUMN_MAPPING = [1, 2, 3, 4, 5]
         ROW_HEADERS = 6
-        DEFAULT_TYPE = 'string'.freeze
 
         attr_reader :columns_mapping, :static_sim_meta, :sim_meta_data
 
@@ -15,15 +14,15 @@ module Analytic
           @columns_mapping = {
             latitude:  { index: 'D', type: 'numeric' },
             longitude: { index: 'E', type: 'numeric' },
-            timestamp: { index: 'C', type: 'datetime' }
+            timestamp: { index: 'C', type: 'string' }
           }
         end
 
         def call
           mapped_columns
           @sim_meta_data = Analytic::SimMetadata.new(static_sim_meta)
-          # @sim_meta_data.meta_imported = File.new(@input_sim_data)
-          # @sim_meta_data.sim_imported = File.new(@sim_data_path)
+          @sim_meta_data.meta_imported = File.new(@input_sim_data)
+          @sim_meta_data.sim_imported = File.new(@sim_data_path)
           @sim_meta_data.created_at = Time.current
           @sim_meta_data.save!
           self
@@ -41,7 +40,7 @@ module Analytic
               column_name = row['K'].parameterize(separator: '_').to_sym
               columns_mapping[column_name] = {
                 index: UtilityServices::IndexToExcelCol.convert(index),
-                type: row['E'].present? ? row['E'].parameterize : DEFAULT_TYPE
+                type: row['E']
               } 
             end
           end

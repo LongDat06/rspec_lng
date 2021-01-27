@@ -23,6 +23,11 @@ set :linked_files,    %w{config/database.yml config/mongoid.yml}
 set :linked_dirs,     %w{log tmp/pids tmp/cache tmp/sockets}
 set :bundle_binstubs, nil
 
+# config whenever
+set :whenever_roles, [:app]
+set :whenever_load_file, -> { "#{release_path}/domains/analytic/config/schedule/#{fetch(:stage)}.rb" }
+set :whenever_identifier, -> { "#{fetch(:application)}_#{fetch(:stage)}" }
+
 Rake::Task['deploy:compile_assets'].clear_actions
 
 namespace :deploy do
@@ -50,6 +55,15 @@ namespace :deploy do
   task :start_monit do
     on roles(:app) do
       execute "sudo /etc/init.d/monit start"
+    end
+  end
+
+  desc 'Update crontab with whenever'
+  task :update_cron do
+    on roles(:app) do
+      within release_path do
+        execute :bundle, :exec, "whenever --update-crontab #{fetch(:application)}"
+      end
     end
   end
 

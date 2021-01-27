@@ -2,9 +2,10 @@ module Analytic
   module SimServices
     module Importing
       class SimData
-        BATCH_IMPORT_SIZE = 1000
+        BATCH_IMPORT_SIZE = 10
 
-        def initialize(sim_metadata_id:, column_mapping:, sim_file_path:, current_time: Time.current)
+        def initialize(imo_no:, sim_metadata_id:, column_mapping:, sim_file_path:, current_time: Time.current)
+          @imo_no = imo_no
           @sim_metadata_id = sim_metadata_id
           @column_mapping = column_mapping
           @current_time = current_time
@@ -23,11 +24,9 @@ module Analytic
 
         def processing_rows
           rows.each.with_index(1) do |row, index|
-            @column_mapping.each do |column_name, column_mapped|
-              increment_counter
-              records << modeling_record(column_name, column_mapped, row, index)
-              import_records if reached_batch_import_size? || reached_end_of_file?
-            end
+            increment_counter
+            records << modeling_record(row, index)
+            import_records if reached_batch_import_size? || reached_end_of_file?
           end
         end
 
@@ -40,18 +39,36 @@ module Analytic
           records.clear
         end
 
-        def modeling_record(column_name, column_mapped, row, index)
-          row_data = row["#{column_mapped[:index]}#{index}"]
+        def modeling_sim_spec(row, index)
+          {}.tap do |hashing|
+            @column_mapping.each do |column_name, column_mapped|
+              row_data = row["#{column_mapped[:index]}#{index}"]
+              next if row_data.blank?
+              hashing[column_name] = if numeric?(column_mapped[:type])
+                row_data.to_f
+              elsif datetime?(column_mapped[:type])
+                row_data.to_datetime.utc
+              else
+                row_data.to_s
+              end
+            end
+          end
+        end
 
-          { 
-            column_name => numeric?(column_mapped[:type]) ? row_data.to_f : row_data.to_s,
+        def modeling_record(row, index)
+          {
+            imo_no: @imo_no,
             sim_metadata_id: @sim_metadata_id,
-            created_at: @current_time
+            spec: modeling_sim_spec(row, index)
           }
         end
 
         def numeric?(data_type)
           data_type == 'numeric'
+        end
+
+        def datetime?(data_type)
+          data_type == 'datetime'
         end
 
         def rows
@@ -67,11 +84,15 @@ module Analytic
         end
 
         def row_count
-          @row_count ||= @column_mapping.size
+          @row_count ||= rows.count
         end
 
         def reached_end_of_file?
           counter == row_count
+        end
+
+        def set_value(value)
+          value + Random.rand(99)
         end
       end
     end

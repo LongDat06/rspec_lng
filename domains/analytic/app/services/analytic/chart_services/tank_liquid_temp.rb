@@ -1,6 +1,7 @@
 module Analytic
   module ChartServices
-    class BoilOffRate
+    class TankLiquidTemp
+
       def initialize(from_time, to_time, imo)
         @from_time = from_time.to_datetime
         @to_time = to_time.to_datetime
@@ -12,6 +13,7 @@ module Analytic
       end
 
       private
+
       def sim_data
         Analytic::Sim
           .where({'spec.timestamp' => { '$gte' => @from_time, '$lte' => @to_time }})
@@ -19,8 +21,10 @@ module Analytic
           .only(
             '_id',
             'spec.timestamp', 
-            'spec.jsmea_mac_cargotk_bor_include_fv', 
-            'spec.jsmea_mac_cargotk_bor_exclude_fv'
+            'spec.jsmea_mac_cargotk1_liquid_temp', 
+            'spec.jsmea_mac_cargotk2_liquid_temp',
+            'spec.jsmea_mac_cargotk3_liquid_temp',
+            'spec.jsmea_mac_cargotk4_liquid_temp'
           )
       end
     end

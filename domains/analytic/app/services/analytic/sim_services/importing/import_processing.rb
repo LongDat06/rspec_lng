@@ -2,7 +2,10 @@ module Analytic
   module SimServices
     module Importing
       class ImportProcessing
-        def initialize
+
+        def initialize(sim)
+          @sim_metadata_path = sim[:metadata_path]
+          @sim_data_path = sim[:data_path]
         end
 
         def call
@@ -10,8 +13,12 @@ module Analytic
         end
 
         private
+
+        attr_reader :sim_metadata_path, :sim_data_path
+
         def import_sim_data
           Analytic::SimServices::Importing::SimData.new(
+            imo_no: sim_meta_data_opts.sim_meta_data.imo_no, 
             sim_metadata_id: sim_meta_data_opts.sim_meta_data.id, 
             column_mapping: sim_meta_data_opts.columns_mapping, 
             sim_file_path: sim_data_path
@@ -25,14 +32,6 @@ module Analytic
               sim_data_path: sim_data_path
             ).()
           end
-        end
-
-        def sim_metadata_path
-          "/Users/admin/Downloads/ShipData_9810020_Metadata_S2332_r3.xlsx"
-        end
-
-        def sim_data_path
-          "/Users/admin/Downloads/IoSData_98100202020122310420455.xlsx"
         end
       end
     end

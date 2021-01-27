@@ -1,0 +1,12 @@
+---
+:concurrency: 5
+staging:
+  :concurrency: 4
+production:
+  :concurrency: 5
+:queues:
+  - critical
+  - mailers
+  - default
+  - low
+  - importing_job

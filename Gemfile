@@ -40,6 +40,7 @@ group :development do
   gem 'capistrano-bundler', require: false
   gem 'capistrano3-puma',   require: false
   gem 'capistrano-rake', require: false
+  gem 'capistrano-sidekiq'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
@@ -62,3 +63,5 @@ gem 'aws-sdk-s3'
 gem 'ais', path: 'domains/ais'
 gem 'weather', path: 'domains/weather'
 gem 'analytic', path: 'domains/analytic'
+gem 'whenever', :require => false
+gem "sidekiq"

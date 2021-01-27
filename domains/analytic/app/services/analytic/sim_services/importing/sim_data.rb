@@ -42,8 +42,8 @@ module Analytic
         def modeling_sim_spec(row, index)
           {}.tap do |hashing|
             @column_mapping.each do |column_name, column_mapped|
+              next if row.blank?
               row_data = row["#{column_mapped[:index]}#{index}"]
-              next if row_data.blank?
               hashing[column_name] = if numeric?(column_mapped[:type])
                 row_data.to_f
               elsif datetime?(column_mapped[:type])

@@ -7,6 +7,7 @@ Analytic::Engine.routes.draw do
       resources :tank_volume, only: [:index]
       resources :tank_equator, only: [:index]
       resources :tank_liquid_temp, only: [:index]
+      resources :press, only: [:index]
     end
   end
 end

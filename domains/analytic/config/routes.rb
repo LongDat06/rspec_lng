@@ -10,6 +10,8 @@ Analytic::Engine.routes.draw do
       resources :press, only: [:index]
       resources :stage_trend31, only: [:index]
       resources :stage_trend32, only: [:index]
+      resources :stage_trend33, only: [:index]
+
     end
   end
 end

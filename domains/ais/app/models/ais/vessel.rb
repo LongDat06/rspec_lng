@@ -5,5 +5,6 @@ module Ais
     extend Enumerize
 
     enumerize :ship_type_id, in: { lng_tanker: 0 }
+    enumerize :engine_type, in: [:stage, :xdf]
   end
 end

@@ -16,9 +16,21 @@ module Ais
         json_response(vessels_json)
       end
 
+      def update
+        vessel = Vessel.find(params[:id])
+        vessel.update!(vessel_params)
+        json_response({})
+      end
+
+      def destroy
+        vessel = Vessel.find(params[:id])
+        vessel.destroy!
+        json_response({})
+      end
+
       private
       def vessel_params
-        params.permit(:name, :mmsi, :imo, :callsign, :date_of_build, :ship_type_id)
+        params.permit(:name, :mmsi, :imo, :callsign, :date_of_build, :ship_type_id, :engine_type)
       end
     end
   end

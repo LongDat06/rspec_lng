@@ -9,6 +9,7 @@ Analytic::Engine.routes.draw do
       resources :tank_liquid_temp, only: [:index]
       resources :press, only: [:index]
       resources :stage_trend31, only: [:index]
+      resources :stage_trend32, only: [:index]
     end
   end
 end

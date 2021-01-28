@@ -6,7 +6,7 @@ module Analytic
 
         set_id :_id
 
-        attribute :total_foc, :id
+        attribute :total_foc
 
         attribute :jsmea_mac_mainturb_load do |object|
           object.spec['jsmea_mac_mainturb_load']

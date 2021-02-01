@@ -64,35 +64,35 @@ module Analytic
         {
           "$addFields" => {
             "foc_hfo" => {
-              "$sum"=> { 
-                "$multiply" => [ 
-                  "$jsmea_mac_boiler_foline_hfo_flowcounter_foc", 
-                  "$jsmea_mac_dieselgeneratorset1_mainline_hfo_flowcounter_foc",
-                  "$jsmea_mac_dieselgeneratorset2_mainline_hfo_flowcounter_foc",
-                  "$jsmea_mac_dieselgeneratorset3_mainline_hfo_flowcounter_foc"
-                ] 
-              } 
+              "$sum"=> {
+                "$add" => [
+                  "$spec.jsmea_mac_boiler_foline_hfo_flowcounter_foc",
+                  "$spec.jsmea_mac_dieselgeneratorset1_mainline_hfo_flowcounter_foc",
+                  "$spec.jsmea_mac_dieselgeneratorset2_mainline_hfo_flowcounter_foc",
+                  "$spec.jsmea_mac_dieselgeneratorset3_mainline_hfo_flowcounter_foc"
+                ]
+              }
             },
             "foc_mgo" => {
-              "$sum"=> { 
-                "$multiply" => [ 
-                  "$jsmea_mac_boiler_mgoline_mgo_flowcounter_foc", 
-                  "$jsmea_mac_dieselgeneratorset1_mainline_mgo_flowcounter_foc",
-                  "$jsmea_mac_dieselgeneratorset2_mainline_mgo_flowcounter_foc",
-                  "$jsmea_mac_dieselgeneratorset3_mainline_mgo_flowcounter_foc",
-                  "$jsmea_mac_dieselgeneratorset1_pilotline_mgo_flowcounter_foc",
-                  "$jsmea_mac_dieselgeneratorset2_pilotline_mgo_flowcounter_foc",
-                  "$jsmea_mac_dieselgeneratorset3_pilotline_mgo_flowcounter_foc"
+              "$sum"=> {
+                "$add" => [
+                  "$spec.jsmea_mac_boiler_mgoline_mgo_flowcounter_foc",
+                  "$spec.jsmea_mac_dieselgeneratorset1_mainline_mgo_flowcounter_foc",
+                  "$spec.jsmea_mac_dieselgeneratorset2_mainline_mgo_flowcounter_foc",
+                  "$spec.jsmea_mac_dieselgeneratorset3_mainline_mgo_flowcounter_foc",
+                  "$spec.jsmea_mac_dieselgeneratorset1_pilotline_mgo_flowcounter_foc",
+                  "$spec.jsmea_mac_dieselgeneratorset2_pilotline_mgo_flowcounter_foc",
+                  "$spec.jsmea_mac_dieselgeneratorset3_pilotline_mgo_flowcounter_foc"
                 ] 
               } 
             },
             "fgc" => {
-              "$sum"=> { 
-                "$multiply" => [ 
-                  "$jsmea_mac_boiler_fgline_fg_flowcounter_fgc", 
-                  "$jsmea_mac_dieselgeneratorset_fg_total_flowcounter_fgc"
-                ] 
-              } 
+              "$sum"=> {
+                "$add" => [
+                  "$spec.jsmea_mac_boiler_fgline_fg_flowcounter_fgc",
+                  "$spec.jsmea_mac_dieselgeneratorset_fg_total_flowcounter_fgc"
+                ]
+              }
             },
           }
         }

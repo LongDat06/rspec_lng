@@ -28,7 +28,7 @@ module Analytic
         {
           "$match" => {
             "$and" => [
-              "spec.timestamp" => { "$gte" => @from_time, "$lte" => @to_time  }, 
+              "spec.timestamp" => { "$gte" => @from_time, "$lte" => @to_time },
               "imo_no" => @imo
             ]
           }
@@ -50,13 +50,13 @@ module Analytic
       def addFields
         {
           "$addFields" => {
-            "total_foc" => { 
+            "total_foc" => {
               "$sum"=> { 
-                "$multiply" => [ 
-                  "$jsmea_mac_boiler_total_flowcounter_foc", 
-                  "$jsmea_mac_dieselgeneratorset_total_flowcounter_foc"
-                ] 
-              } 
+                "$add" => [
+                  "$spec.jsmea_mac_boiler_total_flowcounter_foc",
+                  "$spec.jsmea_mac_dieselgeneratorset_total_flowcounter_foc"
+                ]
+              }
             }
           }
         }

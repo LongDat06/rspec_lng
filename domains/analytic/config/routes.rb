@@ -12,6 +12,7 @@ Analytic::Engine.routes.draw do
       resources :stage_trend32, only: [:index]
       resources :stage_trend33, only: [:index]
       resources :xdf_trend1, only: [:index]
+      resources :xdf_trend21, only: [:index]
     end
   end
 end

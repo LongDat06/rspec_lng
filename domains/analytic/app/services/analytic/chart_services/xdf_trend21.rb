@@ -1,6 +1,6 @@
 module Analytic
   module ChartServices
-    class XdfTrend1
+    class XdfTrend21
 
       def initialize(from_time, to_time, imo)
         @from_time = from_time.to_datetime
@@ -15,11 +15,12 @@ module Analytic
           .only(
             '_id',
             'spec.timestamp', 
-            'spec.jsmea_mac_mainengine_load', 
-            'spec.jsmea_mac_mainengine2_load',
-            'spec.jsmea_mac_mainengine_revolution',
-            'spec.jsmea_mac_mainengine2_revolution',
-            'spec.jsmea_nav_gnss_sog'
+            'spec.jsmea_mac_boiler_fo_flow_ave', 
+            'spec.jsmea_mac_boiler_fg_flow_ave',
+            'spec.jsmea_mac_dieselgeneratorset_fo_flow_ave',
+            'spec.jsmea_mac_dieselgeneratorset_fg_flow_ave',
+            'spec.jsmea_mac_forcingvaporizer_gas_out_flow_ave',
+            'spec.jsmea_mac_boilerdumpstmcontvalve_opening'
           )
       end
     end

@@ -1,6 +1,6 @@
 module Analytic
   module ChartServices
-    class TankLiquidTemp
+    class StageTankEquator
 
       def initialize(from_time, to_time, imo)
         @from_time = from_time.to_datetime
@@ -21,10 +21,10 @@ module Analytic
           .only(
             '_id',
             'spec.timestamp', 
-            'spec.jsmea_mac_cargotk1_liquid_temp', 
-            'spec.jsmea_mac_cargotk2_liquid_temp',
-            'spec.jsmea_mac_cargotk3_liquid_temp',
-            'spec.jsmea_mac_cargotk4_liquid_temp'
+            'spec.jsmea_mac_cargotk1_equator_temp', 
+            'spec.jsmea_mac_cargotk2_equator_temp',
+            'spec.jsmea_mac_cargotk3_equator_temp',
+            'spec.jsmea_mac_cargotk4_equator_temp'
           )
       end
     end

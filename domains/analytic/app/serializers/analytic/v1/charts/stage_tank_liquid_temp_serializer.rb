@@ -1,7 +1,7 @@
 module Analytic
   module V1
     module Charts
-      class TankLiquidTempSerializer
+      class StageTankLiquidTempSerializer
         include FastJsonapi::ObjectSerializer
 
         attribute :jsmea_mac_cargotk1_liquid_temp do |object|

@@ -1,6 +1,6 @@
 module Analytic
   module ChartServices
-    class Press
+    class StagePress
       def initialize(from_time, to_time, imo)
         @from_time = from_time.to_datetime
         @to_time = to_time.to_datetime

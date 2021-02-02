@@ -1,14 +1,14 @@
 module Analytic
   module V1
     module Charts
-      class PressController < BaseController
+      class StageBoilOffRateController < BaseController
         def index
-          charts = Analytic::ChartServices::Press.new(
+          charts = Analytic::ChartServices::StageBoilOffRate.new(
             chart_params[:from_time], 
             chart_params[:to_time], 
             chart_params[:imo]
           ).()
-          json_charts = Analytic::V1::Charts::PressSerializer.new(charts).serializable_hash
+          json_charts = Analytic::V1::Charts::StageBoilOffRateSerializer.new(charts).serializable_hash
           json_response(json_charts)
         end
 

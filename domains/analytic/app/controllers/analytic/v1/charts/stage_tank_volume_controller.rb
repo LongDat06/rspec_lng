@@ -1,14 +1,14 @@
 module Analytic
   module V1
     module Charts
-      class TankVolumeController < BaseController
+      class StageTankVolumeController < BaseController
         def index
-          charts = Analytic::ChartServices::TankVolume.new(
+          charts = Analytic::ChartServices::StageTankVolume.new(
             chart_params[:from_time], 
             chart_params[:to_time], 
             chart_params[:imo]
           ).()
-          json_charts = Analytic::V1::Charts::TankVolumeSerializer.new(charts).serializable_hash
+          json_charts = Analytic::V1::Charts::StageTankVolumeSerializer.new(charts).serializable_hash
           json_response(json_charts)
         end
 

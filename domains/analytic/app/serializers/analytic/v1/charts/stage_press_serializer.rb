@@ -1,7 +1,7 @@
 module Analytic
   module V1
     module Charts
-      class PressSerializer
+      class StagePressSerializer
         include FastJsonapi::ObjectSerializer
 
         attribute :jsmea_mac_cargotk1_press_ave do |object|

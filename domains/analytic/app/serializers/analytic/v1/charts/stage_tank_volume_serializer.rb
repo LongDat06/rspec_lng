@@ -1,7 +1,7 @@
 module Analytic
   module V1
     module Charts
-      class TankVolumeSerializer
+      class StageTankVolumeSerializer
         include FastJsonapi::ObjectSerializer
 
         attribute :jsmea_mac_cargotk1_volume_percent do |object|

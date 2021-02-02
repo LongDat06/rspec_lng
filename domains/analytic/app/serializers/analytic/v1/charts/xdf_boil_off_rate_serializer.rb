@@ -1,7 +1,7 @@
 module Analytic
   module V1
     module Charts
-      class BoilOffRateSerializer
+      class XdfBoilOffRateSerializer
         include FastJsonapi::ObjectSerializer
 
         attribute :jsmea_mac_cargotk_bor_include_fv do |object|

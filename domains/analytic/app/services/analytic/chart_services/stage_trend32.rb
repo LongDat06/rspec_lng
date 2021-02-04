@@ -21,7 +21,8 @@ module Analytic
         Analytic::Sim.collection.aggregate([
           matched,
           project,
-          addFields
+          addFields,
+          sort
         ]).map { |record| MODELING.new(record) }
       end
 
@@ -95,6 +96,12 @@ module Analytic
               }
             },
           }
+        }
+      end
+
+      def sort
+        {
+          "$sort" => { "spec.timestamp" => 1 }
         }
       end
     end

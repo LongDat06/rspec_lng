@@ -16,6 +16,7 @@ module Analytic
 
       def sim_data
         Analytic::Sim
+          .order_by('spec.timestamp' => 1)
           .where({'spec.timestamp' => { '$gte' => @from_time, '$lte' => @to_time }})
           .where(imo_no: @imo.to_i)
           .only(

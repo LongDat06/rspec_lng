@@ -93,7 +93,25 @@ module Analytic
         end
 
         def set_value(value)
-          value + Random.rand(99)
+          tmp_value = value.round.to_s
+
+          plus_value = begin
+            case tmp_value.size
+            when 1
+              Random.rand(0..9)
+            when 2
+              Random.rand(-9..10)
+            when 3
+              Random.rand(-99..100)
+            when 4
+              Random.rand(-999..1000)
+            when 5
+              Random.rand(-9999..10000)
+            else
+              Random.rand(99)
+            end
+          end
+          value + plus_value
         end
       end
     end

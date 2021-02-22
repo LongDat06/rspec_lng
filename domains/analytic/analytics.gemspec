@@ -16,4 +16,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency "creek"
   spec.add_dependency "shrine", "~> 3.0"
   spec.add_dependency 'shrine-mongoid', "~> 1.0"
+  spec.add_dependency "shared"
 end

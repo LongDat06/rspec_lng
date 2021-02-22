@@ -43,6 +43,13 @@ group :development do
   gem 'capistrano-sidekiq'
 end
 
+# Domain service
+gem 'ais', path: 'domains/ais'
+gem 'weather', path: 'domains/weather'
+gem 'analytic', path: 'domains/analytic'
+gem 'identity', path: 'domains/identity'
+gem 'shared', path: 'domains/shared'
+
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'mongoid', '~> 7.2.0'
@@ -60,8 +67,9 @@ gem 'creek', git: 'https://github.com/pythonicrubyist/creek'
 gem 'shrine', "~> 3.0"
 gem 'shrine-mongoid', "~> 1.0"
 gem 'aws-sdk-s3'
-gem 'ais', path: 'domains/ais'
-gem 'weather', path: 'domains/weather'
-gem 'analytic', path: 'domains/analytic'
 gem 'whenever', :require => false
-gem "sidekiq"
+gem 'sidekiq'
+gem 'bcrypt', '~> 3.1.7'
+gem 'email_validator'
+gem 'jwt'
+gem 'pundit'

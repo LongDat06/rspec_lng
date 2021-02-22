@@ -50,7 +50,20 @@ module Analytic
                 Analytic::Sim.where(imo_no: @imo_no).order(created_at: :desc).first.spec['timestamp'].to_datetime + 1.hour
                 # row_data.to_datetime.utc
               else
-                row_data.to_s
+                puts column_name.to_s
+                if column_name.to_s == 'jsmea_mac_boiler_fuelmode'
+                   'GAS'
+                elsif column_name.to_s == 'jsmea_mac_boiler2_fuelmode'
+                   'OTHER'
+                elsif column_name.to_s == 'jsmea_mac_dieselgeneratorset1_fuelmode'
+                   'FO'
+                elsif column_name.to_s == 'jsmea_mac_dieselgeneratorset2_fuelmode'
+                   'DUAL'
+                elsif column_name.to_s == 'jsmea_mac_dieselgeneratorset3_fuelmode'
+                   'Other'
+                else
+                  row_data.to_s
+                end
               end
             end
           end

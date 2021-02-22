@@ -16,6 +16,7 @@ PATH
       httparty
       pagy (~> 3.10)
       rails (= 6.0.3.4)
+      shared
 
 PATH
   remote: domains/analytic
@@ -24,8 +25,26 @@ PATH
       creek
       mongoid
       rails (= 6.0.3.4)
+      shared
       shrine (~> 3.0)
       shrine-mongoid (~> 1.0)
+
+PATH
+  remote: domains/identity
+  specs:
+    identity (0.1.0)
+      bcrypt
+      email_validator
+      jwt
+      rails (= 6.0.3.4)
+      shared
+
+PATH
+  remote: domains/shared
+  specs:
+    shared (0.1.0)
+      pundit
+      rails (~> 6.0.3, >= 6.0.3.4)
 
 PATH
   remote: domains/weather
@@ -115,6 +134,7 @@ GEM
       descendants_tracker (~> 0.0.4)
       ice_nine (~> 0.11.0)
       thread_safe (~> 0.3, >= 0.3.1)
+    bcrypt (3.1.16)
     bootsnap (1.5.1)
       msgpack (~> 1.0)
     bson (4.11.1)
@@ -158,6 +178,8 @@ GEM
       railties (>= 3.2)
     down (5.2.0)
       addressable (~> 2.5)
+    email_validator (2.2.2)
+      activemodel
     enumerize (2.4.0)
       activesupport (>= 3.2)
     equalizer (0.0.11)
@@ -174,6 +196,7 @@ GEM
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
     jmespath (1.4.0)
+    jwt (2.2.2)
     listen (3.3.3)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
@@ -211,6 +234,8 @@ GEM
     public_suffix (4.0.6)
     puma (5.1.1)
       nio4r (~> 2.0)
+    pundit (2.1.0)
+      activesupport (>= 3.0.0)
     racc (1.5.2)
     rack (2.2.3)
     rack-cors (1.1.1)
@@ -309,6 +334,7 @@ DEPENDENCIES
   ais!
   analytic!
   aws-sdk-s3
+  bcrypt (~> 3.1.7)
   bootsnap (>= 1.4.4)
   bson
   byebug
@@ -321,18 +347,23 @@ DEPENDENCIES
   capistrano3-puma
   creek!
   dotenv-rails
+  email_validator
   enumerize
   fast_jsonapi
   httparty
+  identity!
+  jwt
   listen (~> 3.3)
   mongoid (~> 7.2.0)
   pagy (~> 3.10)
   pg (~> 1.1)
   puma (~> 5.0)
+  pundit
   rack-cors
   rails (= 6.0.3.4)
   redis (= 4.2.5)
   redis-rails (= 5.0.2)
+  shared!
   shrine (~> 3.0)
   shrine-mongoid (~> 1.0)
   sidekiq

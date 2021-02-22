@@ -1,0 +1,3 @@
+en:
+  authentication:
+    invalid_token: Invalid Signature

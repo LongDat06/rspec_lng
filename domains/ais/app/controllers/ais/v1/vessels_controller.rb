@@ -4,8 +4,10 @@ module Ais
       VESSEL_PER_PAGE = 1
 
       def create
-        Vessel.create!(vessel_params)
-        json_response({})
+        opts = VesselForms::Register.new(vessel_params)
+        vessel = opts.create
+        vessel_jsons = Ais::V1::VesselSerializer.new(vessel).serializable_hash
+        json_response(vessel_jsons)
       end
 
       def index
@@ -29,7 +31,7 @@ module Ais
 
       def destroy
         vessel = Vessel.find(params[:id])
-        vessel.destroy!
+        VesselForms::Delete.new(vessel).()
         json_response({})
       end
 

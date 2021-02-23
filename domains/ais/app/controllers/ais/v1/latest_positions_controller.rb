@@ -10,7 +10,9 @@ module Ais
           imos: vessels_imo.pluck(:imo)
         }).fetch
         latest_position_json = Ais::V1::Vessels::LatestPositionSerializer.new(
-          latest_position[:data].map {|record| Ais::LatestPosition.new(record[:attributes]) }
+          latest_position[:data]
+            .reject {|record| record[:attributes][:error].present? }
+            .map {|record| Ais::LatestPosition.new(record[:attributes]) }
         ).serializable_hash
 
         pagy_headers_merge(pagy)

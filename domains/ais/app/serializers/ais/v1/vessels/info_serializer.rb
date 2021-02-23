@@ -4,8 +4,7 @@ module Ais
       class InfoSerializer
         include FastJsonapi::ObjectSerializer
 
-        attribute :imo, :name, :mmsi, :callsign, :date_of_build, :engine_type
-
+        attribute :id, :imo, :engine_type, :target, :created_at, :updated_at
       end
     end
   end

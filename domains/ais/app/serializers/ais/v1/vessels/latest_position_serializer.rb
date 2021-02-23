@@ -5,7 +5,7 @@ module Ais
         include FastJsonapi::ObjectSerializer
 
         attribute :imo, :course, :destination, :draught, :eta_at, :heading, :last_position_updated_at,
-                  :latitude, :longitude, :nav_status_code, :speed_over_ground, :vessel_name
+                  :latitude, :longitude, :nav_status_code, :speed_over_ground, :vessel_name, :error
 
         attribute :type do |_|
           'Feature'

@@ -4,8 +4,9 @@ module Identity
       USER_PER_PAGE = 20
 
       def create
-        User.create!(user_params)
-        json_response({})
+        user = User.create!(user_params)
+        user_jsons = Identity::V1::UserSerializer.new(user).serializable_hash
+        json_response(user_jsons)
       end
 
       def index

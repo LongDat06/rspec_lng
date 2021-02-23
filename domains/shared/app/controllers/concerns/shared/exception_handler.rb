@@ -8,6 +8,7 @@ module Shared
     
     included do
       # Define custom handlers
+      rescue_from StandardError, with: :render_422
       rescue_from AuthenticationError, with: :unauthorized_request
       rescue_from AccessDenied, with: :unauthorized_request
       rescue_from ActiveRecord::RecordInvalid, with: :render_422

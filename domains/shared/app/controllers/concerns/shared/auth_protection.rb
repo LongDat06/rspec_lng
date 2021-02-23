@@ -10,14 +10,12 @@ module Shared
 
     private
     def authorize_request
-      # if user_session.blank?
-      #   raise(
-      #     ExceptionHandler::AccessDenied, I18n.t('authentication.invalid_token')
-      #   )
-      # end
-      # @current_user = user_session
-      # Fixed code for integration FE
-      @current_user = User.first
+      if user_session.blank?
+        raise(
+          ExceptionHandler::AccessDenied, I18n.t('authentication.invalid_token')
+        )
+      end
+      @current_user = user_session
     end
 
     def user_session

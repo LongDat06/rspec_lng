@@ -45,9 +45,9 @@ module Analytic
               next if row.blank?
               row_data = row["#{column_mapped[:index]}#{index}"]
               hashing[column_name] = if numeric?(column_mapped[:type])
-                set_value(row_data.to_f)
+                -500.789
               elsif datetime?(column_mapped[:type])
-                Analytic::Sim.where(imo_no: @imo_no).order(created_at: :desc).first.spec['timestamp'].to_datetime + 1.hour
+                Analytic::Sim.where(imo_no: @imo_no).order_by('spec.timestamp' => -1).first.spec['timestamp'].to_datetime + 1.hour
                 # row_data.to_datetime.utc
               else
                 puts column_name.to_s

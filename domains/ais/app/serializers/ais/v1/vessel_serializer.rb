@@ -3,7 +3,7 @@ module Ais
     class VesselSerializer
       include FastJsonapi::ObjectSerializer
 
-      attribute :id, :imo, :mmsi, :name, :callsign, :date_of_build, :created_at, :updated_at
+      attribute :id, :imo, :engine_type, :target, :created_at, :updated_at
     end
   end
 end

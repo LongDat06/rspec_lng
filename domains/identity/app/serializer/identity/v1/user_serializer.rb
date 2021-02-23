@@ -3,7 +3,7 @@ module Identity
     class UserSerializer
       include FastJsonapi::ObjectSerializer
 
-      attributes :id, :fullname, :email
+      attributes :id, :fullname, :email, :role
     end
   end
 end

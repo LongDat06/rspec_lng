@@ -15,5 +15,6 @@ module Identity
     validates :email, presence: true, email: true, uniqueness: { case_sensitive: true }
     validates_presence_of :fullname, :password_digest, :role
     validates :email, presence: true, uniqueness: { case_sensitive: true }
+    validates_presence_of :password_confirmation, :if => :password_digest_changed?
   end
 end

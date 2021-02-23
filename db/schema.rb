@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_03_085917) do
+ActiveRecord::Schema.define(version: 2021_02_23_060628) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -47,15 +47,11 @@ ActiveRecord::Schema.define(version: 2021_02_03_085917) do
   end
 
   create_table "vessels", force: :cascade do |t|
-    t.integer "mmsi"
     t.integer "imo"
-    t.string "name"
-    t.string "callsign"
-    t.string "date_of_build"
-    t.integer "ship_type_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "engine_type", default: "", null: false
+    t.boolean "target", default: false
   end
 
 end

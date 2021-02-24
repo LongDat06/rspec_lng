@@ -12,7 +12,14 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
     # Only allow a request for a specific host
     resource '*',
         headers: :any,
-        :methods => [:get, :post, :delete, :put, :patch, :options, :head], expose: ['ETag', 'Link'],
+        :methods => [:get, :post, :delete, :put, :patch, :options, :head], expose: [
+          'ETag', 
+          'Link',
+          'Page-Items',
+          'Total-Pages',
+          'Total-Count',
+          'Current-Page'
+        ],
         :credentials => true
   end
 

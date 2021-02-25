@@ -30,7 +30,7 @@ module Ais
       end
 
       def destroy
-        vessel = Vessel.find(params[:id])
+        vessel = Vessel.find_by_imo!(params[:id])
         VesselForms::Delete.new(vessel).()
         json_response({})
       end

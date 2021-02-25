@@ -6,7 +6,7 @@ module Ais
 
     enumerize :engine_type, in: [:stage, :xdf]
 
-    validates :imo, presence: true,  uniqueness: true
+    validates :imo, presence: true, uniqueness: true
 
     scope :target, -> (target) { where(target: target) if target.present? }
     scope :imo, -> (imo) { where(imo: imo) if imo.present? }

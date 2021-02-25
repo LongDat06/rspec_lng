@@ -2,6 +2,7 @@ Ais::Engine.routes.draw do
   namespace :v1 do
     namespace :vessels do
       resources :info, only: [:index]
+      resources :non_targets, only: [:create]
     end
 
     resources :trackings, only: [:index]

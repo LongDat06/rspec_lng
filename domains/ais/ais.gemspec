@@ -19,4 +19,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'pagy', '~> 3.10'
   spec.add_dependency 'enumerize'
   spec.add_dependency "shared"
+  spec.add_dependency "activerecord-import"
 end

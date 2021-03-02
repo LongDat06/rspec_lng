@@ -1,7 +1,7 @@
 module Ais
   module V1
     class VesselsController < BaseController
-      VESSEL_PER_PAGE = 1
+      VESSEL_PER_PAGE = 50
 
       def create
         opts = VesselForms::Register.new(vessel_params)

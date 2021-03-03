@@ -1,7 +1,7 @@
 module Analytic
   module V1
     module Charts
-      class StageTankEquatorSerializer
+      class StageTankEquatorTempSerializer
         include FastJsonapi::ObjectSerializer
 
         attribute :jsmea_mac_cargotk1_equator_temp do |object|

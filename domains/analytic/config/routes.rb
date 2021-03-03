@@ -18,6 +18,10 @@ Analytic::Engine.routes.draw do
       resources :xdf_tank_liquid_temp, only: [:index]
       resources :xdf_tank_equator_temp, only: [:index]
       resources :xdf_press, only: [:index]
+      resources :xdf_trend314, only: [:index]
+      resources :xdf_trend315, only: [:index]
+      resources :xdf_trend316, only: [:index]
+      resources :xdf_trend317, only: [:index]
     end
   end
 end

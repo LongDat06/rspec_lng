@@ -1,14 +1,14 @@
 module Analytic
   module V1
     module Charts
-      class StageTankEquatorController < BaseController
+      class XdfTrend316Controller < BaseController
         def index
-          charts = Analytic::ChartServices::StageTankEquator.new(
+          charts = Analytic::ChartServices::XdfTrend316.new(
             chart_params[:from_time], 
             chart_params[:to_time], 
             chart_params[:imo]
           ).()
-          json_charts = Analytic::V1::Charts::StageTankEquatorSerializer.new(charts).serializable_hash
+          json_charts = Analytic::V1::Charts::XdfTrend316Serializer.new(charts).serializable_hash
           json_response(json_charts)
         end
 

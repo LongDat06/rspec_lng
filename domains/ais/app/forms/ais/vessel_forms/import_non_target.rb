@@ -25,7 +25,7 @@ module Ais
 
       def updated_imo_setting
         ExternalServices::Csm::ImoRegister.new({
-          imos: [@imos]
+          imos: @imos
         }).fetch
       end
     end

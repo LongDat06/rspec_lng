@@ -4,6 +4,10 @@ module Analytic
       class XdfTrend315Serializer
         include FastJsonapi::ObjectSerializer
 
+        set_id :_id
+
+        attribute :total_foc
+
         attribute :jsmea_mac_boiler_foline_hfo_flowcounter_foc do |object|
           object.spec['jsmea_mac_boiler_foline_hfo_flowcounter_foc']
         end

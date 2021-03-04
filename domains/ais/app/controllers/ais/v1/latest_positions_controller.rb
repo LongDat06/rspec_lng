@@ -1,7 +1,7 @@
 module Ais
   module V1
     class LatestPositionsController < BaseController
-      VESSEL_PER_PAGE = 1
+      VESSEL_PER_PAGE = 100
 
       def index
         page_number = (params[:page] || 1).to_i

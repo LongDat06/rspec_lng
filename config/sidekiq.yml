@@ -10,3 +10,4 @@ production:
   - default
   - low
   - importing_job
+  - downloading_job

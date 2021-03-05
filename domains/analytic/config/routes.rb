@@ -23,5 +23,12 @@ Analytic::Engine.routes.draw do
       resources :xdf_trend316, only: [:index]
       resources :xdf_trend317, only: [:index]
     end
+
+    namespace :downloads do
+      resources :sims, only: [:create]
+      resources :histories, only: [:index]
+    end
+
+    resources :sim_channels, only: [:index]
   end
 end

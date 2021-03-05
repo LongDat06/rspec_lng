@@ -18,4 +18,5 @@
   * export JWT_ACCESS_PRIVATE_KEY=
   * export JWT_REFRESH_PRIVATE_KEY=
 
-
+### GNG-1471
+  * Analytic::MigrationServices::Mar2021::Gng1471.new.()

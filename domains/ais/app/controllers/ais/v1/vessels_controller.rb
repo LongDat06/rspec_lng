@@ -16,7 +16,7 @@ module Ais
           .target(filter_params[:target])
           .imo(filter_params[:imo])
           .engine_type(filter_params[:engine_type])
-          .order(created_at: :desc)
+          .order_by(created_at: -1)
         pagy, vessels = pagy(scope, items: VESSEL_PER_PAGE)
         vessels_json = Ais::V1::VesselSerializer.new(vessels).serializable_hash
         pagy_headers_merge(pagy)

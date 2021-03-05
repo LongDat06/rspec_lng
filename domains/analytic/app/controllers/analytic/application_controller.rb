@@ -1,4 +1,4 @@
 module Analytic
-  class ApplicationController < ActionController::Base
+  class ApplicationController < ActionController::API
   end
 end

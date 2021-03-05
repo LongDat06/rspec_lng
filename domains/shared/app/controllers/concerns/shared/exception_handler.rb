@@ -9,6 +9,7 @@ module Shared
     included do
       # Define custom handlers
       rescue_from StandardError, with: :render_422
+      rescue_from ActionController::BadRequest, with: :render_400
       rescue_from AuthenticationError, with: :unauthorized_request
       rescue_from AccessDenied, with: :unauthorized_request
       rescue_from ActiveRecord::RecordInvalid, with: :render_422
@@ -18,6 +19,10 @@ module Shared
     # JSON response with message; Status code 422 - unprocessable entity
     def render_422(e)
       json_response({ message: e.message }, :unprocessable_entity)
+    end
+
+    def render_400(e)
+      json_response({ message: e.message }, :bad_request)
     end
 
     # JSON response with message; Status code 401 - Unauthorized

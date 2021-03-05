@@ -30,5 +30,10 @@ Analytic::Engine.routes.draw do
     end
 
     resources :sim_channels, only: [:index]
+    
+    namespace :vessels do
+      resources :stage_specs, only: [:index]
+      resources :xdf_specs,   only: [:index]
+    end
   end
 end

@@ -16,6 +16,7 @@ module Ais
           .target(filter_params[:target])
           .imo(filter_params[:imo])
           .engine_type(filter_params[:engine_type])
+          .ecdis_email(filter_params[:ecdis_email])
           .order(created_at: :desc)
         pagy, vessels = pagy(scope, items: VESSEL_PER_PAGE)
         vessels_json = Ais::V1::VesselSerializer.new(vessels).serializable_hash
@@ -37,11 +38,11 @@ module Ais
 
       private
       def vessel_params
-        params.permit(:imo, :engine_type, :target)
+        params.permit(:imo, :engine_type, :target, :ecdis_email)
       end
 
       def filter_params
-        params.permit(:imo, :engine_type, :target)
+        params.permit(:imo, :engine_type, :target, :ecdis_email)
       end
     end
   end

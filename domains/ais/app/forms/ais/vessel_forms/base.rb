@@ -7,6 +7,7 @@ module Ais
       attribute :id, String
       attribute :imo, Integer
       attribute :engine_type, String
+      attribute :ecdis_email, String
       attribute :target, Boolean
     end
   end

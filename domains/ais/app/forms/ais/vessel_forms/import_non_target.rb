@@ -2,7 +2,7 @@ module Ais
   module VesselForms
     class ImportNonTarget
       def initialize(imos)
-        @imos = imos.uniq
+        @imos = imos.uniq.map(&:to_i).reject(&:zero?)
       end
 
       def create

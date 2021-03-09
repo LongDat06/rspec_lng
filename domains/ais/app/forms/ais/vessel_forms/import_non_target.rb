@@ -17,8 +17,7 @@ module Ais
       def create_vessel
         Ais::Vessel.import!(
           vessels, 
-          on_duplicate_key_update: {conflict_target: [:imo], columns: [:imo, :target]},
-          validate: false
+          validate: true
         )
         updated_imo_setting
       end

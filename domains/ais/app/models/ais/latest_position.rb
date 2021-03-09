@@ -15,6 +15,7 @@ module Ais
     attribute :nav_status_code, Integer
     attribute :speed_over_ground, Float
     attribute :vessel_name, String
+    attribute :last_port_departure_at, DateTime
     attribute :error
   end
 end

@@ -16,10 +16,14 @@ module Analytic
           .only(
             '_id',
             'spec.timestamp', 
-            'spec.jsmea_mac_cargotk1_equator_temp', 
-            'spec.jsmea_mac_cargotk2_equator_temp',
-            'spec.jsmea_mac_cargotk3_equator_temp',
-            'spec.jsmea_mac_cargotk4_equator_temp',
+            'spec.jsmea_mac_cargotk1_innersurface_upp_temp',
+            'spec.jsmea_mac_cargotk1_innersurface_low_temp',
+            'spec.jsmea_mac_cargotk2_innersurface_upp_temp',
+            'spec.jsmea_mac_cargotk2_innersurface_low_temp',
+            'spec.jsmea_mac_cargotk3_innersurface_upp_temp',
+            'spec.jsmea_mac_cargotk3_innersurface_low_temp',
+            'spec.jsmea_mac_cargotk4_innersurface_upp_temp',
+            'spec.jsmea_mac_cargotk4_innersurface_low_temp',
           )
       end
     end

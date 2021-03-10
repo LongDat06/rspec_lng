@@ -20,10 +20,6 @@ module Analytic
             'spec.jsmea_mac_cargotk2_press_ave',
             'spec.jsmea_mac_cargotk3_press_ave',
             'spec.jsmea_mac_cargotk4_press_ave',
-            'spec.jsmea_mac_holdspace1_press_ave',
-            'spec.jsmea_mac_holdspace2_press_ave',
-            'spec.jsmea_mac_holdspace3_press_ave',
-            'spec.jsmea_mac_holdspace4_press_ave'
           )
       end
     end

@@ -38,8 +38,14 @@ module Analytic
           yielder << CSV.generate_line(headers)
 
           sim_data.each do |row|
-            yielder << CSV.generate_line(row.spec.attributes.values)
+            yielder << CSV.generate_line(row_mapping(row.spec))
           end
+        end
+      end
+
+      def row_mapping(spec)
+        exporting_columns.map do |column|
+          spec.attributes[column]
         end
       end
 

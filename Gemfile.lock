@@ -23,6 +23,7 @@ PATH
   remote: domains/analytic
   specs:
     analytic (0.1.0)
+      content_disposition (~> 1.0)
       creek
       mongoid
       mongoid_search
@@ -354,6 +355,7 @@ DEPENDENCIES
   capistrano-rbenv
   capistrano-sidekiq
   capistrano3-puma
+  content_disposition (~> 1.0)
   creek!
   dotenv-rails
   email_validator

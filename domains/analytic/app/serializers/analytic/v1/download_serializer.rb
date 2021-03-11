@@ -6,7 +6,7 @@ module Analytic
       attributes :id, :source, :status, :created_at, :imo_no, :author_id
 
       attribute :content_url do |object|
-        object.content_url
+        object.content_downloadable
       end
 
       attribute :condition do |object|

@@ -11,20 +11,19 @@ module Ais
 
       private
       def vessels
-        @vessels ||= @imos.map {|imo| { imo: imo, target: false } }
+        @vessels ||= @imos.map {|imo| {imo: imo, target: false } }
       end
 
       def create_vessel
-        Ais::Vessel.import!(
-          vessels, 
-          validate: true
+        opts = Ais::Vessel.import!(
+          [:imo, :target], vessels, validate: false, on_duplicate_key_ignore: true
         )
-        updated_imo_setting
+        updated_imo_setting(Ais::Vessel.where(id: opts.ids).pluck(:imo))
       end
 
-      def updated_imo_setting
+      def updated_imo_setting(new_imo)
         ExternalServices::Csm::ImoRegister.new({
-          imos: @imos
+          imos: new_imo
         }).fetch
       end
     end

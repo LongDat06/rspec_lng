@@ -16,5 +16,13 @@ module Analytic
     field :author_id, type: Integer
 
     index({ imo_no: 1 })
+
+    def content_downloadable
+      return if content.blank?
+      content.url(
+        response_content_disposition: ContentDisposition.attachment(content.original_filename),
+        public: false
+      )
+    end
   end
 end

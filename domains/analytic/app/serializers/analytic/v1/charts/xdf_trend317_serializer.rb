@@ -16,6 +16,10 @@ module Analytic
           object.spec['jsmea_mac_dieselgeneratorset3_fuelmode']
         end
 
+        attribute :jsmea_mac_dieselgeneratorset4_fuelmode do |object|
+          object.spec['jsmea_mac_dieselgeneratorset4_fuelmode']
+        end
+
         attribute :timestamp do |object|
           object.spec['timestamp']
         end

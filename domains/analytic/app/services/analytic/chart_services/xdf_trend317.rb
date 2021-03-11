@@ -19,6 +19,7 @@ module Analytic
             'spec.jsmea_mac_dieselgeneratorset1_fuelmode', 
             'spec.jsmea_mac_dieselgeneratorset2_fuelmode',
             'spec.jsmea_mac_dieselgeneratorset3_fuelmode',
+            'spec.jsmea_mac_dieselgeneratorset4_fuelmode',
           )
       end
     end

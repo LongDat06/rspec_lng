@@ -15,11 +15,11 @@ module Analytic
           .where(imo_no: @imo)
           .only(
             '_id',
-            'spec.timestamp', 
-            'spec.jsmea_mac_cargotk1_volume_percent', 
-            'spec.jsmea_mac_cargotk2_volume_percent',
-            'spec.jsmea_mac_cargotk3_volume_percent',
-            'spec.jsmea_mac_cargotk4_volume_percent',
+            'spec.timestamp',
+            'spec.jsmea_mac_cargotk1_volume',
+            'spec.jsmea_mac_cargotk2_volume',
+            'spec.jsmea_mac_cargotk3_volume',
+            'spec.jsmea_mac_cargotk4_volume',
             'spec.jsmea_mac_cargotk_total_volume_ave',
           )
       end

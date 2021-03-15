@@ -1,14 +1,14 @@
 module Analytic
   module V1
     module Charts
-      class XdfTankEquatorTempController < BaseController
+      class XdfInnerSurfaceTempController < BaseController
         def index
-          charts = Analytic::ChartServices::XdfTankEquatorTemp.new(
+          charts = Analytic::ChartServices::XdfInnerSurfaceTemp.new(
             chart_params[:from_time], 
             chart_params[:to_time], 
             chart_params[:imo]
           ).()
-          json_charts = Analytic::V1::Charts::XdfTankEquatorTempSerializer.new(charts).serializable_hash
+          json_charts = Analytic::V1::Charts::XdfInnerSurfaceTempSerializer.new(charts).serializable_hash
           json_response(json_charts)
         end
 

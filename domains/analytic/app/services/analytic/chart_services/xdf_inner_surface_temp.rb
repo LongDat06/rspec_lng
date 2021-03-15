@@ -1,6 +1,6 @@
 module Analytic
   module ChartServices
-    class XdfTankEquatorTemp
+    class XdfInnerSurfaceTemp
 
       def initialize(from_time, to_time, imo)
         @from_time = from_time.to_datetime

@@ -1,7 +1,7 @@
 module Analytic
   module V1
     module Charts
-      class XdfTankEquatorTempSerializer
+      class XdfInnerSurfaceTempSerializer
         include FastJsonapi::ObjectSerializer
 
         attribute :jsmea_mac_cargotk1_innersurface_upp_temp do |object|

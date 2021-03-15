@@ -16,7 +16,7 @@ Analytic::Engine.routes.draw do
       resources :xdf_boil_off_rate, only: [:index]
       resources :xdf_tank_volume, only: [:index]
       resources :xdf_tank_liquid_temp, only: [:index]
-      resources :xdf_tank_equator_temp, only: [:index]
+      resources :xdf_inner_surface_temp, only: [:index]
       resources :xdf_press, only: [:index]
       resources :xdf_trend314, only: [:index]
       resources :xdf_trend315, only: [:index]

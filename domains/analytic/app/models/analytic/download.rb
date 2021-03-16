@@ -10,6 +10,9 @@ module Analytic
     enumerize :status, in: [:created, :queued, :running, :success, :error], default: :created
     enumerize :source, in: [:sim, :spas]
 
+
+    scope :imos, -> (imos) { where(imo: imos) if imos.present? }
+
     field :imo_no, type: Integer
     field :status, type: String
     field :content_data, type: Hash

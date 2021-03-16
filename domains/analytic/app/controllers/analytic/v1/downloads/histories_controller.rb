@@ -6,6 +6,7 @@ module Analytic
         
         def index
           scope = Analytic::Download
+            .imos(params[:imos])
             .where(source: history_params[:source])
             .order_by(created_at: -1)
 
@@ -17,7 +18,7 @@ module Analytic
 
         private
         def history_params
-          params.permit(:source)
+          params.permit(:source, imos: [])
         end
       end
     end

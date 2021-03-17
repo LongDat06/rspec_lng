@@ -11,3 +11,5 @@ production:
   - low
   - importing_job
   - downloading_job
+  - ecdis_mail_checker
+  

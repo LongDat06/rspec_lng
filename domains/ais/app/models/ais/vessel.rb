@@ -15,5 +15,6 @@ module Ais
     scope :engine_type, -> (engine_type) { where(engine_type: engine_type) if engine_type.present? }
     scope :ecdis_email, -> (ecdis_email) { where(ecdis_email: ecdis_email) if ecdis_email.present? }
 
+    has_many :ecdis_routes, class_name: :EcdisRoute, foreign_key: :imo, primary_key: :imo
   end
 end

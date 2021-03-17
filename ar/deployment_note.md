@@ -20,3 +20,9 @@
 
 ### GNG-1471
   * Analytic::MigrationServices::Mar2021::Gng1471.new.()
+
+### GNG-1848
+  Adding these env variables on Staging, Production
+  * ECDIS_GMAIL_USERNAME
+  * ECDIS_GMAIL_PASSWORD
+  * SHARED_TMP

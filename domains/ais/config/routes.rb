@@ -5,6 +5,13 @@ Ais::Engine.routes.draw do
       resources :non_targets, only: [:create]
     end
 
+    namespace :ecdis do
+      resources :routes, only: [:index]
+      get 'routes/point_routes', to: 'routes#point_routes'
+
+      resources :points, only: [:index]
+    end
+
     resources :trackings, only: [:index]
     resources :latest_positions, only: [:index]
     resources :vessels, only: [:create, :index, :update, :destroy]

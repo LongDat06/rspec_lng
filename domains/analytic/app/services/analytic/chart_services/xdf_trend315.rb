@@ -10,12 +10,12 @@ module Analytic
 
       def call
         Analytic::Sim
-          .order_by('spec.timestamp' => 1)
-          .where({'spec.timestamp' => { '$gte' => @from_time, '$lte' => @to_time }})
+          .order_by('spec.ts' => 1)
+          .where({'spec.ts' => { '$gte' => @from_time, '$lte' => @to_time }})
           .where(imo_no: @imo)
           .only(
             '_id',
-            'spec.timestamp',
+            'spec.ts',
             'spec.jsmea_oil_dieselgeneratorset_fo_in_temp',
             'spec.jsmea_mac_ship_mgo_total_flowcounter_foc',
             'spec.jsmea_mac_ship_fg_flowcounter_fgc'

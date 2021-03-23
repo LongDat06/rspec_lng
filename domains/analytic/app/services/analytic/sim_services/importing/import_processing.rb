@@ -1,36 +1,45 @@
 module Analytic
   module SimServices
     module Importing
+      class ImportProcessingError < StandardError; end
       class ImportProcessing
+        DATA_CLASS = 'IoSData'.freeze
+        DATA_TYPE = 'ShipData'.freeze
 
-        def initialize(sim)
-          @sim_metadata_path = sim[:metadata_path]
-          @sim_data_path = sim[:data_path]
+        def initialize(
+          imo:, 
+          period_hour:, 
+          ios_data_list_requester: Analytic::ExternalServices::Shipdc::DataList
+        )
+          @imo = imo
+          @period_hour = period_hour
+          @ios_data_list_requester = ios_data_list_requester
         end
 
         def call
+          raise(ImportProcessingError) if datalist.blank?
           import_sim_data
         end
 
         private
-
-        attr_reader :sim_metadata_path, :sim_data_path
-
         def import_sim_data
           Analytic::SimServices::Importing::SimData.new(
-            imo_no: sim_meta_data_opts.sim_meta_data.imo_no, 
-            sim_metadata_id: sim_meta_data_opts.sim_meta_data.id, 
-            column_mapping: sim_meta_data_opts.columns_mapping, 
-            sim_file_path: sim_data_path
+            imo_no: @imo, 
+            period_hour: @period_hour.to_datetime
           ).()
         end
 
-        def sim_meta_data_opts
-          @sim_meta_data_opts ||= begin
-            Analytic::SimServices::Importing::SimMetadata.new(
-              input_sim_data: sim_metadata_path,
-              sim_data_path: sim_data_path
-            ).()
+        def datalist
+          @datalist ||= begin
+            data = @ios_data_list_requester.new({
+              from: @period_hour.to_datetime.beginning_of_hour.strftime('%FT%TZ'),
+              to: @period_hour.to_datetime.end_of_hour.strftime('%FT%TZ')
+            }).fetch
+            data[:items].select do |item|
+              item[:shipId].to_i == @imo &&
+              item[:dataClass] == DATA_CLASS &&
+              item[:dataType] == DATA_TYPE
+            end
           end
         end
       end

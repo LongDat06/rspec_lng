@@ -2,14 +2,18 @@ module Analytic
   module SimServices
     module Importing
       class SimData
-        BATCH_IMPORT_SIZE = 10
+        BATCH_IMPORT_SIZE = 1
+        DATA_CLASS = 'IoSData'.freeze
+        DATA_TYPE = 'ShipData'.freeze
 
-        def initialize(imo_no:, sim_metadata_id:, column_mapping:, sim_file_path:, current_time: Time.current)
+        def initialize(
+          imo_no:, 
+          period_hour:,
+          ios_data_requester: ExternalServices::Shipdc::IosData
+        )
           @imo_no = imo_no
-          @sim_metadata_id = sim_metadata_id
-          @column_mapping = column_mapping
-          @current_time = current_time
-          @sim_file_path = sim_file_path
+          @period_hour = period_hour
+          @ios_data_requester = ios_data_requester
           @records = []
           @counter = 0
         end
@@ -22,10 +26,27 @@ module Analytic
         attr_reader :records
         attr_accessor :counter
 
+        def getting_meta_data(revno)
+          @meta ||= {}
+          @meta[revno] ||= begin
+            Analytic::SimServices::Importing::SimMetadata.new(
+              imo_no: @imo_no,
+              revno: revno,
+            ).()
+          end
+        end
+
         def processing_rows
-          rows.each.with_index(1) do |row, index|
-            increment_counter
-            records << modeling_record(row, index)
+          ios_data.each do |row|
+            row[:series].each do |serie|
+              increment_counter
+              meta_data = getting_meta_data(serie[:revNo])
+              spec = serie[:items].map do |item|
+                [item[:idx], item[:value]]
+              end.to_h
+              records << modeling_record(spec, meta_data)
+            end
+            
             import_records if reached_batch_import_size? || reached_end_of_file?
           end
         end
@@ -39,58 +60,49 @@ module Analytic
           records.clear
         end
 
-        def modeling_sim_spec(row, index)
+        def modeling_sim_spec(spec, columns_mapping)
           {}.tap do |hashing|
-            @column_mapping.each do |column_name, column_mapped|
-              next if row.blank?
-              row_data = row["#{column_mapped[:index]}#{index}"]
-              hashing[column_name] = if numeric?(column_mapped[:type])
-                -500.789
-              elsif datetime?(column_mapped[:type])
-                Analytic::Sim.where(imo_no: @imo_no).order_by('spec.timestamp' => -1).first.spec['timestamp'].to_datetime + 1.hour
-                # row_data.to_datetime.utc
+            columns_mapping.each do |column_name, column_mapped|
+              next if spec.blank?
+              row_data = spec[column_mapped[:index]]
+              hashing[column_name] = if numeric?(row_data)
+                row_data.to_f
+              elsif datetime?(row_data)
+                row_data.to_datetime
               else
-                puts column_name.to_s
-                if column_name.to_s == 'jsmea_mac_boiler_fuelmode'
-                   'GAS'
-                elsif column_name.to_s == 'jsmea_mac_boiler2_fuelmode'
-                   'OTHER'
-                elsif column_name.to_s == 'jsmea_mac_dieselgeneratorset1_fuelmode'
-                   'FO'
-                elsif column_name.to_s == 'jsmea_mac_dieselgeneratorset2_fuelmode'
-                   'DUAL'
-                elsif column_name.to_s == 'jsmea_mac_dieselgeneratorset3_fuelmode'
-                   'Other'
-                else
-                  row_data.to_s
-                end
+                row_data
               end
             end
           end
         end
 
-        def modeling_record(row, index)
+        def modeling_record(spec, meta_data)
           {
             imo_no: @imo_no,
-            sim_metadata_id: @sim_metadata_id,
-            spec: modeling_sim_spec(row, index)
+            sim_metadata_id: meta_data.sim_meta_data.id,
+            spec: modeling_sim_spec(spec, meta_data.columns_mapping)
           }
         end
 
-        def numeric?(data_type)
-          data_type == 'numeric'
+        def numeric?(data)
+          data.numeric?
         end
 
-        def datetime?(data_type)
-          data_type == 'datetime'
+        def datetime?(data)
+          data.to_datetime.class == DateTime
+        rescue StandardError
+          false
         end
 
-        def rows
-          @rows ||= sim_data_sheet.sheets.first.rows
-        end
-
-        def sim_data_sheet
-          @sim_data_sheet ||= Creek::Book.new(@sim_file_path)
+        def ios_data
+          @ios_data ||= begin
+            body = @ios_data_requester.new(@imo_no, {
+              dataType: DATA_TYPE,
+              from: @period_hour.beginning_of_hour.strftime('%FT%TZ'),
+              to: @period_hour.end_of_hour.strftime('%FT%TZ')
+            }).fetch
+            body[:data]
+          end
         end
 
         def reached_batch_import_size?
@@ -98,33 +110,11 @@ module Analytic
         end
 
         def row_count
-          @row_count ||= rows.count
+          @row_count ||= ios_data.first[:series].size
         end
 
         def reached_end_of_file?
           counter == row_count
-        end
-
-        def set_value(value)
-          tmp_value = value.round.to_s
-
-          plus_value = begin
-            case tmp_value.size
-            when 1
-              Random.rand(0..9)
-            when 2
-              Random.rand(-9..10)
-            when 3
-              Random.rand(-99..100)
-            when 4
-              Random.rand(-999..1000)
-            when 5
-              Random.rand(-9999..10000)
-            else
-              Random.rand(99)
-            end
-          end
-          value + plus_value
         end
       end
     end

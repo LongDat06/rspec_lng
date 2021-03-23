@@ -3,35 +3,24 @@ module Analytic
     class ImportingJob < ApplicationJob
       queue_as :importing_job
 
+      TIME_STEP = 1
+
       def perform
-        Analytic::SimServices::Importing::ImportProcessing.new(dmg_sakura).()
-        Analytic::SimServices::Importing::ImportProcessing.new(dmg_orchid).()
-        Analytic::SimServices::Importing::ImportProcessing.new(dmg_metropolis).()
+        Analytic::UtilityServices::RailsDateRange.new(time_range).().every(hours: TIME_STEP).each do |time|
+          target_imos.each do |imo|
+            Analytic::SimJob::IosDataVerifyJob.set(wait_until: time).perform_later(imo, time)
+          end
+        end
       end
 
       private
-
-      def dmg_sakura #9810020
-        {
-          metadata_path: "/Users/admin/Desktop/sim/ShipData_9810020_Metadata_S2332_r3.xlsx",
-          data_path: "/Users/admin/Desktop/sim/IoSData_98100202020122310420455.xlsx"
-        }
+      def time_range
+        @time_range ||= (Time.current.beginning_of_day..Time.current.end_of_day)
       end
 
-      def dmg_orchid #9779226
-        {
-          metadata_path: "/Users/admin/Desktop/sim/ShipData_9779226_Metadata_S2324_r7.xlsx",
-          data_path: "/Users/admin/Desktop/sim/IoSData_97792262020110100331748.xlsx"
-        }
+      def target_imos
+        @target_imos ||= Analytic::Vessel.target(true).pluck(:imo)
       end
-
-      def dmg_metropolis #9862487
-        {
-          metadata_path: "/Users/admin/Desktop/sim/ShipData_9862487_Metadata_r8.xlsx",
-          data_path: "/Users/admin/Desktop/sim/IoSData_98624872021011719114459.xlsx"
-        }
-      end
-
     end
   end
 end

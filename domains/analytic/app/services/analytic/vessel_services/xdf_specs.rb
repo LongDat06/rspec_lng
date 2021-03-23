@@ -14,7 +14,7 @@ module Analytic
       def vessel_specs
         Analytic::Sim
           .where(imo_no: @imo.to_i)
-          .where('spec.timestamp' => @time)
+          .where('spec.ts' => @time)
           .only(
             '_id',
             'spec.jsmea_nav_gnss_sog',
@@ -34,7 +34,7 @@ module Analytic
             'spec.jsmea_mac_ship_fg_flowcounter_fgc',
             'spec.jsmea_mac_ship_total_include_gcu_fc',
             'spec.jsmea_mac_mainengine2_fuelmode',
-            'spec.timestamp'
+            'spec.ts'
           ).first
       end
     end

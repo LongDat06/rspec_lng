@@ -26,3 +26,12 @@
   * ECDIS_GMAIL_USERNAME
   * ECDIS_GMAIL_PASSWORD
   * SHARED_TMP
+
+### GNG-1881
+  * LNG_SHIP_DC_API_URI=
+  * LNG_SHIP_DC_API_KEY=
+  * LNG_SHIP_DC_SP_APP_KEY=
+  * LNG_SHIP_DC_SU_DATA_KEY=
+  * Analytic::SimServices::Importing::SimChannel.new.()
+  * rake mongoid_search:index
+

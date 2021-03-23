@@ -24,9 +24,9 @@ module Analytic
       def sim_data
         @sim_data ||= begin
           Analytic::Sim
-            .order_by('spec.timestamp' => 1)
+            .order_by('spec.ts' => 1)
             .where(imo_no: @imo)
-            .where({'spec.timestamp' => { 
+            .where({'spec.ts' => { 
               '$gte' => @condition[:timestamp_from_at], '$lte' => @condition[:timestamp_to_at]
             }})
             .only(*exporting_columns.map{|column| "spec.#{column}" })

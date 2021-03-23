@@ -20,6 +20,7 @@ module Identity
       end
 
       def user
+        raise(JwtServices::RefresherInvalidToken) if verify_refresh_token.blank?
         User.find(verify_refresh_token.fetch(:user_id))
       end
 

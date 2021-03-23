@@ -16,12 +16,12 @@ module Analytic
 
       def sim_data
         Analytic::Sim
-          .order_by('spec.timestamp' => 1)
-          .where({'spec.timestamp' => { '$gte' => @from_time, '$lte' => @to_time }})
+          .order_by('spec.ts' => 1)
+          .where({'spec.ts' => { '$gte' => @from_time, '$lte' => @to_time }})
           .where(imo_no: @imo.to_i)
           .only(
             '_id',
-            'spec.timestamp', 
+            'spec.ts', 
             'spec.jsmea_mac_cargotk1_liquid_temp', 
             'spec.jsmea_mac_cargotk2_liquid_temp',
             'spec.jsmea_mac_cargotk3_liquid_temp',

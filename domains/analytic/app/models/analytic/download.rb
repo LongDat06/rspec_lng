@@ -11,7 +11,7 @@ module Analytic
     enumerize :source, in: [:sim, :spas]
 
 
-    scope :imos, -> (imos) { where(imo: imos) if imos.present? }
+    scope :imos, -> (imos) { where(imo_no: { '$in' => imos }) if imos.present? }
 
     field :imo_no, type: Integer
     field :status, type: String

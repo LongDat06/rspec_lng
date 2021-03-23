@@ -2,57 +2,55 @@ module Analytic
   module SimServices
     module Importing
       class SimMetadata
-        ROW_STATIC_COLUMN_MAPPING = [1, 2, 3, 4, 5]
-        ROW_HEADERS = 6
-        DEFAULT_TYPE = 'string'.freeze
+        DATA_CLASS = 'IoSData'.freeze
+        DATA_TYPE = 'ShipData'.freeze
 
-        attr_reader :columns_mapping, :static_sim_meta, :sim_meta_data
+        attr_reader :columns_mapping, :sim_meta_data
 
-        def initialize(input_sim_data:, sim_data_path:)
-          @input_sim_data = input_sim_data
-          @sim_data_path = sim_data_path
-          @static_sim_meta = {}
-          @columns_mapping = {
-            latitude:  { index: 'D', type: 'numeric' },
-            longitude: { index: 'E', type: 'numeric' },
-            timestamp: { index: 'C', type: 'datetime' }
-          }
+        def initialize(
+          imo_no:, 
+          revno:,
+          sim_metadata_find_requester: ExternalServices::Shipdc::MetaDataFind
+        )
+          @imo = imo_no
+          @revno = revno
+          @sim_metadata_find_requester = sim_metadata_find_requester
+          @columns_mapping = {}
         end
 
         def call
           mapped_columns
-          @sim_meta_data = Analytic::SimMetadata.new(static_sim_meta)
-          # @sim_meta_data.meta_imported = File.new(@input_sim_data)
-          # @sim_meta_data.sim_imported = File.new(@sim_data_path)
-          @sim_meta_data.created_at = Time.current
+          @sim_meta_data = Analytic::SimMetadata.new(
+            imo_no: @imo, 
+            dataclass: DATA_CLASS, 
+            datatype: DATA_TYPE, 
+            revisionno: @revno,
+            created_at: Time.current.utc
+          )
           @sim_meta_data.save!
           self
         end
 
         private
         def mapped_columns
-          rows.each.with_index(1) do |row, index|
+          metadata.each do |row|
             next if row.blank?
-            next if ROW_HEADERS == index
-            if ROW_STATIC_COLUMN_MAPPING.include?(index)
-              column_name = row['A'].parameterize(separator: '_').to_sym
-              static_sim_meta[column_name] = row['B']
-            else
-              column_name = row['K'].parameterize(separator: '_').to_sym
-              columns_mapping[column_name] = {
-                index: UtilityServices::IndexToExcelCol.convert(index),
-                type: row['E'].present? ? row['E'].parameterize : DEFAULT_TYPE
-              } 
-            end
+            column_name = row[:isoStdName].parameterize(separator: '_').to_sym
+            columns_mapping[column_name] = {
+              index: row[:idx]
+            }
           end
         end
-        
-        def sim_data_sheet
-          @sim_data_sheet ||= Creek::Book.new(@input_sim_data)
-        end
 
-        def rows
-          @rows ||= sim_data_sheet.sheets.first.simple_rows
+        def metadata
+          @metadata ||= begin
+            body = @sim_metadata_find_requester.new(@imo, { 
+              dataClass: DATA_CLASS, 
+              dataType: DATA_TYPE, 
+              revNo: @revno
+            }).fetch
+            body[:items]
+          end
         end
       end
     end

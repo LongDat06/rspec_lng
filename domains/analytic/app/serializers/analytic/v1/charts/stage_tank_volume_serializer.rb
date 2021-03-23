@@ -25,7 +25,7 @@ module Analytic
         end
 
         attribute :timestamp do |object|
-          object.spec['timestamp']
+          object.spec['ts']
         end
       end
     end

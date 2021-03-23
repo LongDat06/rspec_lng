@@ -31,7 +31,7 @@ module Analytic
         {
           "$match" => {
             "$and" => [
-              "spec.timestamp" => { "$gte" => @from_time, "$lte" => @to_time  }, 
+              "spec.ts" => { "$gte" => @from_time, "$lte" => @to_time  }, 
               "imo_no" => @imo
             ]
           }
@@ -41,7 +41,7 @@ module Analytic
       def project
         {
           "$project" => {
-            "spec.timestamp" => 1, 
+            "spec.ts" => 1, 
             "spec.jsmea_nav_gnss_sog" => 1,
             "spec.jsmea_nav_speedlog_log" => 1,
             "spec.jsmea_mac_boiler_foline_hfo_flowcounter_foc" => 1,
@@ -101,7 +101,7 @@ module Analytic
 
       def sort
         {
-          "$sort" => { "spec.timestamp" => 1 }
+          "$sort" => { "spec.ts" => 1 }
         }
       end
     end

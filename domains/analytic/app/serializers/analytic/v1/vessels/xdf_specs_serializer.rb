@@ -21,6 +21,10 @@ module Analytic
           object.spec['jsmea_mac_sw_temp']
         end
 
+        attribute :jsmea_mac_mainengine_fuelmode do |object|
+          object.spec['jsmea_mac_mainengine_fuelmode']
+        end
+
         attribute :jsmea_mac_dieselgeneratorset1_fuelmode do |object|
           object.spec['jsmea_mac_dieselgeneratorset1_fuelmode']
         end
@@ -33,7 +37,7 @@ module Analytic
           object.spec['jsmea_mac_dieselgeneratorset3_fuelmode']
         end
 
-        attribute :jsmea_mac_dieselgeneratorset3_fuelmode do |object|
+        attribute :jsmea_mac_dieselgeneratorset4_fuelmode do |object|
           object.spec['jsmea_mac_dieselgeneratorset4_fuelmode']
         end
 

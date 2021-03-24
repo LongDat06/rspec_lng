@@ -21,6 +21,7 @@ module Analytic
             'spec.jsmea_nav_speedlog_log',
             'spec.jsmea_mac_engineroom_air_temp',
             'spec.jsmea_mac_sw_temp',
+            'spec.jsmea_mac_mainengine_fuelmode',
             'spec.jsmea_mac_dieselgeneratorset1_fuelmode',
             'spec.jsmea_mac_dieselgeneratorset2_fuelmode',
             'spec.jsmea_mac_dieselgeneratorset3_fuelmode',

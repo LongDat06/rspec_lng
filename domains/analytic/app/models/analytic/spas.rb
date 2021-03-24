@@ -5,7 +5,7 @@ module Analytic
 
     belongs_to :spas_metadata, class_name: Analytic::SpasMetadata.name, required: false
 
-    embeds_one :spas_spec, store_as: 'spec'
+    embeds_one :spec, class_name: Analytic::SpasSpec.name, store_as: 'spec'
 
     field :imo_no, type: Integer
 

@@ -1,19 +1,19 @@
 module Analytic
-  module SimServices
+  module SpasServices
     module Importing
-      class SimData
+      class SpasData
         BATCH_IMPORT_SIZE = 1
-        DATA_CLASS = 'IoSData'.freeze
-        DATA_TYPE = 'ShipData'.freeze
+        DATA_CLASS = 'RepData'.freeze
+        DATA_TYPE = 'AtSeaReport'.freeze
 
         def initialize(
           imo_no:, 
-          period_hour:,
-          ios_data_requester: ExternalServices::Shipdc::IosData
+          period_time:,
+          rep_data_requester: ExternalServices::Shipdc::RepData
         )
           @imo_no = imo_no
-          @period_hour = period_hour
-          @ios_data_requester = ios_data_requester
+          @period_time = period_time
+          @rep_data_requester = rep_data_requester
           @records = []
           @counter = 0
         end
@@ -29,7 +29,7 @@ module Analytic
         def getting_meta_data(revno)
           @meta ||= {}
           @meta[revno] ||= begin
-            Analytic::SimServices::Importing::SimMetadata.new(
+            Analytic::SpasServices::Importing::SpasMetadata.new(
               imo_no: @imo_no,
               revno: revno,
             ).()
@@ -37,7 +37,7 @@ module Analytic
         end
 
         def processing_rows
-          ios_data.each do |row|
+          rep_data.each do |row|
             row[:series].each do |serie|
               increment_counter
               meta_data = getting_meta_data(serie[:revNo])
@@ -56,11 +56,11 @@ module Analytic
         end
 
         def import_records
-          Analytic::Sim.collection.insert_many(records)  
+          Analytic::Spas.collection.insert_many(records)  
           records.clear
         end
 
-        def modeling_sim_spec(spec, columns_mapping)
+        def modeling_spas_spec(spec, columns_mapping)
           {}.tap do |hashing|
             columns_mapping.each do |column_name, column_mapped|
               next if spec.blank?
@@ -79,8 +79,8 @@ module Analytic
         def modeling_record(spec, meta_data)
           {
             imo_no: @imo_no,
-            sim_metadata_id: meta_data.sim_meta_data.id,
-            spec: modeling_sim_spec(spec, meta_data.columns_mapping)
+            spas_metadata_id: meta_data.spas_meta_data.id,
+            spec: modeling_spas_spec(spec, meta_data.columns_mapping)
           }
         end
 
@@ -94,12 +94,12 @@ module Analytic
           false
         end
 
-        def ios_data
-          @ios_data ||= begin
-            body = @ios_data_requester.new(@imo_no, {
+        def rep_data
+          @rep_data ||= begin
+            body = @rep_data_requester.new(@imo_no, {
               dataType: DATA_TYPE,
-              from: @period_hour.beginning_of_hour.strftime('%FT%TZ'),
-              to: @period_hour.end_of_hour.strftime('%FT%TZ')
+              from: @period_time.beginning_of_day.strftime('%FT%TZ'),
+              to: @period_time.end_of_day.strftime('%FT%TZ')
             }).fetch
             body[:data]
           end
@@ -110,7 +110,7 @@ module Analytic
         end
 
         def row_count
-          @row_count ||= ios_data.first[:series].size
+          @row_count ||= rep_data.first[:series].size
         end
 
         def reached_end_of_file?

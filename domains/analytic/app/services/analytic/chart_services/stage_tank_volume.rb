@@ -22,11 +22,17 @@ module Analytic
           .only(
             '_id',
             'spec.ts',
+            'spec.jsmea_mac_cargotk1_volume',
+            'spec.jsmea_mac_cargotk2_volume',
+            'spec.jsmea_mac_cargotk3_volume',
+            'spec.jsmea_mac_cargotk4_volume',
+            'spec.jsmea_mac_cargotk5_volume',
+            'spec.jsmea_mac_cargotk_total_volume_ave',
             'spec.jsmea_mac_cargotk1_volume_percent',
             'spec.jsmea_mac_cargotk2_volume_percent',
             'spec.jsmea_mac_cargotk3_volume_percent',
             'spec.jsmea_mac_cargotk4_volume_percent',
-            'spec.jsmea_mac_cargotk_total_volume_ave'
+            'spec.jsmea_mac_cargotk5_volume_percent',
           )
       end
     end

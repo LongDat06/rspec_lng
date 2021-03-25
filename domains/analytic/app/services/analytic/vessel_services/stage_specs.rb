@@ -13,8 +13,8 @@ module Analytic
       private
       def vessel_specs
         Analytic::Sim
-          .where(imo_no: @imo.to_i)
-          .where('spec.ts' => @time)
+          .imo(@imo.to_i)
+          .closest_to_time(@time)
           .only(
             '_id',
             'spec.jsmea_nav_gnss_sog',

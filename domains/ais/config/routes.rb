@@ -6,9 +6,11 @@ Ais::Engine.routes.draw do
     end
 
     namespace :ecdis do
+      namespace :points do
+        resources :original_eta, only: [:create]
+      end
       resources :routes, only: [:index]
       get 'routes/point_routes', to: 'routes#point_routes'
-
       resources :points, only: [:index]
     end
 

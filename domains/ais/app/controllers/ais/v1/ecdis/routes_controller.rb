@@ -1,7 +1,10 @@
 module Ais
   module V1
     module Ecdis
+      class EcdisRoutesControllerInvalidParameters < ActionController::BadRequest; end
       class RoutesController < BaseController
+        before_action :validate_params, only: [:point_routes]
+
         def index
           routes = Ais::EcdisRoute
                     .imo(filter_params[:imo])
@@ -20,6 +23,16 @@ module Ais
         private
         def filter_params
           params.permit(:imo, :time, ecdis_route_ids: [])
+        end
+
+        def validate_params
+          filter_params_validation = Ais::Validations::Ecdis::EcdisRoutes.new(filter_params)
+          unless filter_params_validation.valid?
+            raise(
+              EcdisRoutesControllerInvalidParameters, 
+              filter_params_validation.errors.full_messages.to_sentence
+            )
+          end
         end
       end
     end

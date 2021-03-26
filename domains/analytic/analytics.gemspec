@@ -19,4 +19,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency "shared"
   spec.add_dependency 'mongoid_search'
   spec.add_dependency 'content_disposition', '~> 1.0'
+  spec.add_dependency 'wisper'
 end

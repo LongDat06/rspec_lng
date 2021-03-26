@@ -4,13 +4,15 @@ module Ais
       before_action :validate_params, only: [:index]
 
       def index
+        vessel = Ais::Vessel.find_by(imo: tracking_params[:imos])
+        tracking_params[:from_time] = vessel.last_port_departure_at.presence || tracking_params[:from_time]
         trackings = ExternalServices::Csm::RouteOptimized.new(tracking_params).fetch
         json_response(trackings)
       end
 
       private
       def tracking_params
-        params.permit(:from_time, :to_time, imos: [])
+        @tracking_params ||= params.permit(:from_time, :to_time, imos: [])
       end
 
       def validate_params

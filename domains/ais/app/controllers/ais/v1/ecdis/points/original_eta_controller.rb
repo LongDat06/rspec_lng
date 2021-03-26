@@ -12,7 +12,8 @@ module Ais
         def ecdis_points_params
           params.permit(ecdis_points: [
             :id,
-            :original_eta
+            :original_eta,
+            :ecdis_route_id
           ])
           .require(:ecdis_points)
         end

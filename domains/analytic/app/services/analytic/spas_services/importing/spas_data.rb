@@ -70,7 +70,7 @@ module Analytic
               elsif datetime?(row_data)
                 row_data.to_datetime
               else
-                row_data.strip
+                row_data.present? ? row_data.strip : row_data
               end
             end
           end

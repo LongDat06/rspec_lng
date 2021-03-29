@@ -5,7 +5,7 @@ module Analytic
 
       def perform(imo, time)
         Analytic::SimServices::Importing::ImportProcessing.new(imo: imo, period_hour: time).()
-      rescue
+      rescue Analytic::SimServices::Importing::ImportProcessingError => e
         Analytic::SimJob::IosDataVerifyJob.set(wait: 1.hour).perform_later(imo, time)
       end
     end

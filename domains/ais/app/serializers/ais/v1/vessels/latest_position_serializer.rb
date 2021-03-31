@@ -24,6 +24,14 @@ module Ais
             vessel_name: object.vessel_name
           }
         end
+
+        attribute :target do |object|
+          object.vessel_instance&.target
+        end
+
+        attribute :engine_type do |object|
+          object.vessel_instance&.engine_type
+        end
       end
     end
   end

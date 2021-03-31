@@ -17,5 +17,7 @@ module Ais
     attribute :vessel_name, String
     attribute :last_port_departure_at, DateTime
     attribute :error
+    
+    attribute :vessel_instance
   end
 end

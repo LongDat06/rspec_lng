@@ -1,4 +1,4 @@
-# desc "Explaining what the task does"
-# task :ais do
-#   # Task goes here
-# end
+"Exec day by day"
+task run_ais_daily_schedule: :environment do
+  Ais::GenerateSchedule.new.()
+end

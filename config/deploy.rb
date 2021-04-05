@@ -25,7 +25,7 @@ set :bundle_binstubs, nil
 
 # config whenever
 set :whenever_roles, [:app]
-set :whenever_load_file, -> { "#{release_path}/domains/analytic/config/schedule/#{fetch(:stage)}.rb" }
+set :whenever_load_file, -> { "#{release_path}/config/schedule/#{fetch(:stage)}.rb" }
 set :whenever_identifier, -> { "#{fetch(:application)}_#{fetch(:stage)}" }
 
 Rake::Task['deploy:compile_assets'].clear_actions

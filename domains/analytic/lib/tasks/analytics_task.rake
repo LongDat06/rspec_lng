@@ -4,6 +4,6 @@
 # end
 
 "Exec day by day"
-task run_daily_schedule: :environment do
+task run_analytic_daily_schedule: :environment do
   GenerateSchedule.new.()
 end

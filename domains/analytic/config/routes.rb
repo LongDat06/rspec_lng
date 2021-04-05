@@ -27,6 +27,7 @@ Analytic::Engine.routes.draw do
     namespace :downloads do
       resources :sims, only: [:create]
       resources :histories, only: [:index]
+      resources :templates, only: [:index, :create, :destroy]
     end
 
     resources :sim_channels, only: [:index]

@@ -9,7 +9,7 @@ module Ais
           routes = Ais::EcdisRoute
                     .imo(filter_params[:imo])
                     .of_month(filter_params[:time]&.to_datetime)
-                    .order(received_at: :desc)
+                    .order([received_at: :desc, file_name: :desc])
           routes_json = Ais::V1::Ecdis::RoutesSerializer.new(routes).serializable_hash
           json_response(routes_json)
         end

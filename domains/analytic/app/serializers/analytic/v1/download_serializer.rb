@@ -3,7 +3,7 @@ module Analytic
     class DownloadSerializer
       include FastJsonapi::ObjectSerializer
 
-      attributes :id, :source, :status, :created_at, :imo_no, :author_id
+      attributes :id, :source, :status, :created_at, :imo_no, :author_id, :vessel_name
 
       attribute :content_url do |object|
         object.content_downloadable

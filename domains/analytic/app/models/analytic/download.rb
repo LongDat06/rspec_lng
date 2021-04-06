@@ -20,6 +20,8 @@ module Analytic
 
     index({ imo_no: 1 })
 
+    attr_accessor :vessel_name
+
     def content_downloadable
       return if content.blank?
       content.url(

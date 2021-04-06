@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_25_084444) do
+ActiveRecord::Schema.define(version: 2021_04_06_074646) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -97,6 +97,7 @@ ActiveRecord::Schema.define(version: 2021_03_25_084444) do
     t.boolean "target", default: false
     t.string "ecdis_email", default: "", null: false
     t.datetime "last_port_departure_at"
+    t.string "name", default: "", null: false
     t.index ["imo"], name: "index_vessels_on_imo", unique: true
   end
 

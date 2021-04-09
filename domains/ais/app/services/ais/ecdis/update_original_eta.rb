@@ -18,7 +18,7 @@ module Ais
         @points.map { |point|
           {
             id: point[:id],
-            original_eta: point[:original_eta].to_datetime,
+            original_eta: point[:original_eta]&.to_datetime,
             ecdis_route_id: point[:ecdis_route_id]
           }
         }

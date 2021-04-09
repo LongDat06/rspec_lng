@@ -4,7 +4,7 @@ module Ais
       FURUNO_MAPPING = Ais::Ecdis::MappingColumn::FURUNO
       FIRST_ROW_DATA_INDEX = 0
       ETA_ETD_ROW_INDEX = 2
-      POINT_ROW_FROM_INDEX = 4
+      POINT_ROW_FROM_INDEX = 3
 
       def initialize(received_at:, filepath:, filename:, vessel:)
         @filepath = filepath
@@ -110,6 +110,8 @@ module Ais
       end
 
       def leg_type_to_enum(leg)
+        return nil if leg.blank?
+        
         leg == 'RHUMBLINE' ? 'RL' : 'GC'
       end
 

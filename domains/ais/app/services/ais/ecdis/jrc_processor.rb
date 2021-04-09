@@ -2,7 +2,7 @@ module Ais
   module Ecdis
     class JrcProcessor
       JRC_MAPPING = Ais::Ecdis::MappingColumn::JRC
-      POINT_ROW_FROM_INDEX = 4
+      POINT_ROW_FROM_INDEX = 3
 
       def initialize(received_at:, filepath:, filename:, vessel:)
         @filepath = filepath
@@ -47,7 +47,7 @@ module Ais
           name: row[JRC_MAPPING[:NAME]] || ' ',
           lat: Ais::UtilityServices::LatLonConverter.dd_calculator(row[JRC_MAPPING[:LAT]], row[JRC_MAPPING[:LAT_D]], row[JRC_MAPPING[:LAT_C]]),
           lon: Ais::UtilityServices::LatLonConverter.dd_calculator(row[JRC_MAPPING[:LON]], row[JRC_MAPPING[:LON_D]], row[JRC_MAPPING[:LON_C]]),
-          leg_type: row[JRC_MAPPING[:SAIL]],
+          leg_type: row[JRC_MAPPING[:SAIL]].blank? ? nil : row[JRC_MAPPING[:SAIL]],
           turn_radius: row[JRC_MAPPING[:TURN_RAD]]
         )
       end

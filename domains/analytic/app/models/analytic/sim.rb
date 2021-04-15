@@ -10,7 +10,7 @@ module Analytic
     field :imo_no, type: Integer
 
     scope :imo, ->(imo) { where(imo_no: imo) if imo.present? }
-    scope :closest_to_time, ->(time) {
+    scope :closest_to_time, -> (time) {
       where('spec.ts' => { "$lte" => time }).order('spec.ts' => -1) if time.present?
     }
 

@@ -3,6 +3,8 @@ module Analytic
     module Charts
       class StageTrend21Serializer
         include FastJsonapi::ObjectSerializer
+        
+        set_id :_id
 
         attribute :jsmea_mac_boiler_fo_flow_ave do |object|
           object.spec['jsmea_mac_boiler_fo_flow_ave']

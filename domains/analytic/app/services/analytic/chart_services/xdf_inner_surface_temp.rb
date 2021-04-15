@@ -1,30 +1,38 @@
 module Analytic
   module ChartServices
-    class XdfInnerSurfaceTemp
-
-      def initialize(from_time, to_time, imo)
-        @from_time = from_time.to_datetime
-        @to_time = to_time.to_datetime
-        @imo = imo.to_i
-      end
+    class XdfInnerSurfaceTemp < BaseChart
+      MODELING = Struct.new(
+        :_id,
+        :id,
+        :spec,
+        :difference,
+        keyword_init: true
+      )
 
       def call
-        Analytic::Sim
-          .order_by('spec.ts' => 1)
-          .where({'spec.ts' => { '$gte' => @from_time, '$lte' => @to_time }})
-          .where(imo_no: @imo)
-          .only(
-            '_id',
-            'spec.ts', 
-            'spec.jsmea_mac_cargotk1_innersurface_upp_temp',
-            'spec.jsmea_mac_cargotk1_innersurface_low_temp',
-            'spec.jsmea_mac_cargotk2_innersurface_upp_temp',
-            'spec.jsmea_mac_cargotk2_innersurface_low_temp',
-            'spec.jsmea_mac_cargotk3_innersurface_upp_temp',
-            'spec.jsmea_mac_cargotk3_innersurface_low_temp',
-            'spec.jsmea_mac_cargotk4_innersurface_upp_temp',
-            'spec.jsmea_mac_cargotk4_innersurface_low_temp',
-          )
+        Analytic::Sim.collection.aggregate([
+          matched,
+          project,
+          sort,
+          limit
+        ]).map { |record| MODELING.new(record) }
+      end
+
+      private
+      def project
+        {
+          "$project" => {
+            "spec.ts" => 1, 
+            "spec.jsmea_mac_cargotk1_innersurface_upp_temp" => 1,
+            "spec.jsmea_mac_cargotk1_innersurface_low_temp" => 1,
+            "spec.jsmea_mac_cargotk2_innersurface_upp_temp" => 1,
+            "spec.jsmea_mac_cargotk2_innersurface_low_temp" => 1,
+            "spec.jsmea_mac_cargotk3_innersurface_upp_temp" => 1,
+            "spec.jsmea_mac_cargotk3_innersurface_low_temp" => 1,
+            "spec.jsmea_mac_cargotk4_innersurface_upp_temp" => 1,
+            "spec.jsmea_mac_cargotk4_innersurface_low_temp" => 1
+          }.merge!(difference_project)
+        }
       end
     end
   end

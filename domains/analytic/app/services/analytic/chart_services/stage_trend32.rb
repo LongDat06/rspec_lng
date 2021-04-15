@@ -1,6 +1,6 @@
 module Analytic
   module ChartServices
-    class StageTrend32
+    class StageTrend32 < BaseChart
       MODELING = Struct.new(
         :_id,
         :id,
@@ -8,35 +8,21 @@ module Analytic
         :foc_hfo,
         :foc_mgo,
         :fgc,
+        :difference,
         keyword_init: true
       )
-
-      def initialize(from_time, to_time, imo)
-        @from_time = from_time.to_datetime
-        @to_time = to_time.to_datetime
-        @imo = imo.to_i
-      end
 
       def call
         Analytic::Sim.collection.aggregate([
           matched,
           project,
           addFields,
-          sort
+          sort,
+          limit
         ]).map { |record| MODELING.new(record) }
       end
 
       private
-      def matched
-        {
-          "$match" => {
-            "$and" => [
-              "spec.ts" => { "$gte" => @from_time, "$lte" => @to_time  }, 
-              "imo_no" => @imo
-            ]
-          }
-        }
-      end
 
       def project
         {
@@ -57,7 +43,7 @@ module Analytic
             "spec.jsmea_mac_dieselgeneratorset3_pilotline_mgo_flowcounter_foc" => 1,
             "spec.jsmea_mac_boiler_fgline_fg_flowcounter_fgc" => 1,
             "spec.jsmea_mac_dieselgeneratorset_fg_total_flowcounter_fgc" => 1
-          }
+          }.merge!(difference_project)
         }
       end
 
@@ -96,12 +82,6 @@ module Analytic
               }
             },
           }
-        }
-      end
-
-      def sort
-        {
-          "$sort" => { "spec.ts" => 1 }
         }
       end
     end

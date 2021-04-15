@@ -1,7 +1,10 @@
 module Analytic
   module V1
     module Downloads
+      class TemplatesControllerInvalidParameters < ActionController::BadRequest; end
       class TemplatesController < BaseController
+        before_action :validate_params, only: [:create]
+        
         def index
           templates = Analytic::DownloadTemplate
             .readable(current_user.id)
@@ -32,6 +35,16 @@ module Analytic
         private
         def template_params
           params.permit(:imo_no, :name, :shared, channels: [])
+        end
+
+        def validate_params
+          template_download_validation = Analytic::Validations::Download::Templates.new(template_params)
+          unless template_download_validation.valid?
+            raise(
+              TemplatesControllerInvalidParameters, 
+              template_download_validation.errors.full_messages.to_sentence
+            )
+          end
         end
       end
     end

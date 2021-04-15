@@ -8,9 +8,8 @@ module Analytic
 
     field :imo_no, type: Integer
     field :name, type: String
-    field :channels, type: Array
+    field :channels, type: Object
     field :author_id, type: Integer
-
     validates_presence_of :author_id, :imo_no, :name, :shared
 
     scope :readable, -> (author_id) {

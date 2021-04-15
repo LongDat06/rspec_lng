@@ -34,7 +34,7 @@ module Analytic
 
         private
         def template_params
-          params.permit(:imo_no, :name, :shared, channels: [])
+          params.permit(:imo_no, :name, :shared, channels: {})
         end
 
         def validate_params

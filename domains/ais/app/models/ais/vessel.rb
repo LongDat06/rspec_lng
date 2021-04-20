@@ -5,7 +5,7 @@ module Ais
     extend Enumerize
 
     enumerize :engine_type, in: [:stage, :xdf]
-
+    validates_length_of :imo, is: 7
     validates :imo, presence: true, uniqueness: true
     validates :ecdis_email, presence: true, email: true,
               uniqueness: { case_sensitive: true }, if: -> { target.present? }

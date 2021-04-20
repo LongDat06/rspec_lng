@@ -5,7 +5,7 @@ module Ais
         def create
           opts = VesselForms::ImportNonTarget.new(vessel_params[:imos])
           opts.create
-          json_response({})
+          json_response({ invalid_imos: opts.invalid_imos })
         end
 
         private

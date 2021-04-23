@@ -7,7 +7,7 @@ module Ais
 
       private
       def sync_vessel
-        Vessel.find_in_batches do |vessels|
+        Vessel.find_in_batches(batch_size: 20) do |vessels|
           vessels_hashing = vessels.index_by(&:imo)
           vessel_info = get_vessel_info(vessels.pluck(:imo))
           latest_position_data = deserialize_vessel_info(vessel_info[:data])

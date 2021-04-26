@@ -12,7 +12,9 @@ module Ais
       def create
         process_imo
         import_instance = create_vessel
-        updated_imo_setting(Ais::Vessel.where(id: import_instance.ids).pluck(:imo))
+        new_imos = Ais::Vessel.where(id: import_instance.ids).pluck(:imo)
+        updated_imo_setting(new_imos)
+        update_vessel_name(new_imos)
         if import_instance.failed_instances.present?
           @invalid_imos.concat(import_instance.failed_instances.map {|_, value| value.imo })
         end
@@ -39,6 +41,10 @@ module Ais
         ExternalServices::Csm::ImoRegister.new({
           imos: new_imo
         }).fetch
+      end
+
+      def update_vessel_name(imos)
+        Ais::SyncServices::VesselInformation.new(imos).()
       end
     end
   end

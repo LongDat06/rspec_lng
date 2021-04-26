@@ -1,18 +1,26 @@
 module Ais
   module SyncServices
     class VesselInformation
+      def initialize(imos = [])
+        @imos = imos
+      end
+
       def call
         sync_vessel
       end
 
       private
       def sync_vessel
-        Vessel.find_in_batches(batch_size: 20) do |vessels|
+        vessels_in_scope.find_in_batches(batch_size: 20) do |vessels|
           vessels_hashing = vessels.index_by(&:imo)
           vessel_info = get_vessel_info(vessels.pluck(:imo))
           latest_position_data = deserialize_vessel_info(vessel_info[:data])
           import_vessel(latest_position_data)
         end
+      end
+
+      def vessels_in_scope
+        @imos.present? ? Vessel.where(imo: @imos) : Vessel.all
       end
 
       def import_vessel(vessels)

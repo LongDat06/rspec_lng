@@ -20,6 +20,7 @@ module Ais
           vessel.assign_attributes(attributes.except(:id))
           if vessel.save!
             updated_imo_setting
+            update_vessel_name
           end
         end
         vessel.reload
@@ -29,6 +30,10 @@ module Ais
         ExternalServices::Csm::ImoRegister.new({
           imos: [vessel.imo]
         }).fetch
+      end
+
+      def update_vessel_name
+        Ais::SyncServices::VesselInformation.new([vessel.imo]).()
       end
     end
   end

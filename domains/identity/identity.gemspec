@@ -25,7 +25,7 @@ Gem::Specification.new do |spec|
 
   spec.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
 
-  spec.add_dependency "rails", "6.0.3.4"
+  spec.add_dependency "rails", "6.0.3.6"
   spec.add_dependency "bcrypt"
   spec.add_dependency "email_validator"
   spec.add_dependency 'jwt'

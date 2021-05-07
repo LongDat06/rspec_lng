@@ -28,6 +28,10 @@ set :whenever_roles, [:app]
 set :whenever_load_file, -> { "#{release_path}/config/schedule/#{fetch(:stage)}.rb" }
 set :whenever_identifier, -> { "#{fetch(:application)}_#{fetch(:stage)}" }
 
+# sidekiq systemd options
+set :sidekiq_service_unit_name, 'sidekiq'
+set :sidekiq_service_unit_user, :system
+
 Rake::Task['deploy:compile_assets'].clear_actions
 
 namespace :deploy do

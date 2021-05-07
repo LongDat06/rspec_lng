@@ -17,14 +17,22 @@ require 'capistrano/rails'
 require 'capistrano/bundler'
 require "capistrano/rails/migrations"
 require 'capistrano/rake'
-require 'capistrano/rbenv'   
+require 'capistrano/rbenv'
 require 'capistrano/puma'
 require 'capistrano/puma/nginx'
 require 'whenever/capistrano'
 require 'capistrano/sidekiq'
 
 install_plugin Capistrano::Puma
-install_plugin Capistrano::Puma::Daemon
+
+task :use_systemd do
+	install_plugin Capistrano::Sidekiq
+  install_plugin Capistrano::Puma::Systemd
+	install_plugin Capistrano::Sidekiq::Systemd
+end
+
+task 'production' => [:use_systemd]
+
 # Load custom tasks from `lib/capistrano/tasks` if you have any defined
 
 install_plugin Capistrano::SCM::Git

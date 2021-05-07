@@ -2,11 +2,11 @@ module Identity
   module JwtServices
     class Expiry
       def self.access_expiry
-        5.minutes
+        1.weeks
       end
 
       def self.refresh_expiry
-        1.days
+        1.months
       end
     end
   end

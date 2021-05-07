@@ -15,5 +15,6 @@ module Analytic
     }
 
     index(imo_no: 1)
+    index "spec.ts" => 1
   end
 end

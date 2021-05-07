@@ -35,3 +35,5 @@
   * Analytic::SimServices::Importing::SimChannel.new.()
   * rake mongoid_search:index
 
+### Create new index
+  * bundle exec rake db:mongoid:create_indexes

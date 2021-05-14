@@ -80,6 +80,7 @@ module Analytic
           {
             imo_no: @imo_no,
             sim_metadata_id: meta_data.sim_meta_data.id,
+            created_at: Time.current,
             spec: modeling_sim_spec(spec, meta_data.columns_mapping)
           }
         end

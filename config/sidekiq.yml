@@ -13,5 +13,4 @@ production:
   - downloading_job
   - ecdis_mail_checker
   - sync_vessel
-
-  
+  - cleaning_job

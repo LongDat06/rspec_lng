@@ -80,6 +80,7 @@ module Analytic
           {
             imo_no: @imo_no,
             spas_metadata_id: meta_data.spas_meta_data.id,
+            created_at: Time.current,
             spec: modeling_spas_spec(spec, meta_data.columns_mapping)
           }
         end

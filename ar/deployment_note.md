@@ -37,3 +37,9 @@
 
 ### Create new index
   * bundle exec rake db:mongoid:create_indexes
+
+### CD-339
+  * Analytic::SimServices::Importing::SimChannel.new(imo: 9810020).()
+  * Analytic::SimServices::Importing::SimChannel.new(imo: 9862487).()
+  * Analytic::SimServices::Importing::SimChannel.new(imo: 9779226).()
+  * rake mongoid_search:index

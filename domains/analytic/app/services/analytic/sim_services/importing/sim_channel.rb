@@ -27,7 +27,8 @@ module Analytic
               records << {
                 standard_name: row[:isoStdName].parameterize(separator: '_').to_sym,
                 local_name: row[:localName],
-                unit: row[:unit]
+                unit: row[:unit],
+                imo_no: @imo
               }
             end
           end

@@ -16,7 +16,7 @@ module Analytic
 
       private
       def channel_params
-        params.permit(:local_name)
+        params.permit(:local_name, :imo)
       end
     end
   end

@@ -13,7 +13,6 @@ module Analytic
       private
       def channel_data
         scope = Analytic::SimChannel
-          .order_by(created_at: -1)
           .where(imo_no: @imo_no)
           .where(:local_name.nin => ["", nil])
         scope = scope.full_text_search(@local_name, match: :all) if @local_name.present?

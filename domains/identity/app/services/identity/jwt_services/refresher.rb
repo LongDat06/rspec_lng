@@ -1,6 +1,6 @@
 module Identity
   module JwtServices
-    class RefresherInvalidToken < StandardError; end
+    class RefresherInvalidToken < ::Shared::ExceptionHandler::AccessDenied; end
     class Refresher
       def initialize(refresh_token:, access_token:)
         @refresh_token = refresh_token

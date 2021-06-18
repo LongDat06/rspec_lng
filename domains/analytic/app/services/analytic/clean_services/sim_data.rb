@@ -1,7 +1,7 @@
 module Analytic
   module CleanServices
     class SimData
-      def initialize(time_period: 1.month.ago)
+      def initialize(time_period: 3.month.ago)
         @time_period = time_period
       end
 

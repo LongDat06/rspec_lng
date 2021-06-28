@@ -11,8 +11,8 @@ module Analytic
 
       attribute :condition do |object|
         {
-          timestamp_from_at: object.condition.timestamp_from_at,
-          timestamp_to_at: object.condition.timestamp_to_at
+          timestamp_from_at: object.condition.timestamp_from_at&.utc,
+          timestamp_to_at: object.condition.timestamp_to_at&.utc
         }
       end
     end

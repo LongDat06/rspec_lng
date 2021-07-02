@@ -27,6 +27,8 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "rails", "~> 6.0.3", ">= 6.0.3.6"
   spec.add_dependency "pundit"
+  spec.add_dependency "airbrake"
+
 
   spec.add_development_dependency "sqlite3"
 end

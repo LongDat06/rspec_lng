@@ -14,4 +14,4 @@ set :puma_state,      "#{fetch(:deploy_to)}/shared/tmp/pids/puma.state"
 set :puma_pid,        "#{fetch(:deploy_to)}/shared/tmp/pids/puma.pid"
 set :puma_access_log, "#{fetch(:deploy_to)}/shared/log/puma.access.log"
 set :puma_error_log,  "#{fetch(:deploy_to)}/shared/log/puma.error.log"
-set :linked_files,    %w{config/database.yml config/mongoid.yml .env}
+set :linked_files,    %w{config/database.yml config/mongoid.yml config/newrelic.yml .env}

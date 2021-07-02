@@ -43,3 +43,7 @@
   * Analytic::SimServices::Importing::SimChannel.new(imo: 9862487).()
   * Analytic::SimServices::Importing::SimChannel.new(imo: 9779226).()
   * rake mongoid_search:index
+
+### Errbit monitoring tools
+  Adding these env variables on Staging, Production
+  * ERRBIT_KEY=

@@ -16,6 +16,7 @@ require_relative '../lib/middleware/jwt'
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
+require_relative '../lib/core_extensions/airbrake_config_extensions'
 Dotenv::Railtie.load
 module LngBackend
   class Application < Rails::Application

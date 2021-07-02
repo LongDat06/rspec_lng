@@ -13,6 +13,7 @@ module Analytic
         Analytic::Sim.collection.aggregate([
           matched,
           project,
+          group,
           sort,
           limit
         ]).map { |record| MODELING.new(record) }

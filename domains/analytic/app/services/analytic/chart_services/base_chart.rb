@@ -30,13 +30,26 @@ module Analytic
         { "$limit" => @closest_at.present? ? 1 : 9999999 }
       end
 
+      def group
+        {
+          "$group" => {
+            "_id" => { "hour" => { "$hour" => "$spec.ts"}, "day" => { "$dayOfMonth" => "$spec.ts"}, "month" => { "$month" => "$spec.ts"}, "year" => { "$year" => "$spec.ts" } },
+            "spec" => {"$last" => '$spec'},
+          }
+        }
+      end
+
+      def unwind
+        { "$unwind" => "$spec" }
+      end
+
       def difference_project
         {
           "difference" => {
             "$abs" => {
               "$subtract" => [@closest_at, "$spec.ts"]
             }
-          }
+          },
         }
       end
     end

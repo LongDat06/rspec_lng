@@ -16,6 +16,7 @@ module Analytic
         Analytic::Sim.collection.aggregate([
           matched,
           project,
+          group,
           addFields,
           sort,
           limit

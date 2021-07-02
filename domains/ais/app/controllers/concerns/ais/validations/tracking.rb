@@ -5,7 +5,7 @@ module Ais
 
       attr_accessor :from_time, :to_time, :imos
 
-      validates_presence_of :from_time, :to_time, :imos
+      validates_presence_of :to_time, :imos
 
       def initialize(params)
         @from_time = params[:from_time]

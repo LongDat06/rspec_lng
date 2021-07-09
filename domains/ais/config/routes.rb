@@ -18,5 +18,6 @@ Ais::Engine.routes.draw do
     resources :latest_positions, only: [:index]
     resources :vessels, only: [:create, :index, :update, :destroy]
     resources :plan_routes, only: [:index]
+    resources :closest_destinations, only: [:index]
   end
 end

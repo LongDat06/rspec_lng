@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_06_074646) do
+ActiveRecord::Schema.define(version: 2021_07_05_132715) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -80,6 +80,28 @@ ActiveRecord::Schema.define(version: 2021_04_06_074646) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "trackings", force: :cascade do |t|
+    t.float "latitude"
+    t.float "longitude"
+    t.integer "heading"
+    t.float "speed_over_ground"
+    t.datetime "last_ais_updated_at"
+    t.integer "nav_status_code"
+    t.integer "vessel_id"
+    t.float "course"
+    t.string "source"
+    t.boolean "is_valid"
+    t.boolean "need_to_scan"
+    t.integer "imo"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "csm_id"
+    t.string "collection_type", default: "", null: false
+    t.datetime "csm_created_at"
+    t.index ["imo"], name: "index_trackings_on_imo"
+    t.index ["last_ais_updated_at"], name: "index_trackings_on_last_ais_updated_at"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "fullname", default: "", null: false
@@ -87,6 +109,21 @@ ActiveRecord::Schema.define(version: 2021_04_06_074646) do
     t.string "password_digest", default: "", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "vessel_destinations", force: :cascade do |t|
+    t.integer "vessel_id"
+    t.integer "csm_id"
+    t.string "destination"
+    t.float "draught"
+    t.datetime "eta"
+    t.datetime "last_ais_updated_at"
+    t.integer "imo"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "csm_created_at"
+    t.index ["imo"], name: "index_vessel_destinations_on_imo"
+    t.index ["last_ais_updated_at"], name: "index_vessel_destinations_on_last_ais_updated_at"
   end
 
   create_table "vessels", force: :cascade do |t|

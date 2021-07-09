@@ -14,3 +14,4 @@ production:
   - ecdis_mail_checker
   - sync_vessel
   - cleaning_job
+  - ais

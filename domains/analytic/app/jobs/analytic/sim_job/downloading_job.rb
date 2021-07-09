@@ -15,7 +15,8 @@ module Analytic
 
         job.status = :success
         job.save!
-      rescue
+      rescue StandardError => e
+        Airbrake.notify(e)
         job.status = :error
         job.save!
       ensure

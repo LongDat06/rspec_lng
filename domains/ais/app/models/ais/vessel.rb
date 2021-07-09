@@ -16,5 +16,7 @@ module Ais
     scope :ecdis_email, ->(ecdis_email) { where(ecdis_email: ecdis_email) if ecdis_email.present? }
 
     has_many :ecdis_routes, class_name: :EcdisRoute, foreign_key: :imo, primary_key: :imo
+    has_many :trackings, class_name: :Tracking, foreign_key: :imo, primary_key: :imo
+    has_many :vessel_destinations, class_name: :VesselDestination, foreign_key: :imo, primary_key: :imo
   end
 end

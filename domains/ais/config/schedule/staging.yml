@@ -8,3 +8,13 @@
   start_at: "00:00"
   interval:
   params:
+
+- class_name: Ais::TrackingJob::TrackingQueueCreate
+  start_at: "00:10"
+  interval:
+  params:
+
+- class_name: Ais::VesselDestinationJob::VesselDestinationQueueCreate
+  start_at: "00:10"
+  interval:
+  params:

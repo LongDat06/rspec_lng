@@ -7,8 +7,13 @@ module Ais
       def index
         vessel = Ais::Vessel.find_by(imo: tracking_params[:imos])
         tracking_params[:from_time] = tracking_params[:from_time].presence || vessel.last_port_departure_at
-        trackings = ExternalServices::Csm::RouteOptimized.new(tracking_params).fetch
-        json_response(trackings)
+        trackings = Ais::TrackingServices::TrackingPerHour.new(
+          from_time: tracking_params[:from_time], 
+          to_time: tracking_params[:to_time],
+          imo: vessel.imo
+        ).get
+        trackig_jsons = Ais::V1::TrackingSerializer.new(trackings).serializable_hash
+        json_response(trackig_jsons)
       end
 
       private

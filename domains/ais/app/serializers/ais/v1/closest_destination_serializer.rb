@@ -9,12 +9,20 @@ module Ais
         object.tracking&.course
       end
 
+      attribute :target do |object|
+        object.vessel&.target
+      end
+
       attribute :heading do |object|
         object.tracking&.heading
       end
 
       attribute :course do |object|
         object.tracking&.course
+      end
+
+      attribute :target do |object|
+        object.vessel&.target || true
       end
 
       attribute :last_position_updated_at do |object|

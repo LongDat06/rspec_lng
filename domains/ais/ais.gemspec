@@ -21,4 +21,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency "shared"
   spec.add_dependency "activerecord-import"
   spec.add_dependency "ruby-gmail"
+  spec.add_dependency "pundit"
 end

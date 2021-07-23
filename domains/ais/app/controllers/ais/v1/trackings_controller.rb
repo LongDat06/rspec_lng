@@ -5,6 +5,7 @@ module Ais
       before_action :validate_params, only: [:index]
 
       def index
+        authorize Ais::Tracking, policy_class: Ais::TrackingsPolicy
         vessel = Ais::Vessel.find_by(imo: tracking_params[:imos])
         tracking_params[:from_time] = tracking_params[:from_time].presence || vessel.last_port_departure_at
         trackings = Ais::TrackingServices::TrackingPerHour.new(

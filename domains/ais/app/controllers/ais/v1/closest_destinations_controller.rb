@@ -2,6 +2,7 @@ module Ais
   module V1
     class ClosestDestinationsController < BaseController
       def index
+        authorize Ais::VesselDestination, policy_class: Ais::ClosestDestinationsPolicy
         tracking = Ais::Tracking.closest_time(destination_params[:time], destination_params[:imo]).limit(1)
         vessel = Ais::Vessel.find_by(imo: destination_params[:imo])
         from_time = destination_params[:from_time].presence || vessel.last_port_departure_at

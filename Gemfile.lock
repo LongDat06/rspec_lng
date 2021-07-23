@@ -16,6 +16,7 @@ PATH
       fast_jsonapi (~> 1.3)
       httparty
       pagy (~> 3.10)
+      pundit
       rails (= 6.0.3.6)
       ruby-gmail
       shared
@@ -28,6 +29,7 @@ PATH
       creek
       mongoid
       mongoid_search
+      pundit
       rails (= 6.0.3.6)
       shared
       shrine (~> 3.0)
@@ -41,6 +43,7 @@ PATH
       bcrypt
       email_validator
       jwt
+      pundit
       rails (= 6.0.3.6)
       shared
 
@@ -56,6 +59,7 @@ PATH
   remote: domains/weather
   specs:
     weather (0.1.0)
+      pundit
       rails (= 6.0.3.6)
 
 GEM

@@ -4,6 +4,7 @@ module Ais
       VESSEL_PER_PAGE = 50
 
       def create
+        authorize Ais::Vessel, policy_class: Ais::VesselsPolicy
         opts = VesselForms::Register.new(vessel_params)
         vessel = opts.create
         vessel_jsons = Ais::V1::VesselSerializer.new(vessel).serializable_hash
@@ -11,6 +12,7 @@ module Ais
       end
 
       def index
+        authorize Ais::Vessel, policy_class: Ais::VesselsPolicy
         page_number = (params[:page] || 1).to_i
         scope = Vessel
           .target(filter_params[:target])
@@ -25,13 +27,13 @@ module Ais
       end
 
       def update
-        vessel = Vessel.find(params[:id])
+        vessel = policy_scope(Vessel, policy_scope_class: Ais::VesselsPolicy::Scope).find(params[:id])
         vessel.update!(vessel_params)
         json_response({})
       end
 
       def destroy
-        vessel = Vessel.find_by_imo!(params[:id])
+        vessel = policy_scope(Vessel, policy_scope_class: Ais::VesselsPolicy::Scope).find_by_imo!(params[:id])
         VesselForms::Delete.new(vessel).()
         json_response({})
       end

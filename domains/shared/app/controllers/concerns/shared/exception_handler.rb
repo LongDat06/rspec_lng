@@ -13,6 +13,7 @@ module Shared
       rescue_from AuthenticationError, with: :unauthorized_request
       rescue_from AccessDenied, with: :unauthorized_request
       rescue_from ActiveRecord::RecordInvalid, with: :render_422
+      rescue_from Pundit::NotAuthorizedError, with: :permission_denied
     end
 
     private
@@ -37,6 +38,10 @@ module Shared
 
     def record_errors(e)
       json_response({ message: e.record.errors.full_messages }, :unprocessable_entity)
+    end
+
+    def permission_denied(e)
+      json_response({ message: e.message }, :forbidden)
     end
   end
 end

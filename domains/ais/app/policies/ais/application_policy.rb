@@ -1,4 +1,4 @@
-module Identity
+module Ais
   class ApplicationPolicy
     attr_reader :user, :record
 

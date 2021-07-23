@@ -30,4 +30,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency "email_validator"
   spec.add_dependency 'jwt'
   spec.add_dependency "shared"
+  spec.add_dependency "pundit"
 end

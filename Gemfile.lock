@@ -53,12 +53,14 @@ PATH
     shared (0.1.0)
       airbrake
       pundit
-      rails (~> 6.0.3, >= 6.0.3.6)
+      rails (= 6.0.3.6)
 
 PATH
   remote: domains/weather
   specs:
     weather (0.1.0)
+      dotenv-rails
+      httparty
       pundit
       rails (= 6.0.3.6)
 

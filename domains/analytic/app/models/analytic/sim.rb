@@ -11,7 +11,10 @@ module Analytic
 
     scope :imo, ->(imo) { where(imo_no: imo) if imo.present? }
     scope :closest_to_time, -> (time) {
-      where('spec.ts' => { "$lte" => time }).order('spec.ts' => -1) if time.present?
+      return unless time.present?
+      data = where('spec.ts' => { "$lte" => time }).order('spec.ts' => -1) 
+      data = where('spec.ts' => { "$gte" => time }).order('spec.ts' => 1) if data.blank?
+      data
     }
 
     index(imo_no: 1)

@@ -1,9 +1,11 @@
 module Analytic
   module VesselServices
     class StageSpecs
-      def initialize(imo, time)
+      def initialize(imo, time, from_time, to_time)
         @imo = imo
         @time = time.to_datetime
+        @from_time = from_time.to_datetime
+        @to_time = to_time.to_datetime
       end
 
       def call
@@ -14,6 +16,7 @@ module Analytic
       def vessel_specs
         Analytic::Sim
           .imo(@imo.to_i)
+          .where("spec.ts" => { "$gte" => @from_time, "$lte" => @to_time })
           .closest_to_time(@time)
           .only(
             '_id',

@@ -3,8 +3,10 @@ module Ais
     class ClosestDestinationsController < BaseController
       def index
         tracking = Ais::Tracking.closest_time(destination_params[:time], destination_params[:imo]).limit(1)
+        vessel = Ais::Vessel.find_by(imo: destination_params[:imo])
+        from_time = destination_params[:from_time].presence || vessel.last_port_departure_at
         destination = Ais::VesselDestination
-          .where('last_ais_updated_at >= ? AND last_ais_updated_at <= ?', destination_params[:from_time], destination_params[:to_time] )
+          .where('last_ais_updated_at >= ? AND last_ais_updated_at <= ?', from_time, destination_params[:to_time] )
           .imo(destination_params[:imo])
           .closest_time(destination_params[:time], destination_params[:imo])
           .limit(1)

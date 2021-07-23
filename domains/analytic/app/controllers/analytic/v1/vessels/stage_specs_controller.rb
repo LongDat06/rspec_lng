@@ -6,14 +6,16 @@ module Analytic
         before_action :validate_params, only: [:index]
 
         def index
-          specs = Analytic::VesselServices::StageSpecs.new(params[:imo], params[:time]).call
+          vessel = Analytic::Vessel.find_by(imo: spec_params[:imo])
+          from_time = spec_params[:from_time].presence || vessel.last_port_departure_at
+          specs = Analytic::VesselServices::StageSpecs.new(params[:imo], params[:time], from_time, spec_params[:to_time]).call
           specs_json = Analytic::V1::Vessels::StageSpecsSerializer.new(specs).serializable_hash
           json_response(specs_json)
         end
 
         private
         def spec_params
-          params.permit(:time, :imo)
+          params.permit(:time, :from_time, :to_time, :imo)
         end
 
         def validate_params

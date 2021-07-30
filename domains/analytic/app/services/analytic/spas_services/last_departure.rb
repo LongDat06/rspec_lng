@@ -27,7 +27,7 @@ module Analytic
             '_id',
             'spec.ts', 
             'spec.jsmea_voy_voyageinformation_category',
-            'spec.jsmea_voy_dateandtime_lt',
+            'spec.jsmea_voy_dateandtime_utc',
             'spec.jsmea_voy_portinformation_portcode',
           )
           .limit(1)

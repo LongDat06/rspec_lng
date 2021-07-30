@@ -2,8 +2,8 @@ module Ais
   module TrackingServices
     class TrackingPerHour
       def initialize(from_time:, to_time:, imo:)
-        @from_time = from_time.to_datetime.beginning_of_day
-        @to_time = to_time.to_datetime.end_of_day
+        @from_time = from_time.to_datetime
+        @to_time = to_time.to_datetime
         @imo = imo
       end
 

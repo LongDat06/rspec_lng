@@ -79,3 +79,5 @@ gem 'wisper'
 gem 'newrelic_rpm', '~> 7'
 gem 'airbrake', '~> 11'
 gem 'pundit'
+gem 'fcm'
+

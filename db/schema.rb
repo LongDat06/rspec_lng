@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_05_132715) do
+ActiveRecord::Schema.define(version: 2021_08_01_064002) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -55,6 +55,7 @@ ActiveRecord::Schema.define(version: 2021_07_05_132715) do
     t.datetime "received_at", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "imported_checksum", default: "", null: false
     t.index ["imo"], name: "index_ecdis_routes_on_imo"
   end
 
@@ -70,6 +71,12 @@ ActiveRecord::Schema.define(version: 2021_07_05_132715) do
   create_table "roles", force: :cascade do |t|
     t.string "name", default: "", null: false
     t.text "activities", default: [], array: true
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "tests", force: :cascade do |t|
+    t.jsonb "result", default: {}
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
@@ -135,6 +142,7 @@ ActiveRecord::Schema.define(version: 2021_07_05_132715) do
     t.string "ecdis_email", default: "", null: false
     t.datetime "last_port_departure_at"
     t.string "name", default: "", null: false
+    t.string "error_code", default: "", null: false
     t.index ["imo"], name: "index_vessels_on_imo", unique: true
   end
 

@@ -5,6 +5,8 @@ module Ais
     extend Enumerize
 
     enumerize :engine_type, in: [:stage, :xdf]
+    enumerize :error_code, in: [:vessel_not_registered, :lack_of_latest_vessel_info]
+
     validates_length_of :imo, is: 7
     validates :imo, presence: true, uniqueness: true
     validates :ecdis_email, presence: true, email: true,

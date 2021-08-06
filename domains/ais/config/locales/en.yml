@@ -14,6 +14,11 @@ en:
         restrict_dependent_destroy:
           has_one: Cannot delete record because a dependent %{record} exists
           has_many: Cannot delete record because dependent %{record} exist
+  enumerize:
+    ais/vessel:
+      error_code:
+        vessel_not_registered: No existence in AIS Settings
+        lack_of_latest_vessel_info: No AIS data
   date:
     abbr_day_names:
     - Sun

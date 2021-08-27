@@ -37,7 +37,9 @@ Analytic::Engine.routes.draw do
       end
     end
 
-    resources :sim_channels, only: [:index]
+    resources :sim_channels, only: [:index] do
+      get :fetch_units, on: :collection
+    end
     
     namespace :vessels do
       resources :stage_specs, only: [:index]

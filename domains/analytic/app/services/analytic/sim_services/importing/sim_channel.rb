@@ -17,7 +17,9 @@ module Analytic
         end
 
         def call
-          Analytic::SimChannel.collection.insert_many(processing_records)  
+          Analytic::SimChannel.collection.insert_many(processing_records)
+          Rails.cache.delete(:channel_units)
+          Analytic::SimChannel.fetch_units
         end
 
         private

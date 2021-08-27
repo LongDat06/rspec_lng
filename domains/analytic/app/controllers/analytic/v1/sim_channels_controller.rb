@@ -14,6 +14,10 @@ module Analytic
         json_response(json_channels)
       end
 
+      def fetch_units
+        json_response(Analytic::SimChannel.fetch_units)
+      end
+
       private
       def channel_params
         params.permit(:local_name, :imo)

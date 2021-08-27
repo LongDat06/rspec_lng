@@ -6,10 +6,11 @@ module Analytic
 
     field :local_name, type: String
     field :standard_name, type: String
+    field :iso_std_name, type: String
     field :unit, type: String
     field :imo_no, type: Integer
 
-    index(imo_no: 1)
+    index({ imo_no: 1, standard_name: 1 })
     search_in :local_name
 
     def self.fetch_units

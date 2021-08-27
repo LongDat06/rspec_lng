@@ -16,7 +16,7 @@ module Analytic
           .where(imo_no: @imo_no)
           .where(:local_name.nin => ["", nil])
         scope = scope.full_text_search(@local_name, match: :all) if @local_name.present?
-        scope
+        scope.order('standard_name' => 1) 
       end
     end
   end

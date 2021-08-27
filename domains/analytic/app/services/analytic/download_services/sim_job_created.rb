@@ -12,7 +12,7 @@ module Analytic
             author_id: @current_user_id,
             imo_no: imo,
             source: :sim,
-            created_at: Time.current
+            created_at: Time.current,
           )
           download.condition = build_condition
           download.save!
@@ -30,7 +30,8 @@ module Analytic
           {
             timestamp_from_at: @params[:timestamp_from_at],
             timestamp_to_at: @params[:timestamp_to_at],
-            columns: @params[:column_mappings].to_h
+            columns: @params[:column_mappings].to_h,
+            included_stdname: @params[:included_stdname]
           }
         end
       end

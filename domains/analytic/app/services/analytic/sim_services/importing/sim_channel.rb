@@ -28,6 +28,7 @@ module Analytic
             metadata.each do |row|
               records << {
                 standard_name: row[:isoStdName].parameterize(separator: '_').to_sym,
+                iso_std_name: row[:isoStdName],
                 local_name: row[:localName],
                 unit: row[:unit],
                 imo_no: @imo

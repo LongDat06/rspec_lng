@@ -32,15 +32,17 @@ module Analytic
 
       def csv_enumerator
         CSV.open(csv_tmp_file, 'w') do |writer|
-          writer << (headers.concat(fixed_columns.map {|key, _| key }))
+          writer << header_combinations
+          writer << stdname_rows if @condition[:included_stdname].present?
+          writer << unit_rows
           sim_data.each do |row|
-            writer << (row_mapping(row.spec).concat(fixed_columns((row.spec.attributes)).map {|_, value| value }))
+            writer << row_combinations(row.spec)
           end
         end
       end
 
       def row_mapping(spec)
-        exporting_columns.map do |column|
+        channels.pluck(:standard_name).map do |column|
           spec.attributes[column]
         end
       end
@@ -56,13 +58,46 @@ module Analytic
       end
 
       def headers
-        @headers ||= @condition.columns.values
+        @headers ||= channels.pluck(:local_name)
       end
 
-      def fixed_columns(attributes = [])
+      def channels
+        @channels ||= Analytic::SimChannel.where(imo_no: @imo, :standard_name.in => exporting_columns).order('standard_name' => 1) 
+      end
+
+      def unit_rows
+        @unit_rows ||= begin
+          units = channels.pluck(:unit)
+          ts_column.map {|_| ''}.concat(units, fixed_right_columns.map {|_| ''})
+        end
+      end
+
+      def stdname_rows
+        std_names = channels.pluck(:iso_std_name)
+        ts_column.map {|_| ''}.concat(std_names, fixed_right_columns.map {|_| ''})
+      end
+
+      def header_combinations
+        ts_header    = ts_column.map {|key, _| key }
+        right_header = fixed_right_columns.map {|key, _| key }
+        ts_header.concat(headers, right_header)
+      end
+
+      def row_combinations(spec)
+        ts_column_value    = ts_column(spec.attributes).map { |_, value| value }
+        right_column_value = fixed_right_columns(spec.attributes).map { |_, value| value }
+        ts_column_value.concat(row_mapping(spec), right_column_value)
+      end
+
+      def ts_column(attributes = [])
+        {
+          'UTC' => attributes.present? ? attributes['ts'] : ''
+        }
+      end
+
+      def fixed_right_columns(attributes = [])
         {
           'Vessel Name' => @vessel_name,
-          'Timestamp' => attributes.present? ? attributes['ts'] : ''
         }
       end
 

@@ -17,7 +17,7 @@ module Analytic
 
         private
         def download_params
-          params.permit(:timestamp_from_at, :timestamp_to_at, column_mappings: {}, imos: [])
+          params.permit(:timestamp_from_at, :timestamp_to_at, :included_stdname, column_mappings: {}, imos: [])
         end
 
         def validate_params

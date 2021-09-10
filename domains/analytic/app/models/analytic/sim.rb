@@ -17,7 +17,6 @@ module Analytic
       data
     }
 
-    index(imo_no: 1)
-    index "spec.ts" => 1
+    index({imo_no: 1, "spec.ts" => 1})
   end
 end

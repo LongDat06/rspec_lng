@@ -8,8 +8,9 @@ module Ais
         authorize Ais::Tracking, policy_class: Ais::TrackingsPolicy
         vessel = Ais::Vessel.find_by(imo: tracking_params[:imos])
         tracking_params[:from_time] = tracking_params[:from_time].presence || vessel.last_port_departure_at
+        tracking_params[:to_time] = tracking_params[:to_time].presence || Time.current.utc
         trackings = Ais::TrackingServices::TrackingPerHour.new(
-          from_time: tracking_params[:from_time], 
+          from_time: tracking_params[:from_time],
           to_time: tracking_params[:to_time],
           imo: vessel.imo
         ).get

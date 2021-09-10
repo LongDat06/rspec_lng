@@ -20,7 +20,7 @@ module Analytic
           Analytic::SimChannel.collection.insert_many(processing_records)
           reindex
           Rails.cache.delete(:channel_units)
-          self.fetch_units
+          Analytic::SimChannel.fetch_units
         end
 
         private

@@ -10,6 +10,7 @@ module Analytic
     field :name, type: String
     field :channels, type: Object
     field :author_id, type: Integer
+    field :bk_channels, type: Object
     validates_presence_of :author_id, :imo_no, :name, :shared
 
     scope :readable, -> (author_id) {

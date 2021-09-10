@@ -13,6 +13,12 @@ module Analytic
     index({ imo_no: 1, standard_name: 1 })
     search_in :local_name
 
+    scope :unit, -> (unit) {
+      return unless unit.present?
+      return where(:unit.in => ["", nil])  if unit == 'none'
+      where(unit: /.*#{unit}.*/i)
+    }
+
     def self.fetch_units
       Rails.cache.fetch(:channel_units) do
         self.distinct("unit")

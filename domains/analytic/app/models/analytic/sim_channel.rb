@@ -16,7 +16,7 @@ module Analytic
     scope :unit, -> (unit) {
       return unless unit.present?
       return where(:unit.in => ["", nil])  if unit == 'none'
-      where(unit: /.*#{unit}.*/i)
+      where(unit: unit)
     }
 
     def self.fetch_units

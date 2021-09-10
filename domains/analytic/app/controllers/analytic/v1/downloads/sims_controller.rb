@@ -17,6 +17,11 @@ module Analytic
 
         private
         def download_params
+          column_mappings = {}
+          params[:column_mappings].each do |key, value|
+            column_mappings[key] = value if params[:channels].include?(key)
+          end
+          params[:column_mappings] = column_mappings
           params.permit(:timestamp_from_at, :timestamp_to_at, :included_stdname, column_mappings: {}, imos: [])
         end
 

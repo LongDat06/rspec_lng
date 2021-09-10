@@ -16,12 +16,12 @@ module Analytic
         ).()
 
         job.status = :success
-        fcm_service.send_to_topic(noti_msg(:success))
+        # fcm_service.send_to_topic(noti_msg(:success))
         job.save!
       rescue StandardError => e
         Airbrake.notify(e)
         job.status = :error
-        fcm_service.send_to_topic(noti_msg(:error))
+        # fcm_service.send_to_topic(noti_msg(:error))
         job.save!
       ensure
         Analytic::SimJob::QueueNextJob.perform_later

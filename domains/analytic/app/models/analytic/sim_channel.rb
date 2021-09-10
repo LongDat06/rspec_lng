@@ -15,7 +15,6 @@ module Analytic
 
     scope :unit, -> (unit) {
       return unless unit.present?
-      return where(:unit.in => ["", nil])  if unit == 'none'
       where(unit: unit)
     }
 
@@ -23,6 +22,12 @@ module Analytic
       Rails.cache.fetch(:channel_units) do
         self.distinct("unit")
       end
+    end
+
+    def self.update_unit_to_na
+      self.where(:unit.in => ["", "-", nil]).update_all(unit: "N/A")
+      Rails.cache.delete(:channel_units)
+      self.fetch_units
     end
   end
 end

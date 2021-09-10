@@ -18,20 +18,22 @@ module Analytic
 
         def call
           Analytic::SimChannel.collection.insert_many(processing_records)
-          Rails.cache.delete(:channel_units)
-          Analytic::SimChannel.fetch_units
           reindex
+          Rails.cache.delete(:channel_units)
+          self.fetch_units
         end
 
         private
         def processing_records
           [].tap do |records|
             metadata.each do |row|
+              unit = row[:unit].to_s.strip
+              unit = [nil, "", "-"].include?(unit) ? "N/A" : unit
               records << {
                 standard_name: row[:isoStdName].parameterize(separator: '_').to_sym,
                 iso_std_name: row[:isoStdName],
                 local_name: row[:localName],
-                unit: row[:unit],
+                unit: unit,
                 imo_no: @imo
               }
             end

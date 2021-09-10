@@ -24,4 +24,9 @@ namespace :migrate_data do
     end
     logger.info("----------END_migrate--------------")
   end
+
+  desc "Update for Unit in SimChannel"
+  task update_special_units_to_na: :environment do
+    Analytic::SimChannel.update_unit_to_na
+  end
 end

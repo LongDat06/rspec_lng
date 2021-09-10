@@ -13,6 +13,7 @@ module Ais
         )
         opts.call
         next_checkpoint = Ais::Tracking
+          .where('csm_id IS NOT NULL AND csm_created_at IS NOT NULL')
           .where('csm_created_at >= :from_date AND csm_created_at <= :to_date', from_date: from_date, to_date: to_date)
           .imo(imo).order(csm_id: :desc).first
         return if time_current > to_date && !opts.data_existed

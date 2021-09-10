@@ -57,6 +57,12 @@ module Analytic
             'Accept' => 'application/json'
           }
         end
+
+        private
+
+        def default_timeout
+          1000
+        end
       end
     end
   end

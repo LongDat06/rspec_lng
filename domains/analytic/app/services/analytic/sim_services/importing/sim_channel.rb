@@ -20,6 +20,7 @@ module Analytic
           Analytic::SimChannel.collection.insert_many(processing_records)
           Rails.cache.delete(:channel_units)
           Analytic::SimChannel.fetch_units
+          reindex
         end
 
         private
@@ -54,6 +55,12 @@ module Analytic
               revNo: latest_meta_data_revno[:revNo] 
             }).fetch
             body[:items]
+          end
+        end
+
+        def reindex
+          Mongoid::Search.classes.each do |klass|
+            klass.index_keywords!
           end
         end
       end

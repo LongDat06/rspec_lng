@@ -2,6 +2,10 @@ module Ais
   class VesselDestination < ApplicationRecord
     self.table_name = "vessel_destinations"
 
+    extend Enumerize
+
+    enumerize :source, in: [:spire, :spas]
+
     scope :imo, ->(imo) { where(imo: imo) if imo.present? }
 
     scope :closest_time, -> (time, imo) {

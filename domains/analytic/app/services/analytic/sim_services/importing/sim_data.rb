@@ -2,20 +2,20 @@ module Analytic
   module SimServices
     module Importing
       class SimData
-        BATCH_IMPORT_SIZE = 1
         DATA_CLASS = 'IoSData'.freeze
         DATA_TYPE = 'ShipData'.freeze
 
         def initialize(
           imo_no:, 
-          period_hour:,
+          period_from:,
+          period_to:,
           ios_data_requester: ExternalServices::Shipdc::IosData
         )
           @imo_no = imo_no
-          @period_hour = period_hour
+          @period_from = period_from
+          @period_to = period_to
           @ios_data_requester = ios_data_requester
           @records = []
-          @counter = 0
         end
 
         def call
@@ -24,7 +24,6 @@ module Analytic
 
         private
         attr_reader :records
-        attr_accessor :counter
 
         def getting_meta_data(revno)
           @meta ||= {}
@@ -39,25 +38,19 @@ module Analytic
         def processing_rows
           ios_data.each do |row|
             row[:series].each do |serie|
-              increment_counter
               meta_data = getting_meta_data(serie[:revNo])
               spec = serie[:items].map do |item|
                 [item[:idx], item[:value]]
               end.to_h
               records << modeling_record(spec, meta_data)
             end
-            
-            import_records if reached_batch_import_size? || reached_end_of_file?
           end
-        end
-
-        def increment_counter
-          self.counter += 1
+          opts = import_records
+          opts.inserted_ids
         end
 
         def import_records
-          Analytic::Sim.collection.insert_many(records)  
-          records.clear
+          Analytic::Sim.collection.insert_many(records)
         end
 
         def modeling_sim_spec(spec, columns_mapping)
@@ -96,26 +89,12 @@ module Analytic
         end
 
         def ios_data
-          @ios_data ||= begin
-            body = @ios_data_requester.new(@imo_no, {
-              dataType: DATA_TYPE,
-              from: @period_hour.beginning_of_hour.strftime('%FT%TZ'),
-              to: @period_hour.end_of_hour.strftime('%FT%TZ')
-            }).fetch
-            body[:data]
-          end
-        end
-
-        def reached_batch_import_size?
-          (counter % BATCH_IMPORT_SIZE).zero?
-        end
-
-        def row_count
-          @row_count ||= ios_data.first[:series].size
-        end
-
-        def reached_end_of_file?
-          counter == row_count
+          body = @ios_data_requester.new(@imo_no, {
+            dataType: DATA_TYPE,
+            from: @period_from.strftime('%FT%TZ'),
+            to: @period_to.strftime('%FT%TZ')
+          }).fetch
+          body[:data]
         end
       end
     end

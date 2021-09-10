@@ -2,6 +2,8 @@ module Ais
   module VesselForms
     class Validation < StandardError; end
     class Register < Base
+      include Wisper::Publisher 
+
       def create
         if valid?
           create_vessel
@@ -18,9 +20,11 @@ module Ais
       def create_vessel
         Ais::Vessel.transaction do
           vessel.assign_attributes(attributes.except(:id))
+          vessel.last_port_departure_at = 2.month.ago
           if vessel.save!
             updated_imo_setting
             update_vessel_name
+            start_import_sim
           end
         end
         vessel.reload
@@ -34,6 +38,11 @@ module Ais
 
       def update_vessel_name
         Ais::SyncServices::VesselInformation.new([vessel.imo]).()
+      end
+
+      def start_import_sim
+        return unless @vessel.target
+        broadcast(:on_vessel_create_successful, @vessel.imo)
       end
     end
   end

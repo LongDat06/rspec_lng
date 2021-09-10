@@ -15,7 +15,6 @@ module Analytic
           @period_time = period_time
           @rep_data_requester = rep_data_requester
           @records = []
-          @counter = 0
         end
 
         def call
@@ -24,7 +23,6 @@ module Analytic
 
         private
         attr_reader :records
-        attr_accessor :counter
 
         def getting_meta_data(revno)
           @meta ||= {}
@@ -39,25 +37,20 @@ module Analytic
         def processing_rows
           rep_data.each do |row|
             row[:series].each do |serie|
-              increment_counter
               meta_data = getting_meta_data(serie[:revNo])
               spec = serie[:items].map do |item|
                 [item[:idx], item[:value]]
               end.to_h
               records << modeling_record(spec, meta_data)
             end
-            
-            import_records if reached_batch_import_size? || reached_end_of_file?
           end
-        end
 
-        def increment_counter
-          self.counter += 1
+          opts = import_records
+          opts.inserted_ids
         end
 
         def import_records
           Analytic::Spas.collection.insert_many(records)  
-          records.clear
         end
 
         def modeling_spas_spec(spec, columns_mapping)
@@ -104,18 +97,6 @@ module Analytic
             }).fetch
             body[:data]
           end
-        end
-
-        def reached_batch_import_size?
-          (counter % BATCH_IMPORT_SIZE).zero?
-        end
-
-        def row_count
-          @row_count ||= rep_data.first[:series].size
-        end
-
-        def reached_end_of_file?
-          counter == row_count
         end
       end
     end

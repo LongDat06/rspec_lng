@@ -349,6 +349,8 @@ GEM
       connection_pool (>= 2.2.2)
       rack (~> 2.0)
       redis (>= 4.2.0)
+    sidekiq-limit_fetch (3.4.0)
+      sidekiq (>= 4)
     spring (2.1.1)
     sprockets (4.0.2)
       concurrent-ruby (~> 1.0)
@@ -423,6 +425,7 @@ DEPENDENCIES
   shrine (~> 3.0)
   shrine-mongoid (~> 1.0)
   sidekiq
+  sidekiq-limit_fetch
   spring
   tzinfo-data
   virtus

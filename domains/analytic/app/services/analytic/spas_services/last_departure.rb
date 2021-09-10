@@ -3,7 +3,7 @@ module Analytic
     class LastDeparture
       include Wisper::Publisher 
 
-      EXCLUDE_PORT_LOCODE = 'PABLB;PACTB;EGSCA;EGSUZ'.freeze
+      EXCLUDE_PORT_LOCODE = ['PABLB', 'PACTB', 'EGSCA', 'EGSUZ'].freeze
       DEPATURE_FLAG = '3:DEP'.freeze
 
       def initialize(imo)
@@ -12,8 +12,6 @@ module Analytic
 
       def call
         return if last_dep.blank?
-        port_code = last_dep.spec.attributes[:jsmea_voy_portinformation_portcode]
-        return if port_code.present? && EXCLUDE_PORT_LOCODE.include?(port_code.strip)
         broadcast(:on_dep_successful, { imo: @imo, spec: last_dep.spec.attributes })
       end
 
@@ -22,6 +20,7 @@ module Analytic
         Analytic::Spas
           .order_by('spec.ts' => -1)
           .where(imo_no: @imo.to_i)
+          .not_in('spec.jsmea_voy_portinformation_portcode' => EXCLUDE_PORT_LOCODE)
           .where('spec.jsmea_voy_voyageinformation_category' => DEPATURE_FLAG)
           .only(
             '_id',

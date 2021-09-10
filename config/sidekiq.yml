@@ -1,17 +1,31 @@
 ---
-:concurrency: 5
+:concurrency: 4
 staging:
   :concurrency: 4
 production:
   :concurrency: 5
 :queues:
-  - critical
-  - mailers
-  - default
-  - low
-  - importing_job
-  - downloading_job
-  - ecdis_mail_checker
-  - sync_vessel
-  - cleaning_job
-  - ais
+  - ["ais", 4]
+  - ["critical", 5]
+  - ["mailers", 5]
+  - ["default", 5]
+  - ["downloading_job", 1]
+  - ["import_channel_job", 1]
+  - ["ecdis_mail_checker", 1]
+  - ["sync_vessel", 1]
+  - ["cleaning_job", 1]
+  - ["importing_job", 3]
+  - ["low", 5]
+:limits:
+  ais: 4
+  critical: 5
+  mailers: 5
+  default: 5
+  downloading_job: 1
+  import_channel_job: 1
+  ecdis_mail_checker: 1
+  sync_vessel: 1
+  cleaning_job: 1
+  importing_job: 3
+  low: 5
+

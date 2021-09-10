@@ -16,7 +16,7 @@ module Analytic
 
         def body
           {
-            timeout: 300,
+            timeout: default_timeout,
             verify: false,
             query: @params
           }

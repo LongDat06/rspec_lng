@@ -1,17 +1,15 @@
 module Analytic
   module ExternalServices
     module Shipdc
-      class MetaDataFind < Base
-        URI = '/ios-op/v2/ships/%s/metadata/find'.freeze
+      class DataSet < Base
+        URL = '/ios-op/v1/dataset'.freeze
 
-        def initialize(imo, params)
+        def initialize
           super()
-          @imo = imo
-          @params = params
         end
 
         def fetch
-          @response = self.class.get("#{format(URI, @imo)}", options)
+          @response = self.class.get(URL, options)
           super
         end
 
@@ -19,7 +17,6 @@ module Analytic
           {
             timeout: default_timeout,
             verify: false,
-            query: @params
           }
         end
       end

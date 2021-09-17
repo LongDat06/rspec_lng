@@ -17,19 +17,25 @@ module Analytic
 
         private
         def download_params
-          column_mappings = {}
-          params[:column_mappings].each do |key, value|
-            column_mappings[key] = value if params[:channels].include?(key)
-          end
-          params[:column_mappings] = column_mappings
+          params[:column_mappings] = fetch_channels
           params.permit(:timestamp_from_at, :timestamp_to_at, :included_stdname, column_mappings: {}, imos: [])
+        end
+
+        def fetch_channels
+          Analytic::SimServices::Channels.new(
+            params: {
+              imo: params[:imos]&.first,
+              channels: params[:is_select_all].to_s == 'true' ? nil : params[:channels],
+              except_channels: params[:except_channels]
+            }
+          ).call.each_with_object({}) { |sim, hash| hash[sim.id.to_s] = sim.local_name }
         end
 
         def validate_params
           sim_download_validation = Analytic::Validations::SimDownload.new(download_params)
           unless sim_download_validation.valid?
             raise(
-              SimsControllerInvalidParameters, 
+              SimsControllerInvalidParameters,
               sim_download_validation.errors.full_messages.to_sentence
             )
           end

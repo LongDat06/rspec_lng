@@ -23,10 +23,10 @@ module Analytic
           Analytic::Sim
             .order_by('spec.ts' => 1)
             .where(imo_no: @imo)
-            .where({'spec.ts' => { 
+            .where({'spec.ts' => {
               '$gte' => @condition[:timestamp_from_at], '$lte' => @condition[:timestamp_to_at]
             }})
-            .only(*exporting_columns.map{|column| "spec.#{column}" } << "spec.ts")
+            .only(*standard_name_columns.map{|column| "spec.#{column}" } << "spec.ts")
         end
       end
 
@@ -62,31 +62,31 @@ module Analytic
       end
 
       def channels
-        @channels ||= Analytic::SimChannel.where(imo_no: @imo, :_id.in => exporting_columns).order('standard_name' => 1)
+        @channels ||= Analytic::SimChannel.where(imo_no: @imo, :_id.in => exporting_columns).order('iso_std_name' => 1)
       end
 
       def unit_rows
         @unit_rows ||= begin
           units = channels.pluck(:unit)
-          ts_column.map {|_| ''}.concat(units, fixed_right_columns.map {|_| ''})
+          fixed_left_columns.map {|_| ''}.concat(ts_column.map {|_| ''}, units)
         end
       end
 
       def stdname_rows
         std_names = channels.pluck(:iso_std_name)
-        ts_column.map {|_| ''}.concat(std_names, fixed_right_columns.map {|_| ''})
+        fixed_left_columns.map {|_| ''}.concat(ts_column.map {|_| ''}, std_names)
       end
 
       def header_combinations
+        left_header = fixed_left_columns.keys
         ts_header    = ts_column.map {|key, _| key }
-        right_header = fixed_right_columns.map {|key, _| key }
-        ts_header.concat(headers, right_header)
+        left_header.concat(ts_header, headers)
       end
 
       def row_combinations(spec)
+        left_column_value = fixed_left_columns.values
         ts_column_value    = ts_column(spec.attributes).map { |_, value| value }
-        right_column_value = fixed_right_columns(spec.attributes).map { |_, value| value }
-        ts_column_value.concat(row_mapping(spec), right_column_value)
+        left_column_value.concat(ts_column_value,row_mapping(spec))
       end
 
       def ts_column(attributes = [])
@@ -95,7 +95,7 @@ module Analytic
         }
       end
 
-      def fixed_right_columns(attributes = [])
+      def fixed_left_columns
         {
           'Vessel Name' => @vessel_name,
         }
@@ -103,6 +103,10 @@ module Analytic
 
       def exporting_columns
         @exporting_columns ||= @condition.columns.keys
+      end
+
+      def standard_name_columns
+        @standard_name_columns ||= @channels.pluck(:standard_name)
       end
 
       def vessel_name

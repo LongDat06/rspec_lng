@@ -53,7 +53,7 @@ module Analytic
           Analytic::SimServices::Channels.new(
             params: {
               imo: params[:imo_no],
-              channels: params[:channels],
+              channels: params[:is_select_all].to_s == 'true' ? nil : params[:channels],
               except_channels: params[:except_channels]
             }
           ).call.each_with_object({}) { |sim, hash| hash[sim.id.to_s] = sim.local_name }

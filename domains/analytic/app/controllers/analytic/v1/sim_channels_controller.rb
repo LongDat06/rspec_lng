@@ -22,7 +22,11 @@ module Analytic
 
       private
       def channel_params
-        params.permit(:local_name, :imo, :unit)
+        params.permit(:local_name,
+                      :imo,
+                      :unit,
+                      :sort_by,
+                      :sort_order)
       end
     end
   end

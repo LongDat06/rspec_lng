@@ -6,6 +6,7 @@ module Analytic
         @imo_no = params[:imo]
         @unit = params[:unit]
         @channels = params[:channels]
+        @except_channels = params[:except_channels]
         @sort_by = params[:sort_by]
         @sort_order = params[:sort_order]
       end

@@ -3,6 +3,7 @@ module Analytic
     include Mongoid::Document
     include Mongoid::Search
     include Mongoid::Timestamps::Created
+    NULL_UNITS = ["", "-", 'null', "None", "(None)", "N/A"]
 
     field :local_name, type: String
     field :standard_name, type: String
@@ -15,17 +16,27 @@ module Analytic
 
     scope :unit, -> (unit) {
       return unless unit.present?
+      unit = unit == "N/A" ? nil : unit
       where(unit: unit)
     }
 
     def self.fetch_units
       Rails.cache.fetch(:channel_units) do
-        self.distinct("unit")
+        channels = self.collection.aggregate(
+                                              [
+                                                {
+                                                   "$project" => {
+                                                      "unit" => { "$ifNull" => [ "$unit", "N/A" ] }
+                                                   }
+                                                }
+                                              ]
+                                            )
+        channels.map {|channel| channel["unit"]}.uniq
       end
     end
 
     def self.update_unit_to_na
-      self.where(:unit.in => ["", "-", nil]).update_all(unit: "N/A")
+      self.where(:unit.in => NULL_UNITS).update_all(unit: nil)
       Rails.cache.delete(:channel_units)
       self.fetch_units
     end

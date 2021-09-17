@@ -28,7 +28,7 @@ module Analytic
           [].tap do |records|
             metadata.each do |row|
               unit = row[:unit].to_s.strip
-              unit = [nil, "", "-"].include?(unit) ? "N/A" : unit
+              unit = Analytic::SimChannel::NULL_UNITS.include?(unit) ? nil : unit
               records << {
                 standard_name: row[:isoStdName].parameterize(separator: '_').to_sym,
                 iso_std_name: row[:isoStdName],

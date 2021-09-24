@@ -9,9 +9,8 @@ module Analytic
         ).()
 
         pagy, channels = pagy_mongoid(scope, items: CHANNEL_PER_PAGE)
-        # options = { meta: { channel_ids: scope.pluck(:id).map(&:to_s) } }
-        # json_channels = Analytic::V1::SimChannelSerializer.new(channels, options).serializable_hash
-        json_channels = Analytic::V1::SimChannelSerializer.new(channels).serializable_hash
+        options = { meta: { channel_ids: scope.pluck(:id).map(&:to_s) } }
+        json_channels = Analytic::V1::SimChannelSerializer.new(channels, options).serializable_hash
         pagy_headers_merge(pagy)
         json_response(json_channels)
       end

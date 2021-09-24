@@ -55,6 +55,14 @@ module Ais
       attribute :coordinates do |object|
         [object.tracking&.longitude, object.tracking&.latitude]
       end
+
+      attribute :tracking_source do |object|
+        object.tracking&.source_text
+      end
+
+      attribute :destination_source do |object|
+        object.source_text
+      end
     end
   end
 end

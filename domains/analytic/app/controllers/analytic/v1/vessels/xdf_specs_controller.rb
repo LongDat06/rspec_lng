@@ -8,7 +8,8 @@ module Analytic
         def index
           vessel = Analytic::Vessel.find_by(imo: spec_params[:imo])
           from_time = spec_params[:from_time].presence || vessel.last_port_departure_at
-          specs = Analytic::VesselServices::XdfSpecs.new(params[:imo], params[:time], from_time, spec_params[:to_time]).call
+          to_time = spec_params[:to_time].presence || Time.current.utc
+          specs = Analytic::VesselServices::XdfSpecs.new(params[:imo], params[:time], from_time, to_time).call
           specs_json = Analytic::V1::Vessels::XdfSpecsSerializer.new(specs).serializable_hash
           json_response(specs_json)
         end
@@ -22,7 +23,7 @@ module Analytic
           spec_params_validation = Analytic::Validations::Vessels::XdfSpecs.new(spec_params)
           unless spec_params_validation.valid?
             raise(
-              XdfSpecsControllerInvalidParameters, 
+              XdfSpecsControllerInvalidParameters,
               spec_params_validation.errors.full_messages.to_sentence
             )
           end

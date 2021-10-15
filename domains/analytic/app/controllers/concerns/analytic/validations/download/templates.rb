@@ -4,7 +4,7 @@ module Analytic
       class Templates
         include ActiveModel::Validations
 
-        attr_accessor :imo_no, :name, :shared, :channels
+        attr_accessor :imo_no, :name, :shared, :channels, :author_id
 
         validates_presence_of :imo_no, :name, :shared, :channels
         validate :uniqueness_of_name
@@ -14,11 +14,13 @@ module Analytic
           @name = params[:name]
           @shared = params[:shared]
           @channels = params[:channels]
+          @author_id = params[:author_id]
         end
 
         private
         def uniqueness_of_name
-          if Analytic::DownloadTemplate.where(name: name).exists?
+          if Analytic::DownloadTemplate.where(name: name, author_id: author_id, shared: :local).exists? ||
+            Analytic::DownloadTemplate.where(name: name, shared: :public).exists?
             errors.add(:name, :taken)
           end
         end

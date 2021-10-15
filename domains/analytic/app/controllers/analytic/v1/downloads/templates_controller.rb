@@ -6,6 +6,8 @@ module Analytic
         before_action :validate_params, only: [:create]
 
         def index
+          authorize Analytic::DownloadTemplate
+
           templates = Analytic::DownloadTemplate
             .readable(current_user.id)
             .order_by('created_at' => -1)
@@ -14,8 +16,9 @@ module Analytic
         end
 
         def create
-          template = Analytic::DownloadTemplate.new(template_params)
-          template.author_id = current_user.id
+          authorize Analytic::DownloadTemplate
+
+          template = Analytic::DownloadTemplate.new(create_template_params)
           unless template.valid?
             raise(
               StandardError,
@@ -26,21 +29,34 @@ module Analytic
           json_response({})
         end
 
+        def update
+          template = Analytic::DownloadTemplate.find(params[:id])
+          authorize template
+
+          template.update!(update_template_params)
+          json_response({})
+        end
+
         def destroy
           template = Analytic::DownloadTemplate.find(params[:id])
+          authorize template
           template.destroy!
           json_response({})
         end
 
         private
-        def template_params
+        def create_template_params
           permitted = params.permit(:imo_no, :name, :shared)
-          permitted.merge!(channels: fetch_channels)
+          permitted.merge!({channels: fetch_channels, author_id: current_user.id, latest_updated_by_id: current_user.id})
           permitted
         end
 
+        def update_template_params
+          {channels: fetch_channels, latest_updated_by_id: current_user.id}
+        end
+
         def validate_params
-          template_download_validation = Analytic::Validations::Download::Templates.new(template_params)
+          template_download_validation = Analytic::Validations::Download::Templates.new(create_template_params)
           unless template_download_validation.valid?
             raise(
               TemplatesControllerInvalidParameters,

@@ -27,7 +27,7 @@ Analytic::Engine.routes.draw do
     namespace :downloads do
       resources :sims, only: [:create]
       resources :histories, only: [:index]
-      resources :templates, only: [:index, :create, :destroy]
+      resources :templates, only: [:index, :create, :destroy, :update]
     end
 
     resources :fcm_notification do

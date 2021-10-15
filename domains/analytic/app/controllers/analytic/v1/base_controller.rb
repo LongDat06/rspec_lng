@@ -6,6 +6,7 @@ module Analytic
       include ::Shared::ResponseSerializer
       include ::Shared::ExceptionHandler
       include ::Shared::AuthProtection
+      include Pundit
     end
   end
 end

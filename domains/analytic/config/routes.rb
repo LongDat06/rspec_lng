@@ -30,13 +30,6 @@ Analytic::Engine.routes.draw do
       resources :templates, only: [:index, :create, :destroy, :update]
     end
 
-    resources :fcm_notification do
-      collection do
-        post 'subcribe'
-        post 'unsubcribed'
-      end
-    end
-
     resources :sim_channels, only: [:index] do
       get :fetch_units, on: :collection
     end

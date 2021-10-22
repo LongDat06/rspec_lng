@@ -79,5 +79,5 @@ gem 'wisper'
 gem 'newrelic_rpm', '~> 7'
 gem 'airbrake', '~> 11'
 gem 'pundit'
-gem 'fcm'
 gem 'sidekiq-limit_fetch'
+gem "anycable-rails"

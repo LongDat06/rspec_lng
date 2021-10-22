@@ -132,6 +132,18 @@ GEM
       rbtree3 (~> 0.5)
     airbrussh (1.4.0)
       sshkit (>= 1.6.1, != 1.7.0)
+    anycable (1.1.2)
+      anycable-core (= 1.1.2)
+      grpc (~> 1.37)
+    anycable-core (1.1.2)
+      anyway_config (>= 2.1.0)
+      google-protobuf (>= 3.13)
+    anycable-rails (1.1.2)
+      actioncable (>= 6)
+      anycable (~> 1.1)
+      globalid
+    anyway_config (2.1.0)
+      ruby-next-core (>= 0.11.0)
     aws-eventstream (1.1.0)
     aws-partitions (1.416.0)
     aws-sdk-core (3.111.1)
@@ -202,31 +214,18 @@ GEM
       activesupport (>= 3.2)
     equalizer (0.0.11)
     erubi (1.10.0)
-    faraday (1.5.1)
-      faraday-em_http (~> 1.0)
-      faraday-em_synchrony (~> 1.0)
-      faraday-excon (~> 1.1)
-      faraday-httpclient (~> 1.0.1)
-      faraday-net_http (~> 1.0)
-      faraday-net_http_persistent (~> 1.1)
-      faraday-patron (~> 1.0)
-      multipart-post (>= 1.2, < 3)
-      ruby2_keywords (>= 0.0.4)
-    faraday-em_http (1.0.0)
-    faraday-em_synchrony (1.0.0)
-    faraday-excon (1.1.0)
-    faraday-httpclient (1.0.1)
-    faraday-net_http (1.0.1)
-    faraday-net_http_persistent (1.2.0)
-    faraday-patron (1.0.0)
     fast-stemmer (1.0.2)
     fast_jsonapi (1.5)
       activesupport (>= 4.2)
-    fcm (1.0.3)
-      faraday (~> 1)
     ffi (1.14.1)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
+    google-protobuf (3.18.0)
+    googleapis-common-protos-types (1.2.0)
+      google-protobuf (~> 3.14)
+    grpc (1.40.0)
+      google-protobuf (~> 3.15)
+      googleapis-common-protos-types (~> 1.0)
     httparty (0.18.1)
       mime-types (~> 3.0)
       multi_xml (>= 0.5.2)
@@ -262,7 +261,6 @@ GEM
       mongoid (>= 5.0.0)
     msgpack (1.3.3)
     multi_xml (0.6.0)
-    multipart-post (2.1.1)
     net-scp (3.0.0)
       net-ssh (>= 2.6.5, < 7.0.0)
     net-ssh (6.1.0)
@@ -336,7 +334,7 @@ GEM
       mail (>= 2.2.1)
       mime (>= 0.1)
       shared-mime-info
-    ruby2_keywords (0.0.5)
+    ruby-next-core (0.12.0)
     rubyzip (2.3.0)
     shared-mime-info (0.2.5)
     shrine (3.3.0)
@@ -387,6 +385,7 @@ DEPENDENCIES
   airbrake (~> 11)
   ais!
   analytic!
+  anycable-rails
   aws-sdk-s3
   bcrypt (~> 3.1.7)
   bootsnap (>= 1.4.4)
@@ -405,7 +404,6 @@ DEPENDENCIES
   email_validator
   enumerize
   fast_jsonapi
-  fcm
   httparty
   identity!
   jwt

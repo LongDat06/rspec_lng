@@ -32,6 +32,9 @@ set :whenever_identifier, -> { "#{fetch(:application)}_#{fetch(:stage)}" }
 set :sidekiq_service_unit_name, 'sidekiq'
 set :sidekiq_service_unit_user, :system
 
+set :anycable_systemctl_service_name, 'lng-anycable'
+
+
 Rake::Task['deploy:compile_assets'].clear_actions
 
 namespace :deploy do
@@ -70,6 +73,8 @@ namespace :deploy do
       end
     end
   end
+
+  after 'deploy:publishing', 'anycable:restart'
 
   # before :starting,  'deploy:stop_monit'
   # after :finishing, :restart_puma

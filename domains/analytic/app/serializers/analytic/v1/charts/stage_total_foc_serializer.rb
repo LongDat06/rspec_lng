@@ -4,6 +4,8 @@ module Analytic
       class StageTotalFocSerializer
         include FastJsonapi::ObjectSerializer
 
+        attribute :total_foc
+
         attribute :jsmea_mac_totalplant_mgo_total_flowcounter_foc do |object|
           object.spec['jsmea_mac_totalplant_mgo_total_flowcounter_foc']
         end
@@ -14,6 +16,14 @@ module Analytic
 
         attribute :jsmea_mac_totalplant_total_flowcounter_fc do |object|
           object.spec['jsmea_mac_totalplant_total_flowcounter_fc']
+        end
+
+        attribute :jsmea_mac_boiler_total_flowcounter_foc do |object|
+          object.spec['jsmea_mac_boiler_total_flowcounter_foc']
+        end
+
+        attribute :jsmea_mac_dieselgeneratorset_total_flowcounter_foc do |object|
+          object.spec['jsmea_mac_dieselgeneratorset_total_flowcounter_foc']
         end
 
         attribute :timestamp do |object|

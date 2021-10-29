@@ -1,16 +1,17 @@
 module Analytic
   module V1
     module Charts
-      class XdfTrend315Serializer
+      class OgSpeedSerializer
         include FastJsonapi::ObjectSerializer
 
-        attribute :jsmea_mac_ship_mgo_total_flowcounter_foc do |object|
-          object.spec['jsmea_mac_ship_mgo_total_flowcounter_foc']
+        attribute :jsmea_nav_gnss_sog do |object|
+          object.spec['jsmea_nav_gnss_sog']
         end
 
         attribute :timestamp do |object|
           object.spec['ts']
         end
+
       end
     end
   end

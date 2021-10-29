@@ -1,6 +1,6 @@
 module Analytic
   module ChartServices
-    class StagePress < BaseChart
+    class OgSpeed < BaseChart
       MODELING = Struct.new(
         :_id,
         :id,
@@ -20,14 +20,12 @@ module Analytic
       end
 
       private
+
       def project
         {
           "$project" => {
             "spec.ts" => 1,
-            "spec.jsmea_mac_cargotk1_press_ave" => 1,
-            "spec.jsmea_mac_cargotk2_press_ave" => 1,
-            "spec.jsmea_mac_cargotk3_press_ave" => 1,
-            "spec.jsmea_mac_cargotk4_press_ave" => 1,
+            "spec.jsmea_nav_gnss_sog" => 1,
           }.merge!(difference_project)
         }
       end

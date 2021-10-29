@@ -23,10 +23,8 @@ module Analytic
       def project
         {
           "$project" => {
-            "spec.ts" => 1, 
-            "spec.jsmea_oil_dieselgeneratorset_fo_in_temp" => 1,
+            "spec.ts" => 1,
             "spec.jsmea_mac_ship_mgo_total_flowcounter_foc" => 1,
-            "spec.jsmea_mac_ship_fg_flowcounter_fgc" => 1,
           }.merge!(difference_project)
         }
       end

@@ -1,11 +1,11 @@
 module Analytic
   module V1
     module Charts
-      class XdfTrend315Serializer
+      class TotalTankVolumeSerializer
         include FastJsonapi::ObjectSerializer
 
-        attribute :jsmea_mac_ship_mgo_total_flowcounter_foc do |object|
-          object.spec['jsmea_mac_ship_mgo_total_flowcounter_foc']
+        attribute :jsmea_mac_cargotk_total_volume_ave do |object|
+          object.spec['jsmea_mac_cargotk_total_volume_ave']
         end
 
         attribute :timestamp do |object|

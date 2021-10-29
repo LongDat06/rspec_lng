@@ -3,16 +3,8 @@ module Analytic
     module Charts
       class StageTrend21Serializer
         include FastJsonapi::ObjectSerializer
-        
+
         set_id :_id
-
-        attribute :jsmea_mac_boiler_fo_flow_ave do |object|
-          object.spec['jsmea_mac_boiler_fo_flow_ave']
-        end
-
-        attribute :jsmea_mac_boiler_fg_flow_ave do |object|
-          object.spec['jsmea_mac_boiler_fg_flow_ave']
-        end
 
         attribute :jsmea_mac_dieselgeneratorset_fo_flow_ave do |object|
           object.spec['jsmea_mac_dieselgeneratorset_fo_flow_ave']
@@ -24,10 +16,6 @@ module Analytic
 
         attribute :jsmea_mac_forcingvaporizer_gas_out_flow_ave do |object|
           object.spec['jsmea_mac_forcingvaporizer_gas_out_flow_ave']
-        end
-
-         attribute :jsmea_mac_boilerdumpstmcontvalve_opening do |object|
-          object.spec['jsmea_mac_boilerdumpstmcontvalve_opening']
         end
 
         attribute :timestamp do |object|

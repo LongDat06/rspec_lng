@@ -20,10 +20,6 @@ module Analytic
           object.spec['jsmea_mac_mainengine2_revolution']
         end
 
-        attribute :jsmea_nav_gnss_sog do |object|
-          object.spec['jsmea_nav_gnss_sog']
-        end
-
         attribute :timestamp do |object|
           object.spec['ts']
         end

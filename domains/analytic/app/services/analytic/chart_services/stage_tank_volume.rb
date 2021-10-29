@@ -8,7 +8,7 @@ module Analytic
         :difference,
         keyword_init: true
       )
-      
+
       def call
         Analytic::Sim.collection.aggregate([
           matched,
@@ -23,13 +23,12 @@ module Analytic
       def project
         {
           "$project" => {
-            "spec.ts" => 1, 
+            "spec.ts" => 1,
             "spec.jsmea_mac_cargotk1_volume" => 1,
             "spec.jsmea_mac_cargotk2_volume" => 1,
             "spec.jsmea_mac_cargotk3_volume" => 1,
             "spec.jsmea_mac_cargotk4_volume" => 1,
             "spec.jsmea_mac_cargotk5_volume" => 1,
-            "spec.jsmea_mac_cargotk_total_volume_ave" => 1,
             "spec.jsmea_mac_cargotk1_volume_percent" => 1,
             "spec.jsmea_mac_cargotk2_volume_percent" => 1,
             "spec.jsmea_mac_cargotk3_volume_percent" => 1,

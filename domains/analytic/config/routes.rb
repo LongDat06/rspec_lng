@@ -8,8 +8,6 @@ Analytic::Engine.routes.draw do
       resources :stage_tank_equator_temp, only: [:index]
       resources :stage_tank_liquid_temp, only: [:index]
       resources :stage_press, only: [:index]
-      resources :stage_trend31, only: [:index]
-      resources :stage_trend32, only: [:index]
       resources :stage_trend33, only: [:index]
       resources :xdf_trend1, only: [:index]
       resources :xdf_trend21, only: [:index]
@@ -22,6 +20,17 @@ Analytic::Engine.routes.draw do
       resources :xdf_trend315, only: [:index]
       resources :xdf_trend316, only: [:index]
       resources :xdf_trend317, only: [:index]
+      resources :cm_stage_press_hold, only: [:index]
+      resources :total_tank_volume, only: [:index]
+      resources :em_stage_blr, only: [:index]
+      resources :xdf_foc_1, only: [:index]
+      resources :xdf_total_foc, only: [:index]
+      resources :stage_foc1, only: [:index]
+      resources :stage_total_foc, only: [:index]
+      resources :xdf_me, only: [:index]
+      resources :og_speed, only: [:index]
+      resources :f_dump_v_open, only: [:index]
+      resources :blr_flow, only: [:index]
     end
 
     namespace :downloads do
@@ -33,7 +42,7 @@ Analytic::Engine.routes.draw do
     resources :sim_channels, only: [:index] do
       get :fetch_units, on: :collection
     end
-    
+
     namespace :vessels do
       resources :stage_specs, only: [:index]
       resources :xdf_specs,   only: [:index]

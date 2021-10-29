@@ -1,6 +1,6 @@
 module Analytic
   module ChartServices
-    class StagePress < BaseChart
+    class XdfMe < BaseChart
       MODELING = Struct.new(
         :_id,
         :id,
@@ -24,10 +24,8 @@ module Analytic
         {
           "$project" => {
             "spec.ts" => 1,
-            "spec.jsmea_mac_cargotk1_press_ave" => 1,
-            "spec.jsmea_mac_cargotk2_press_ave" => 1,
-            "spec.jsmea_mac_cargotk3_press_ave" => 1,
-            "spec.jsmea_mac_cargotk4_press_ave" => 1,
+            "spec.jsmea_mac_mainengine_fg_in_flow" => 1,
+            "spec.jsmea_mac_mainengine2_fg_in_flow" => 1,
           }.merge!(difference_project)
         }
       end

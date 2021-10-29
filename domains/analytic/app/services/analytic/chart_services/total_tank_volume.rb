@@ -1,6 +1,6 @@
 module Analytic
   module ChartServices
-    class StagePress < BaseChart
+    class TotalTankVolume < BaseChart
       MODELING = Struct.new(
         :_id,
         :id,
@@ -24,10 +24,7 @@ module Analytic
         {
           "$project" => {
             "spec.ts" => 1,
-            "spec.jsmea_mac_cargotk1_press_ave" => 1,
-            "spec.jsmea_mac_cargotk2_press_ave" => 1,
-            "spec.jsmea_mac_cargotk3_press_ave" => 1,
-            "spec.jsmea_mac_cargotk4_press_ave" => 1,
+            "spec.jsmea_mac_cargotk_total_volume_ave" => 1
           }.merge!(difference_project)
         }
       end

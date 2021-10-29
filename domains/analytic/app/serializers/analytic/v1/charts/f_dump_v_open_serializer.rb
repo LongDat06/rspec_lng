@@ -1,11 +1,13 @@
 module Analytic
   module V1
     module Charts
-      class XdfTrend315Serializer
+      class FDumpVOpenSerializer
         include FastJsonapi::ObjectSerializer
 
-        attribute :jsmea_mac_ship_mgo_total_flowcounter_foc do |object|
-          object.spec['jsmea_mac_ship_mgo_total_flowcounter_foc']
+        set_id :_id
+
+        attribute :jsmea_mac_boilerdumpstmcontvalve_opening do |object|
+          object.spec['jsmea_mac_boilerdumpstmcontvalve_opening']
         end
 
         attribute :timestamp do |object|

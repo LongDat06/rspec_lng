@@ -23,12 +23,11 @@ module Analytic
       def project
         {
           "$project" => {
-            "spec.ts" => 1, 
+            "spec.ts" => 1,
             "spec.jsmea_mac_mainengine_load" => 1,
             "spec.jsmea_mac_mainengine2_load" => 1,
             "spec.jsmea_mac_mainengine_revolution" => 1,
             "spec.jsmea_mac_mainengine2_revolution" => 1,
-            "spec.jsmea_nav_gnss_sog" => 1,
           }.merge!(difference_project)
         }
       end

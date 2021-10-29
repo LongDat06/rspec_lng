@@ -23,9 +23,7 @@ module Analytic
       def project
         {
           "$project" => {
-            "spec.ts" => 1, 
-            "spec.jsmea_mac_boiler_fuelmode" => 1,
-            "spec.jsmea_mac_boiler2_fuelmode" => 1,
+            "spec.ts" => 1,
             "spec.jsmea_mac_dieselgeneratorset1_fuelmode" => 1,
             "spec.jsmea_mac_dieselgeneratorset2_fuelmode" => 1,
             "spec.jsmea_mac_dieselgeneratorset3_fuelmode" => 1,

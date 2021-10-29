@@ -44,10 +44,6 @@ module Analytic
           object.spec['jsmea_mac_cargotk5_volume']
         end
 
-        attribute :jsmea_mac_cargotk_total_volume_ave do |object|
-          object.spec['jsmea_mac_cargotk_total_volume_ave']
-        end
-
         attribute :timestamp do |object|
           object.spec['ts']
         end

@@ -5,7 +5,6 @@ module Analytic
         :_id,
         :id,
         :spec,
-        :total_foc,
         :difference,
         keyword_init: true
       )
@@ -15,7 +14,6 @@ module Analytic
           matched,
           project,
           group,
-          addFields,
           sort,
           limit
         ]).map { |record| MODELING.new(record) }
@@ -28,26 +26,10 @@ module Analytic
             "spec.ts" => 1,
             "spec.jsmea_mac_mainturb_load" => 1,
             "spec.jsmea_mac_mainturb_revolution" => 1,
-            "spec.jsmea_mac_boiler_total_flowcounter_foc" => 1,
-            "spec.jsmea_mac_dieselgeneratorset_total_flowcounter_foc" => 1
           }.merge!(difference_project)
         }
       end
 
-      def addFields
-        {
-          "$addFields" => {
-            "total_foc" => {
-              "$sum"=> { 
-                "$add" => [
-                  "$spec.jsmea_mac_boiler_total_flowcounter_foc",
-                  "$spec.jsmea_mac_dieselgeneratorset_total_flowcounter_foc"
-                ]
-              }
-            }
-          }
-        }
-      end
     end
   end
 end

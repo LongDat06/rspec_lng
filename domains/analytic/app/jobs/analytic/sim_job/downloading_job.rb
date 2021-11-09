@@ -3,8 +3,6 @@ module Analytic
     class DownloadingJob < ApplicationJob
       queue_as :downloading_job
 
-      CHANNEL_NAME = "SIMS_DOWNLOAD_DATA".freeze
-
       def perform(job_id)
         job = Analytic::Download.find(job_id)
         job.status = :running
@@ -17,13 +15,22 @@ module Analytic
 
         job.status = :success
         job.save!
+        send_broadcast(job_id)
       rescue StandardError => e
         Airbrake.notify(e)
         job.status = :error
         job.save!
+        send_broadcast(job_id)
       ensure
         Analytic::SimJob::QueueNextJob.perform_later
       end
+
+      private
+
+      def send_broadcast(job_id)
+        ActionCable.server.broadcast("download_job_for_#{job_id}", { msg: "done" })
+      end
+
     end
   end
 end

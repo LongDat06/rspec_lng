@@ -6,13 +6,13 @@ module Analytic
         before_action :validate_params, only: [:create]
 
         def create
-          Analytic::DownloadServices::SimJobCreated.new(
+          job = Analytic::DownloadServices::SimJobCreated.new(
             params: download_params,
             current_user_id: current_user.id
           ).()
 
           Analytic::SimJob::QueueNextJob.perform_later
-          json_response({})
+          json_response({ job_id: job.id.to_s })
         end
 
         private

@@ -7,7 +7,7 @@ module Analytic
         ActiveRecord::Base.transaction do
           job_created = Analytic::Download.where(status: :created).order_by(created_at: 1).limit(1)
           return if job_created.first.blank?
-          Analytic::SimJob::DownloadingJob.perform_later(job_created.first.id.to_s)
+          Analytic::SimJob::DownloadingJob.set(wait: 3.seconds).perform_later(job_created.first.id.to_s)
         end
       end
     end

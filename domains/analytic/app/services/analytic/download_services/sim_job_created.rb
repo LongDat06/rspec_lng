@@ -7,16 +7,15 @@ module Analytic
       end
 
       def call
-        imos.each do |imo|
-          download = Analytic::Download.new(
-            author_id: @current_user_id,
-            imo_no: imo,
-            source: :sim,
-            created_at: Time.current,
-          )
-          download.condition = build_condition
-          download.save!
-        end
+        download = Analytic::Download.new(
+          author_id: @current_user_id,
+          imo_no: imos[0],
+          source: :sim,
+          created_at: Time.current,
+        )
+        download.condition = build_condition
+        download.save!
+        download
       end
 
       private

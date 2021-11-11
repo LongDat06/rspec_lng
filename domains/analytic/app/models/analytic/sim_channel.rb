@@ -3,6 +3,9 @@ module Analytic
     include Mongoid::Document
     include Mongoid::Search
     include Mongoid::Timestamps::Created
+
+    NOT_AVAILABLE_TYPE = 'N/A'
+
     NULL_UNITS = ["", "-", 'null', "None", "(None)", "N/A"]
 
     field :local_name, type: String
@@ -10,6 +13,7 @@ module Analytic
     field :iso_std_name, type: String
     field :unit, type: String
     field :imo_no, type: Integer
+    field :genre, type: String
 
     index({ imo_no: 1, standard_name: 1 })
     search_in :local_name

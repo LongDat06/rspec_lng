@@ -10,10 +10,93 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_22_090620) do
+ActiveRecord::Schema.define(version: 2021_11_10_070904) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "analytic_edq_results", force: :cascade do |t|
+    t.integer "imo", null: false
+    t.string "name", null: false
+    t.float "foe", null: false
+    t.float "init_lng_volume"
+    t.float "unpumpable"
+    t.float "cosuming_lng_of_laden_voyage"
+    t.float "heel"
+    t.float "edq"
+    t.bigint "laden_voyage_id"
+    t.bigint "ballast_voyage_id"
+    t.boolean "published", default: false, null: false
+    t.bigint "author_id"
+    t.bigint "updated_by_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "laden_voyage_no", null: false
+    t.string "ballast_voyage_no", null: false
+    t.index ["author_id"], name: "index_analytic_edq_results_on_author_id"
+    t.index ["ballast_voyage_id"], name: "index_analytic_edq_results_on_ballast_voyage_id"
+    t.index ["imo"], name: "index_analytic_edq_results_on_imo"
+    t.index ["laden_voyage_id"], name: "index_analytic_edq_results_on_laden_voyage_id"
+    t.index ["updated_by_id"], name: "index_analytic_edq_results_on_updated_by_id"
+  end
+
+  create_table "analytic_focs", force: :cascade do |t|
+    t.integer "imo"
+    t.float "speed"
+    t.float "laden"
+    t.float "ballast"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["imo", "speed"], name: "index_analytic_focs_on_imo_and_speed", unique: true
+    t.index ["imo"], name: "index_analytic_focs_on_imo"
+  end
+
+  create_table "analytic_genre_sim_channels", force: :cascade do |t|
+    t.bigint "analytic_genres_id", null: false
+    t.string "iso_std_name"
+    t.index ["analytic_genres_id", "iso_std_name"], name: "analytic_genre_sim_channels_uniq_idx", unique: true
+    t.index ["analytic_genres_id"], name: "index_analytic_genre_sim_channels_on_analytic_genres_id"
+  end
+
+  create_table "analytic_genres", force: :cascade do |t|
+    t.integer "imo", null: false
+    t.string "name", null: false
+    t.boolean "active", default: false
+    t.index ["imo", "name"], name: "analytic_genres_uniq_idx", unique: true
+    t.index ["imo"], name: "index_analytic_genres_on_imo"
+  end
+
+  create_table "analytic_heel_results", force: :cascade do |t|
+    t.string "type", null: false
+    t.string "port_dept", null: false
+    t.string "port_arrival", null: false
+    t.string "pacific_route", null: false
+    t.datetime "etd", null: false
+    t.datetime "eta", null: false
+    t.float "estimated_distance", null: false
+    t.float "voyage_duration", null: false
+    t.float "required_speed", null: false
+    t.float "estimated_daily_foc", null: false
+    t.float "estimated_daily_foc_season_effect", null: false
+    t.float "estimated_total_foc", null: false
+    t.float "consuming_lng", null: false
+  end
+
+  create_table "analytic_routes", force: :cascade do |t|
+    t.string "port_1"
+    t.string "port_2"
+    t.string "pacific_route"
+    t.string "detail"
+    t.integer "distance"
+    t.integer "created_by"
+    t.integer "updated_by"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["created_by"], name: "index_analytic_routes_on_created_by"
+    t.index ["port_1", "port_2"], name: "index_analytic_routes_on_port_1_and_port_2"
+    t.index ["port_1"], name: "index_analytic_routes_on_port_1"
+    t.index ["updated_by"], name: "index_analytic_routes_on_updated_by"
+  end
 
   create_table "ecdis_points", force: :cascade do |t|
     t.bigint "ecdis_route_id", null: false
@@ -71,12 +154,6 @@ ActiveRecord::Schema.define(version: 2021_08_22_090620) do
   create_table "roles", force: :cascade do |t|
     t.string "name", default: "", null: false
     t.text "activities", default: [], array: true
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-  end
-
-  create_table "tests", force: :cascade do |t|
-    t.jsonb "result", default: {}
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
@@ -144,7 +221,14 @@ ActiveRecord::Schema.define(version: 2021_08_22_090620) do
     t.datetime "last_port_departure_at"
     t.string "name", default: "", null: false
     t.string "error_code", default: "", null: false
+    t.string "sim_data_type"
+    t.text "genre_error_reporting_data"
+    t.string "genre_error_code"
     t.index ["imo"], name: "index_vessels_on_imo", unique: true
   end
 
+  add_foreign_key "analytic_edq_results", "analytic_heel_results", column: "ballast_voyage_id"
+  add_foreign_key "analytic_edq_results", "analytic_heel_results", column: "laden_voyage_id"
+  add_foreign_key "analytic_edq_results", "users", column: "author_id"
+  add_foreign_key "analytic_edq_results", "users", column: "updated_by_id"
 end

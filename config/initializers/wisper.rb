@@ -5,4 +5,5 @@ Rails.application.config.to_prepare do
   Wisper.subscribe(Ais::ImportVesselDestinationSpasListener.new)
   Wisper.subscribe(Analytic::VesselAssociatedDeletionListener.new)
   Wisper.subscribe(Analytic::VesselCreationListener.new)
+  Wisper.subscribe(Analytic::GenreChannelMappingListener.new)
 end

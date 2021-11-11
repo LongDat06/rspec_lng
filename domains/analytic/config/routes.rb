@@ -47,5 +47,17 @@ Analytic::Engine.routes.draw do
       resources :stage_specs, only: [:index]
       resources :xdf_specs,   only: [:index]
     end
+
+    resources :vessels, module: :vessels, param: :imo do
+      resources :genres, only: [:index, :import] do
+        post 'import', on: :collection
+        get 'export_mapping', on: :collection
+        get 'export_errors', on: :collection
+      end
+    end
+
+    post "/temp/upload", to: "temporary_upload#upload"
+    mount Analytic::Uploader::TemporaryUploader.upload_endpoint(:cache) => "/temp/upload"
+
   end
 end

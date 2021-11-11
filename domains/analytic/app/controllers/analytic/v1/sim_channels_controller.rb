@@ -25,7 +25,8 @@ module Analytic
                       :imo,
                       :unit,
                       :sort_by,
-                      :sort_order)
+                      :sort_order,
+                      genres: [])
       end
     end
   end

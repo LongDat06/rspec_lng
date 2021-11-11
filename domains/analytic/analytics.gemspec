@@ -21,4 +21,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'content_disposition', '~> 1.0'
   spec.add_dependency 'wisper'
   spec.add_dependency "pundit"
+  spec.add_dependency "xlsxwriter"
 end

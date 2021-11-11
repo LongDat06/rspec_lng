@@ -81,3 +81,4 @@ gem 'airbrake', '~> 11'
 gem 'pundit'
 gem 'sidekiq-limit_fetch'
 gem "anycable-rails"
+gem "xlsxwriter"

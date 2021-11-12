@@ -3,7 +3,7 @@ module Ais
     class ClosestDestinationsController < BaseController
       def index
         authorize Ais::VesselDestination, policy_class: Ais::ClosestDestinationsPolicy
-        tracking = Ais::Tracking.closest_time(destination_params[:time], destination_params[:imo]).limit(1)
+        tracking = Ais::Tracking.closest_time(destination_params[:time], destination_params[:imo])
         vessel = Ais::Vessel.find_by(imo: destination_params[:imo])
         from_time = destination_params[:from_time].presence || vessel.last_port_departure_at
         to_time = destination_params[:to_time].presence || Time.current.utc
@@ -14,7 +14,7 @@ module Ais
           .limit(1)
           .first
         destination = destination.presence || VesselDestination.new(imo: destination_params[:imo], source: nil)
-        destination.tracking = tracking&.first
+        destination.tracking = tracking
         vessel_destination_jsons = Ais::V1::ClosestDestinationSerializer.new(destination).serializable_hash
         json_response(vessel_destination_jsons)
       end

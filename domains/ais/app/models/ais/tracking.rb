@@ -8,11 +8,13 @@ module Ais
 
     scope :imo, ->(imo) { where(imo: imo) if imo.present? }
 
-    scope :closest_time, -> (time, imo) {
-      where(imo: imo).
-      where('last_ais_updated_at >= ? OR last_ais_updated_at <= ?', time, time).
-      order(Arel.sql("abs(extract(epoch from last_ais_updated_at::timestamp - '#{time}'::timestamp))"))
-    }
+    def self.closest_time(time, imo)
+      relation = self.where(imo: imo)
+      first_larger = relation.where('last_ais_updated_at >= ?', time).order(:last_ais_updated_at).first
+      first_smaller = relation.where('last_ais_updated_at <= ?', time).order(last_ais_updated_at: :desc).first
+      time_parser = Time.find_zone("UTC").parse(time).utc
+      [first_larger,first_smaller].compact.min_by { |ais| (ais.last_ais_updated_at - time_parser).abs }
+    end
 
     belongs_to :vessel, class_name: :Vessel, foreign_key: :imo, primary_key: :imo
   end

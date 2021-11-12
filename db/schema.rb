@@ -182,6 +182,7 @@ ActiveRecord::Schema.define(version: 2021_11_10_070904) do
     t.bigint "csm_id"
     t.string "collection_type", default: "", null: false
     t.datetime "csm_created_at"
+    t.index ["csm_created_at"], name: "index_trackings_on_csm_created_at"
     t.index ["imo"], name: "index_trackings_on_imo"
     t.index ["last_ais_updated_at"], name: "index_trackings_on_last_ais_updated_at"
   end

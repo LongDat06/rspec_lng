@@ -1,0 +1,73 @@
+Port 1,Port 2,Route,Distance Nm,Route datail
+Cameron,Tokyo Bay,Great Circle,"9231",Shortest
+Cameron,Tokyo Bay,LAT30N,"9516",Via Midway island
+Cameron,Tokyo Bay,Hawaii,"9717",Via Honolulu
+Cameron,Osaka Bay,Great Circle,"9492",Shortest
+Cameron,Osaka Bay,LAT30N,"9782",Via Midway island
+Cameron,Osaka Bay,Hawaii,"9975",Via Honolulu
+Cameron,Ise Bay,Great Circle,"9342",Shortest
+Cameron,Ise Bay,LAT30N,"9642",Via Midway island
+Cameron,Ise Bay,Hawaii,"9830",Via Honolulu
+Cameron,Shimizu,Great Circle,"9252",Shortest
+Cameron,Shimizu,LAT30N,"9544",Via Midway island
+Cameron,Shimizu,Hawaii,"9741",Via Honolulu
+Cameron,Naoetsu,Great Circle,"9226","Shortest, via Tsugaru strait"
+Cameron,Naoetsu,LAT30N,"9745","Via Midway, Tsugaru strait"
+Cameron,Naoetsu,Hawaii,"9869","Via Honolulu, Tsugaru strait"
+Cameron,Yung An,Great Circle,"10472",Shortest
+Cameron,Yung An,LAT30N,"10664",Via Midway island
+Cameron,Yung An,Hawaii,"10891",Via Honolulu
+Cameron,Pyongtaek,Great Circle,"10006","Shortest, via Tsugaru strait"
+Cameron,Pyongtaek,LAT30N,"10432",Via Midway island
+Cameron,Pyongtaek,Hawaii,"10686","Via Honoulu, Osumi strait"
+Cameron,Yeosu,Great Circle,"9698","Shortest, via Tsugaru strait"
+Cameron,Yeosu,LAT30N,"10311","Via Midway island, Osumi strait"
+Cameron,Yeosu,Hawaii,"10452","Via Honoulu, Osumi strait"
+Cameron,Boryeong,Great Circle,"9937","Shortest, via Tsugaru strait"
+Cameron,Boryeong,LAT30N,"10503","Via Midway island, Osumi strait"
+Cameron,Boryeong,Hawaii,"10624","Via Honoulu, Osumi strait"
+Cameron,Tianjin,Great Circle,"10293","Shortest, via Tsugaru strait"
+Cameron,Tianjin,LAT30N,"10723",Estimation
+Cameron,Tianjin,Hawaii,"10979","Via Honoulu, Osumi strait"
+Cameron,Beihai,Great Circle,"11073",Shortest
+Cameron,Beihai,LAT30N,"11399",Via Midway island
+Cameron,Beihai,Hawaii,"11498",Via Honolulu
+Cameron,Zhoushan,Great Circle,"10093","Shortest, via Tsugaru strait"
+Cameron,Zhoushan,LAT30N,"10300",Estimation
+Cameron,Zhoushan,Hawaii,"10588",Via Honolulu
+Freeport,Tokyo Bay,Great Circle,"9253",Cameron+22Nm
+Freeport,Tokyo Bay,LAT30N,"9538",Cameron+22Nm
+Freeport,Tokyo Bay,Hawaii,"9739",Cameron+22Nm
+Freeport,Osaka Bay,Great Circle,"9514",Cameron+22Nm
+Freeport,Osaka Bay,LAT30N,"9804",Cameron+22Nm
+Freeport,Osaka Bay,Hawaii,"9997",Cameron+22Nm
+Freeport,Ise Bay,Great Circle,"9364",Cameron+22Nm
+Freeport,Ise Bay,LAT30N,"9664",Cameron+22Nm
+Freeport,Ise Bay,Hawaii,"9852",Cameron+22Nm
+Freeport,Shimizu,Great Circle,"9274",Cameron+22Nm
+Freeport,Shimizu,LAT30N,"9566",Cameron+22Nm
+Freeport,Shimizu,Hawaii,"9763",Cameron+22Nm
+Freeport,Naoetsu,Great Circle,"9248",Cameron+22Nm
+Freeport,Naoetsu,LAT30N,"9767",Cameron+22Nm
+Freeport,Naoetsu,Hawaii,"9891",Cameron+22Nm
+Freeport,Yung An,Great Circle,"10494",Cameron+22Nm
+Freeport,Yung An,LAT30N,"10686",Cameron+22Nm
+Freeport,Yung An,Hawaii,"10913",Cameron+22Nm
+Freeport,Pyongtaek,Great Circle,"10028",Cameron+22Nm
+Freeport,Pyongtaek,LAT30N,"10454",Cameron+22Nm
+Freeport,Pyongtaek,Hawaii,"10708",Cameron+22Nm
+Freeport,Yeosu,Great Circle,"9720",Cameron+22Nm
+Freeport,Yeosu,LAT30N,"10165",Cameron+22Nm
+Freeport,Yeosu,Hawaii,"10474",Cameron+22Nm
+Freeport,Boryeong,Great Circle,"9959",Cameron+22Nm
+Freeport,Boryeong,LAT30N,"10386",Cameron+22Nm
+Freeport,Boryeong,Hawaii,"10566",Cameron+22Nm
+Freeport,Tianjin,Great Circle,"10315",Cameron+22Nm
+Freeport,Tianjin,LAT30N,"10745",Cameron+22Nm
+Freeport,Tianjin,Hawaii,"11001",Cameron+22Nm
+Freeport,Beihai,Great Circle,"11095",Cameron+22Nm
+Freeport,Beihai,LAT30N,"11421",Cameron+22Nm
+Freeport,Beihai,Hawaii,"11520",Cameron+22Nm
+Freeport,Zhoushan,Great Circle,"10115",Cameron+22Nm
+Freeport,Zhoushan,LAT30N,"10322",Cameron+22Nm
+Freeport,Zhoushan,Hawaii,"10610",Cameron+22Nm

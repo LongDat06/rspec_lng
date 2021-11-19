@@ -48,6 +48,14 @@ Analytic::Engine.routes.draw do
       resources :xdf_specs,   only: [:index]
     end
 
+    namespace :voyages do
+      resources :routes, only: [:index] do
+        collection do
+          get :fetch_first_ports
+          get :fetch_second_ports
+        end
+      end
+    end
     resources :vessels, module: :vessels, param: :imo do
       resources :genres, only: [:index, :import] do
         post 'import', on: :collection

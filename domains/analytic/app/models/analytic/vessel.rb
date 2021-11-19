@@ -9,6 +9,8 @@ module Analytic
 
     enumerize :genre_error_code, in: [:in_processing, :finished, :failed]
 
+    has_many :focs, class_name: :Foc, foreign_key: :imo, primary_key: :imo
+
     scope :target, -> (target) { where(target: target) if target.present? }
 
   end

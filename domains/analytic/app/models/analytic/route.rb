@@ -33,6 +33,19 @@ module Analytic
       self.find_by_sql([query, {port_1: port_1, port_2: port_2}]).pluck(:pacific_route)
     end
 
+    def self.find_route(port_1, port_2, pacific_route)
+      where_conds = <<~SQL
+        pacific_route = :pacific_route
+        AND (
+          (port_1 = :port_1 AND port_2 = :port_2)
+          OR (port_1 = :port_2 AND port_2 = :port_1)
+        )
+      SQL
+      where(where_conds, { port_1: port_1,
+                           port_2: port_2,
+                           pacific_route: pacific_route }).first
+    end
+
     private
     def different_distance
       if self.class.exists?(port_1: self.port_2, port_2: self.port_1, pacific_route: self.pacific_route)

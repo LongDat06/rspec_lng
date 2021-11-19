@@ -5,7 +5,7 @@ module Shared
     # Define custom error subclasses - rescue catches `StandardErrors`
     class AuthenticationError < StandardError; end
     class AccessDenied < StandardError; end
-    
+
     included do
       # Define custom handlers
       rescue_from StandardError, with: :render_unexpected_error

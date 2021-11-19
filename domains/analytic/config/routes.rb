@@ -67,5 +67,14 @@ Analytic::Engine.routes.draw do
     post "/temp/upload", to: "temporary_upload#upload"
     mount Analytic::Uploader::TemporaryUploader.upload_endpoint(:cache) => "/temp/upload"
 
+
+    namespace :heels do
+      resources :calculator, only: [:create]
+    end
+
+    namespace :edqs do
+      resources :result, only: [:index, :create, :update, :show, :destroy]
+    end
+
   end
 end

@@ -1,3 +1,15 @@
 en:
   analytic:
     end_date_after_start_date: must be after the start date
+    eta_after_etd_at_least_30_mins: ETA must be after the ETD at least 30 minutes.
+    cannot_find_route: System cannot find the route specified.
+    voyage_no_invalid_format: "%{value} is not a valid format."
+  activemodel:
+    attributes:
+      analytic/edq_result_forms/base:
+        foe: FOE
+      analytic/heel_calculator_forms/submission:
+        foe: FOE
+
+
+

@@ -70,7 +70,7 @@ module Analytic
 
         def estimated_daily_foc_season_effect
           @estimated_daily_foc_season_effect ||= begin
-            months_of_winner = [1,2,3]
+            months_of_winner = [10,11,12,1,2,3]
             if months_of_winner.include? etd.month
               (estimated_daily_foc * 1.1).round(1)
             else

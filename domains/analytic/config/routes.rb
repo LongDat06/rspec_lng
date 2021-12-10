@@ -94,5 +94,10 @@ Analytic::Engine.routes.draw do
       resources :result, only: [:index, :create, :update, :show, :destroy]
     end
 
+    namespace :masters do
+      resources :countries, only: [:index]
+      resources :timezones, only: [:show], param: :country_code
+    end
+
   end
 end

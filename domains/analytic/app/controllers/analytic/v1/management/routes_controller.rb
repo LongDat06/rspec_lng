@@ -6,8 +6,9 @@ module Analytic
         before_action :add_authorize, only: [:index, :create, :import, :fetch_invalid_record_file, :export]
 
         def index
-          routes = Analytic::ManagementServices::RouteService.new(params[:port], params[:pacific_route], params[:sort_by], params[:sort_order]).()
+          routes = Analytic::ManagementServices::RouteService.new(params[:port_id], params[:master_route_id], params[:sort_by], params[:sort_order]).()
           pagy, routes = pagy(routes, items: PER_PAGE)
+
           routes_json = Analytic::V1::Management::RouteSerializer.new(routes).serializable_hash
           pagy_headers_merge(pagy)
           json_response(routes_json)
@@ -16,10 +17,6 @@ module Analytic
         def create
           Analytic::Route.create! create_params
           json_response({})
-        end
-
-        def show
-          json_response(Analytic::V1::Management::RouteSerializer.new(@route))
         end
 
         def update
@@ -44,13 +41,14 @@ module Analytic
         end
 
         def export
-          Analytic::ManagementJob::ExportingRouteJob.perform_later(current_user.id, params[:port], params[:pacific_route], params[:sort_by], params[:sort_order])
+          Analytic::ManagementJob::ExportingRouteJob.perform_later(current_user.id, params[:port_id], params[:master_route_id], params[:sort_by], params[:sort_order])
           json_response({})
         end
 
         private
         def set_route
-          @route = Analytic::Route.find(params[:id])
+          @route = Analytic::Route.find_by_id(params[:id])
+          not_found_record unless @route.present?
           authorize @route
         end
 
@@ -59,12 +57,14 @@ module Analytic
         end
 
         def create_params
-          route_params = params.permit(:port_1, :port_2, :pacific_route, :distance)
-          route_params.merge!(updated_by: current_user, created_by: current_user)
+          ports = [params[:port_1].to_s.upcase, params[:port_2].to_s.upcase].sort
+          port_1_id, port_2_id = Analytic::MasterPort.sort_port(ports)
+          route_params = params.permit(:distance, :detail)
+          route_params.merge!(temp_route_name: params[:route_name], port_1_id: port_1_id, port_2_id: port_2_id, temp_port_name_1: ports.first, temp_port_name_2: ports.last, updated_by: current_user, created_by_id: current_user.id)
         end
 
         def update_params
-          params.permit(:distance).merge!(updated_by: current_user)
+          params.permit(:distance, :detail).merge!(updated_by: current_user)
         end
       end
     end

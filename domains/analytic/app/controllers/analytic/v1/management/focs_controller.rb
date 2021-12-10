@@ -47,7 +47,8 @@ module Analytic
         private
 
         def set_foc
-          @foc = Analytic::Foc.find(params[:id])
+          @foc = Analytic::Foc.find_by_id(params[:id])
+          not_found_record unless @foc.present?
           authorize @foc
         end
 
@@ -57,7 +58,7 @@ module Analytic
 
         def create_params
           foc_params = params.permit(:imo, :speed, :laden, :ballast)
-          foc_params.merge!(updated_by: current_user, created_by: current_user)
+          foc_params.merge!(updated_by: current_user, created_by_id: current_user.id)
         end
 
         def update_params

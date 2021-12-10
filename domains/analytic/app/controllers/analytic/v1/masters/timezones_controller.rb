@@ -6,7 +6,7 @@ module Analytic
         def show
           zones = ActiveSupport::TimeZone.country_zones(params[:country_code])
           data = zones.map do |zone|
-            { code: zone.name, name: "#{zone.name} (#{zone.formatted_offset})" }
+            { code: zone.name, name: "#{zone.name} (UTC #{zone.formatted_offset})" }
           end
           json_response(data)
         end

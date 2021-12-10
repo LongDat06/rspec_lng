@@ -8,10 +8,6 @@ module Analytic
       admin?
     end
 
-    def show?
-      admin?
-    end
-
     def create?
       admin?
     end

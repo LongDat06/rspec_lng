@@ -9,20 +9,26 @@ module Analytic
         DETAIL = "E"#{}"Route datail"
 
         def call
-          user = Shared::User.find user_id
           routes = {}
           rows.each_with_index do |row, index|
             next if index == 0
-            route = Analytic::Route.new({port_1: row[PORT_1], port_2: row[PORT_2], pacific_route: row[NAME], distance: row[DISTANCE].to_i,
-                                         detail: row[DETAIL], created_by: user, updated_by: user})
-            routes["#{row[PORT_1].to_s.upcase}_#{row[PORT_2].to_s.upcase}_#{row[NAME].to_s.upcase}"] = route
+            ports = [row[PORT_1].to_s.upcase, row[PORT_2].to_s.upcase].sort
+            port_name_1 = ports.first
+            port_name_2 = ports.last
+            port_1_id, port_2_id = Analytic::MasterPort.sort_port(ports)
+            route = Analytic::Route.new({port_1_id: port_1_id, port_2_id: port_2_id, temp_route_name: row[NAME],
+                                        temp_port_name_1: port_name_1, temp_port_name_2: port_name_2, distance: row[DISTANCE],
+                                        temp_distance: row[DISTANCE], detail: row[DETAIL], created_by_id: user_id, updated_by_id: user_id})
+            routes["#{port_name_1}_#{port_name_2}_#{row[NAME].to_s.upcase}"] = route
           end
-          results = Analytic::Route.import(routes.values, on_duplicate_key_update: {conflict_target: [:port_1, :port_2, :pacific_route],
-                                                                             columns: [:distance, :updated_by]})
+          results = Analytic::Route.import(routes.values, on_duplicate_key_update: {conflict_target: [:port_1_id, :port_2_id, :master_route_id],
+                                                                             columns: [:distance, :detail, :updated_by_id]})
           error_instances = results.failed_instances
           error_instances.each do |route|
-            error_rows << [route.port_1, route.port_2, route.pacific_route, route.distance, route.detail, route.errors.full_messages.join(",")]
+            error_rows << [ route.temp_port_name_1, route.temp_port_name_2, route.temp_route_name,
+                          route.temp_distance, route.detail, route.errors.full_messages.join(",") ]
           end
+
           Analytic::ManagementServices::Importing::ErrorFile.new(user_id, Analytic::ReportFile::ROUTE, error_rows).call
         end
       end

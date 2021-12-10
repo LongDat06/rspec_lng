@@ -10,7 +10,7 @@ module Analytic
         end
 
         def header
-          ['Imo', 'Speed (kts)', 'Laden FOC (MT/ day)', 'Ballast FOC (MT/ day)']
+          ['IMO', 'Speed (knot)', 'Laden FOC (MT/day)', 'Ballast FOC (MT/day)']
         end
 
         def rows
@@ -19,7 +19,9 @@ module Analytic
         end
 
         def file_name
-          "exported_foc_#{Time.current.utc.strftime('%FT-%H-%M-%S')}.xlsx"
+          return "exported_foc_#{Time.current.utc.strftime('%FT-%H-%M-%S')}.xlsx" if imo.blank?
+          vessel_name = Analytic::Vessel.find_by_imo(imo)&.name
+          "#{vessel_name}_exported_foc_#{Time.current.utc.strftime('%FT-%H-%M-%S')}.xlsx"
         end
       end
     end

@@ -4,6 +4,9 @@ en:
     eta_after_etd_at_least_30_mins: ETA must be after the ETD at least 30 minutes.
     cannot_find_route: System cannot find the route specified.
     voyage_no_invalid_format: "%{value} is not a valid format."
+    no_record: "Record does not exist"
+    used_message: "Cannot delete %{name}: It is being used by another function"
+    unauthorized: "Access Denied: You do not have permission to access this page"
   activemodel:
     attributes:
       analytic/edq_result_forms/base:
@@ -14,12 +17,28 @@ en:
   activerecord:
     attributes:
       analytic/route:
-        pacific_route: "Route"
+        master_route_id: "Route Name"
+        port_1_id: "Port Name 1"
+        port_2_id: "Port Name 2"
+        distance: "Estimated Distance"
+      analytic/foc:
+        imo: "IMO"
     errors:
       models:
         analytic/route:
           attributes:
-            pacific_route:
+            master_route_id:
               taken: "has already been taken."
+            port_1_id:
+              blank: "can't be blank"
+            port_2_id:
+              blank: "can't be blank"
+            master_route_id:
+              blank: "can't be blank"
+            master_route_id:
+              taken: "and Port Name 1, Port Name 2 have already been taken"
+  pundit:
+    default: 'Access Denied: You do not have permission to access this page'
+
 
 

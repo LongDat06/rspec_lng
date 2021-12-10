@@ -50,11 +50,11 @@ module Analytic
         end
 
         def route_header
-          ['Port Name 1', 'Port Name 2', 'Pacific Route', 'Estimated Distance (NM)', 'Route Detail', 'Error message']
+          ['Port Name 1', 'Port Name 2', 'Route', 'Estimated Distance (NM)', 'Route Detail', 'Error Message']
         end
 
         def foc_header
-          ['Imo', 'Speed (kts)', 'Laden FOC (MT/ day)', 'Ballast FOC (MT/ day)', 'Error message']
+          ['IMO', 'Speed (knot)', 'Laden FOC (MT/day)', 'Ballast FOC (MT/day)', 'Error Message']
         end
       end
     end

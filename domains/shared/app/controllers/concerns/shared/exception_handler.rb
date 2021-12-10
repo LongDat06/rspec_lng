@@ -41,7 +41,7 @@ module Shared
     end
 
     def permission_denied(e)
-      json_response({ message: e.message }, :forbidden)
+      json_response({ message: I18n.t("analytic.unauthorized") }, :forbidden)
     end
   end
 end

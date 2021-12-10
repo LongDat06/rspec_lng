@@ -14,6 +14,10 @@ module Analytic
         return JSON.parse(metadata.first) if status == 200
         raise "Cannot upload this file to S3"
       end
+
+      def not_found_record
+        raise I18n.t("analytic.no_record")
+      end
     end
   end
 end

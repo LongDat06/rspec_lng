@@ -65,12 +65,18 @@ Analytic::Engine.routes.draw do
           get :export
         end
       end
-      resources :routes do
+      resources :routes, except: [:show] do
         collection do
           post :import
           get :fetch_invalid_record_file
           get :export
         end
+      end
+      resources :master_routes do
+        get :fetch_autocomplete_routes, on: :collection
+      end
+      resources :master_ports do
+        get :fetch_autocomplete_ports, on: :collection
       end
     end
 

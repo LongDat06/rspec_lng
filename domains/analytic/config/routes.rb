@@ -56,6 +56,24 @@ Analytic::Engine.routes.draw do
         end
       end
     end
+
+    namespace :management do
+      resources :focs do
+        collection do
+          post :import
+          get :fetch_invalid_record_file
+          get :export
+        end
+      end
+      resources :routes do
+        collection do
+          post :import
+          get :fetch_invalid_record_file
+          get :export
+        end
+      end
+    end
+
     resources :vessels, module: :vessels, param: :imo do
       resources :genres, only: [:index, :import] do
         post 'import', on: :collection

@@ -17,10 +17,11 @@ module Analytic
         file_path = "#{Rails.root}/domains/analytic/data/#{file_name}"
         return if file_name.blank?
         return unless File.exist? file_path
+
         CSV.foreach(file_path, headers: true) do |row|
           begin
-            por1, port2 = [row[PORT_1], row[PORT_2]].sort
-            Analytic::Route.create!({port_1: por1, port_2: port2, pacific_route: row[NAME], distance: row[DISTANCE].to_i, detail: row[DETAIL]})
+            port_1, port_2 = [row[PORT_1], row[PORT_2]].sort
+            Analytic::Route.create!({port_1: port_1, port_2: port_2, pacific_route: row[NAME], distance: row[DISTANCE].to_i, detail: row[DETAIL]})
           rescue => error
             logger.info("---------error: #{error.inspect}  at row: #{row.inspect}-------------")
           end

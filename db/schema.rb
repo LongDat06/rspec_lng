@@ -10,35 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_10_070904) do
+ActiveRecord::Schema.define(version: 2021_11_12_034154) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-
-  create_table "analytic_genre_sim_channels", force: :cascade do |t|
-    t.bigint "analytic_genres_id", null: false
-    t.string "iso_std_name"
-    t.index ["analytic_genres_id", "iso_std_name"], name: "analytic_genre_sim_channels_uniq_idx", unique: true
-    t.index ["analytic_genres_id"], name: "index_analytic_genre_sim_channels_on_analytic_genres_id"
-  end
-
-  create_table "analytic_genres", force: :cascade do |t|
-    t.integer "imo", null: false
-    t.string "name", null: false
-    t.boolean "active", default: false
-    t.index ["imo", "name"], name: "analytic_genres_uniq_idx", unique: true
-    t.index ["imo"], name: "index_analytic_genres_on_imo"
-  end
 
   create_table "analytic_edq_results", force: :cascade do |t|
     t.integer "imo", null: false
     t.string "name", null: false
     t.float "foe", null: false
-    t.float "init_lng_volume"
-    t.float "unpumpable"
-    t.float "cosuming_lng_of_laden_voyage"
-    t.float "heel"
-    t.float "edq"
+    t.float "init_lng_volume", null: false
+    t.float "unpumpable", null: false
+    t.float "cosuming_lng_of_laden_voyage", null: false
+    t.float "heel", null: false
+    t.float "edq", null: false
     t.bigint "laden_voyage_id"
     t.bigint "ballast_voyage_id"
     t.boolean "published", default: false, null: false
@@ -46,8 +31,6 @@ ActiveRecord::Schema.define(version: 2021_11_10_070904) do
     t.bigint "updated_by_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.string "laden_voyage_no", null: false
-    t.string "ballast_voyage_no", null: false
     t.index ["author_id"], name: "index_analytic_edq_results_on_author_id"
     t.index ["ballast_voyage_id"], name: "index_analytic_edq_results_on_ballast_voyage_id"
     t.index ["imo"], name: "index_analytic_edq_results_on_imo"
@@ -62,14 +45,24 @@ ActiveRecord::Schema.define(version: 2021_11_10_070904) do
     t.float "ballast"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["imo", "speed"], name: "index_analytic_focs_on_imo_and_speed", unique: true
+    t.integer "created_by"
+    t.integer "updated_by"
+    t.index ["imo", "speed"], name: "index_analytic_focs_on_imo_and_speed"
     t.index ["imo"], name: "index_analytic_focs_on_imo"
+  end
+
+  create_table "analytic_genre_sim_channels", force: :cascade do |t|
+    t.bigint "analytic_genres_id", null: false
+    t.string "iso_std_name"
+    t.index ["analytic_genres_id", "iso_std_name"], name: "analytic_genre_sim_channels_uniq_idx", unique: true
+    t.index ["analytic_genres_id"], name: "index_analytic_genre_sim_channels_on_analytic_genres_id"
   end
 
   create_table "analytic_genres", force: :cascade do |t|
     t.integer "imo", null: false
     t.string "name", null: false
-    t.index ["imo", "name"], name: "index_analytic_genres_on_imo_and_name", unique: true
+    t.boolean "active", default: false
+    t.index ["imo", "name"], name: "analytic_genres_uniq_idx", unique: true
     t.index ["imo"], name: "index_analytic_genres_on_imo"
   end
 
@@ -89,20 +82,27 @@ ActiveRecord::Schema.define(version: 2021_11_10_070904) do
     t.float "consuming_lng", null: false
   end
 
+  create_table "analytic_report_files", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.text "file_content_data"
+    t.string "source"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id"], name: "index_analytic_report_files_on_user_id"
+  end
+
   create_table "analytic_routes", force: :cascade do |t|
     t.string "port_1"
     t.string "port_2"
     t.string "pacific_route"
     t.string "detail"
     t.integer "distance"
-    t.integer "created_by"
-    t.integer "updated_by"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["created_by"], name: "index_analytic_routes_on_created_by"
+    t.integer "created_by"
+    t.integer "updated_by"
     t.index ["port_1", "port_2"], name: "index_analytic_routes_on_port_1_and_port_2"
     t.index ["port_1"], name: "index_analytic_routes_on_port_1"
-    t.index ["updated_by"], name: "index_analytic_routes_on_updated_by"
   end
 
   create_table "ecdis_points", force: :cascade do |t|
@@ -145,7 +145,6 @@ ActiveRecord::Schema.define(version: 2021_11_10_070904) do
     t.datetime "received_at", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.string "imported_checksum", default: "", null: false
     t.index ["imo"], name: "index_ecdis_routes_on_imo"
   end
 

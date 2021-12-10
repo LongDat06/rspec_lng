@@ -8,7 +8,7 @@ module Analytic
         end
 
         def fetch_first_ports
-          json_response(Analytic::Route.fetch_first_ports)
+          json_response(Analytic::Route.fetch_first_ports(params[:port] || params[:port_dept]))
         end
 
         def fetch_second_ports

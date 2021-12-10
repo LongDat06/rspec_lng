@@ -40,6 +40,10 @@ module Analytic
         user.role.admin? || user.role.user?
       end
 
+      def admin?
+        user.role.admin?
+      end
+
     class Scope
       attr_reader :user, :scope
 

@@ -11,5 +11,15 @@ en:
       analytic/heel_calculator_forms/submission:
         foe: FOE
 
+  activerecord:
+    attributes:
+      analytic/route:
+        pacific_route: "Route"
+    errors:
+      models:
+        analytic/route:
+          attributes:
+            pacific_route:
+              taken: "has already been taken."
 
 

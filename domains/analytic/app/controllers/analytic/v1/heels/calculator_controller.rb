@@ -12,7 +12,14 @@ module Analytic
 
         private
         def submission_params
-          params.permit(:imo, :port_dept, :port_arrival, :pacific_route, :etd, :eta, :foe, :voyage_type)
+          params.permit(:imo,
+                        :port_dept_id,
+                        :port_arrival_id,
+                        :master_route_id,
+                        :etd,
+                        :eta,
+                        :foe,
+                        :voyage_type)
         end
       end
     end

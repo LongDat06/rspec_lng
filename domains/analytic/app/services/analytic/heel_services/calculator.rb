@@ -2,7 +2,15 @@ module Analytic
   module HeelServices
     class HeelCalculatorError < StandardError; end
     class Calculator
-      CalculatorResult = Struct.new(:estimated_distance,
+      CalculatorResult = Struct.new(:etd,
+                                    :etd_utc,
+                                    :etd_time_zone,
+                                    :etd_label,
+                                    :eta,
+                                    :eta_utc,
+                                    :eta_time_zone,
+                                    :eta_label,
+                                    :estimated_distance,
                                     :voyage_duration,
                                     :required_speed,
                                     :estimated_daily_foc,
@@ -17,7 +25,15 @@ module Analytic
       end
 
       def call
-        CalculatorResult.new(estimated_distance,
+        CalculatorResult.new(etd,
+                             etd_utc,
+                             etd_time_zone,
+                             etd_label,
+                             eta,
+                             eta_utc,
+                             eta_time_zone,
+                             eta_label,
+                             estimated_distance,
                              voyage_duration,
                              required_speed,
                              estimated_daily_foc,
@@ -28,15 +44,61 @@ module Analytic
 
       private
         attr_reader :submit_params
-        delegate :imo, :port_dept, :port_arrival, :pacific_route, :etd, :eta, :foe, :voyage_type, to: :submit_params, private: true
+        delegate :imo,
+                 :port_dept_id,
+                 :port_arrival_id,
+                 :master_route_id,
+                 :etd,
+                 :eta,
+                 :foe,
+                 :voyage_type, to: :submit_params, private: true
+
 
         def fetch_router
           @fetch_router ||= begin
-            route = Analytic::Route.select(:distance).find_route(port_dept, port_arrival, pacific_route)
+            route = Analytic::Route.select(:distance).find_route(port_dept_id, port_arrival_id, master_route_id)
             raise HeelCalculatorError, I18n.t('analytic.cannot_find_route') if route.nil?
 
           route
           end
+        end
+
+        def port_dept_time_zone
+          @port_dept_time_zone ||= Analytic::HeelServices::TimezoneLabel.new(port_id: port_dept_id,
+                                                                             time: etd).call
+        end
+
+        def port_arrival_time_zone
+          @port_arrival_time_zone ||= Analytic::HeelServices::TimezoneLabel.new(port_id: port_arrival_id,
+                                                                                time: eta).call
+        end
+
+        def eta_time_zone
+          port_arrival_time_zone.time_zone
+        end
+
+        def eta_utc
+          port_arrival_time_zone.time_utc
+        end
+
+        def eta_label
+          port_arrival_time_zone.label
+        end
+
+        def etd_time_zone
+          port_dept_time_zone.time_zone
+        end
+
+        def etd_utc
+          port_dept_time_zone.time_utc
+        end
+
+        def etd_label
+          port_dept_time_zone.label
+        end
+
+        def adjust_time_zone(time, zone)
+          time.asctime.in_time_zone(zone)
         end
 
         def fetch_all_tcp_foc
@@ -51,7 +113,11 @@ module Analytic
         end
 
         def voyage_duration
-          @voyage_duration ||= ((eta.to_f - etd.to_f)/1.hour).round(0)
+          @voyage_duration ||= begin
+            adjust_time_eta_with_zone = adjust_time_zone(eta, eta_time_zone)
+            adjust_time_etd_with_zone = adjust_time_zone(etd, etd_time_zone)
+            ((adjust_time_eta_with_zone.to_f - adjust_time_etd_with_zone.to_f)/1.hour).round(0)
+          end
         end
 
         def required_speed

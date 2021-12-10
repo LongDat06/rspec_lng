@@ -5,17 +5,17 @@ module Analytic
       include ActiveModel::Validations
       include Virtus.model
 
-      attribute :imo,           Integer
-      attribute :port_dept,     String
-      attribute :port_arrival,  String
-      attribute :pacific_route, String
-      attribute :etd,           DateTime
-      attribute :eta,           DateTime
-      attribute :foe,           Float
-      attribute :voyage_type,   String
+      attribute :imo,             Integer
+      attribute :port_dept_id,    Integer
+      attribute :port_arrival_id, Integer
+      attribute :master_route_id, Integer
+      attribute :etd,             Time
+      attribute :eta,             Time
+      attribute :foe,             Float
+      attribute :voyage_type,     String
 
 
-      validates_presence_of :imo, :port_dept, :port_arrival, :pacific_route, :etd, :eta
+      validates_presence_of :imo, :port_dept_id, :port_arrival_id, :master_route_id, :etd , :eta
       validates :foe, numericality: { other_than: 0 }, presence: true
       validates :voyage_type, inclusion: { in: %w(ballast laden) }, presence: true
 

@@ -47,14 +47,14 @@ module Analytic
 
         def result_params
           params.permit(:imo,
-                        :ballast_voyage_port_dept,
-                        :ballast_voyage_port_arrival,
-                        :laden_voyage_port_dept,
-                        :laden_voyage_port_arrival,
+                        :ballast_voyage_port_dept_id,
+                        :ballast_voyage_port_arrival_id,
+                        :laden_voyage_port_dept_id,
+                        :laden_voyage_port_arrival_id,
                         :voyage_no,
                         :voyage_no_type,
-                        :pacific_route,
-                        :pacific_route_type,
+                        :master_route_id,
+                        :master_route_type,
                         :sort_by,
                         :sort_order,
                         :page)
@@ -71,16 +71,16 @@ module Analytic
                         :cosuming_lng_of_laden_voyage,
                         :heel,
                         :edq,
-                        laden_voyage: [:port_dept, :port_arrival, :pacific_route,
-                                       :etd, :eta, :estimated_distance,
-                                       :voyage_duration, :required_speed, :estimated_daily_foc,
-                                       :estimated_daily_foc_season_effect, :estimated_total_foc,
-                                       :consuming_lng],
-                        ballast_voyage: [:port_dept, :port_arrival, :pacific_route,
-                                         :etd, :eta, :estimated_distance,
-                                         :voyage_duration, :required_speed, :estimated_daily_foc,
-                                         :estimated_daily_foc_season_effect, :estimated_total_foc,
-                                         :consuming_lng])
+                        laden_voyage: heel_voyage_params,
+                        ballast_voyage: heel_voyage_params)
+        end
+
+        def heel_voyage_params
+          [:port_dept_id, :port_arrival_id, :master_route_id,
+           :etd, :etd_time_zone, :eta, :eta_time_zone, :estimated_distance,
+           :voyage_duration, :required_speed, :estimated_daily_foc,
+           :estimated_daily_foc_season_effect, :estimated_total_foc,
+           :consuming_lng]
         end
 
         def update_params

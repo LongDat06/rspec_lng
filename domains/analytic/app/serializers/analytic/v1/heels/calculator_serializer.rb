@@ -12,7 +12,14 @@ module Analytic
                    :estimated_daily_foc,
                    :estimated_daily_foc_season_effect,
                    :estimated_total_foc,
-                   :consuming_lng
+                   :consuming_lng,
+                   :etd_time_zone,
+                   :eta_time_zone,
+                   :etd_label,
+                   :eta_label,
+                   :eta_utc,
+                   :etd_utc
+
       end
     end
   end

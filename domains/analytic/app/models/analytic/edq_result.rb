@@ -20,6 +20,10 @@ module Analytic
       joins(<<-SQL)
         LEFT JOIN analytic_heel_results AS laden_voyage
         ON laden_voyage.id = analytic_edq_results.laden_voyage_id
+        LEFT JOIN analytic_master_ports as laden_voyage_port_arrival
+        ON laden_voyage_port_arrival.id = laden_voyage.port_arrival_id
+        LEFT JOIN analytic_master_ports as laden_voyage_port_dept
+        ON laden_voyage_port_dept.id = laden_voyage.port_dept_id
       SQL
     }
 
@@ -27,6 +31,10 @@ module Analytic
       joins(<<-SQL)
         LEFT JOIN analytic_heel_results AS ballast_voyage
         ON ballast_voyage.id = analytic_edq_results.ballast_voyage_id
+        LEFT JOIN analytic_master_ports as ballast_voyage_port_arrival
+        ON ballast_voyage_port_arrival.id = ballast_voyage.port_arrival_id
+        LEFT JOIN analytic_master_ports as ballast_voyage_port_dept
+        ON ballast_voyage_port_dept.id = ballast_voyage.port_dept_id
       SQL
     }
 
@@ -37,27 +45,6 @@ module Analytic
       SQL
     }
 
-    scope :in_laden_voyage_port_dept, -> (port) {
-      join_laden_voyage.where(laden_voyage: { port_dept: port })
-    }
-
-    scope :in_laden_voyage_port_arrival, -> (port) {
-      join_laden_voyage.where(laden_voyage: { port_arrival: port })
-    }
-
-    scope :in_ballast_voyage_port_dept, -> (port) {
-      join_ballast_voyage.where(ballast_voyage: { port_dept: port })
-    }
-
-    scope :in_ballast_voyage_port_arrival, -> (port) {
-      join_ballast_voyage.where(ballast_voyage: { port_arrival: port })
-    }
-
-
-    def ownable?(user_id)
-      self.author_id == user_id
-    end
-
     def vessel_name
       read_attribute("vessel_name") || vessel&.name
     end
@@ -65,7 +52,6 @@ module Analytic
     def updated_by_name
       read_attribute("updated_by_name") || updated_by&.fullname
     end
-
 
   end
 end

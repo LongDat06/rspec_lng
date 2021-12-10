@@ -4,11 +4,13 @@ module Analytic
       include ActiveModel::Validations
       include Virtus.model
 
-      attribute :port_dept,                          String
-      attribute :port_arrival,                       String
-      attribute :pacific_route,                      String
+      attribute :port_dept_id,                       Integer
+      attribute :port_arrival_id,                    Integer
+      attribute :master_route_id,                    Integer
       attribute :etd,                                DateTime
+      attribute :etd_time_zone,                      String
       attribute :eta,                                DateTime
+      attribute :eta_time_zone,                      String
       attribute :estimated_distance,                 Float
       attribute :voyage_duration,                    Float
       attribute :required_speed,                     Float
@@ -17,10 +19,13 @@ module Analytic
       attribute :estimated_total_foc,                Float
       attribute :consuming_lng,                      Float
 
-      validates_presence_of :port_dept,
-                            :port_arrival,
+      validates_presence_of :port_dept_id,
+                            :port_arrival_id,
+                            :master_route_id,
                             :etd,
+                            :etd_time_zone,
                             :eta,
+                            :eta_time_zone,
                             :estimated_distance,
                             :voyage_duration,
                             :estimated_daily_foc,

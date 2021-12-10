@@ -8,14 +8,14 @@ module Analytic
 
       def initialize(params, current_user_id = nil)
         @imo = params[:imo]
-        @ballast_voyage_port_dept = params[:ballast_voyage_port_dept]
-        @ballast_voyage_port_arrival = params[:ballast_voyage_port_arrival]
-        @laden_voyage_port_dept = params[:laden_voyage_port_dept]
-        @laden_voyage_port_arrival = params[:laden_voyage_port_arrival]
+        @ballast_voyage_port_dept_id = params[:ballast_voyage_port_dept_id]
+        @ballast_voyage_port_arrival_id = params[:ballast_voyage_port_arrival_id]
+        @laden_voyage_port_dept_id = params[:laden_voyage_port_dept_id]
+        @laden_voyage_port_arrival_id = params[:laden_voyage_port_arrival_id]
         @voyage_no = params[:voyage_no]
         @voyage_no_type = params[:voyage_no_type]
-        @pacific_route = params[:pacific_route]
-        @pacific_route_type = params[:pacific_route_type]
+        @master_route_id = params[:master_route_id]
+        @master_route_type = params[:master_route_type]
         @sort_by = params[:sort_by]
         @sort_order = params[:sort_order]
         @params = params
@@ -34,15 +34,16 @@ module Analytic
                                      .join_ballast_voyage
                                      .join_user_updated_by
                                      .joins(:vessel)
-                                     .includes(:laden_voyage, :ballast_voyage)
+                                     .includes(laden_voyage: [:port_arrival, :port_dept, :master_route],
+                                               ballast_voyage: [:port_arrival, :port_dept, :master_route])
 
           scope = scope.where(imo: @imo) if @imo.present?
-          scope = scope.where(ballast_voyage: { port_dept: @ballast_voyage_port_dept }) if @ballast_voyage_port_dept.present?
-          scope = scope.where(ballast_voyage: { port_arrival: @ballast_voyage_port_arrival }) if @ballast_voyage_port_arrival.present?
-          scope = scope.where(laden_voyage: { port_dept: @laden_voyage_port_dept }) if @laden_voyage_port_dept.present?
-          scope = scope.where(laden_voyage: { port_arrival: @laden_voyage_port_arrival }) if @laden_voyage_port_arrival.present?
+          scope = scope.where(ballast_voyage: { port_dept_id: @ballast_voyage_port_dept_id }) if @ballast_voyage_port_dept_id.present?
+          scope = scope.where(ballast_voyage: { port_arrival_id: @ballast_voyage_port_arrival_id }) if @ballast_voyage_port_arrival_id.present?
+          scope = scope.where(laden_voyage: { port_dept_id: @laden_voyage_port_dept_id }) if @laden_voyage_port_dept_id.present?
+          scope = scope.where(laden_voyage: { port_arrival_id: @laden_voyage_port_arrival_id }) if @laden_voyage_port_arrival_id.present?
           scope = scope.where(where_clause_voyage_no) if @voyage_no.present?
-          scope = scope.where(where_clause_pacific_route) if @pacific_route.present?
+          scope = scope.where(where_clause_master_route) if @master_route_id.present?
           scope.order(order_params)
         end
       end
@@ -65,14 +66,14 @@ module Analytic
         return [ query ,{ voyage_no: @voyage_no } ]
       end
 
-      def where_clause_pacific_route
-        if @pacific_route_type.present?
-          field = voyage_type_field(@pacific_route_type)
-          return { field => { pacific_route: @pacific_route } }
+      def where_clause_master_route
+        if @master_route_type.present?
+          field = voyage_type_field(@master_route_type)
+          return { field => { master_route_id: @master_route_id } }
         end
 
-        query = "ballast_voyage.pacific_route = :pacific_route OR laden_voyage.pacific_route = :pacific_route"
-        return [ query, { pacific_route: @pacific_route } ]
+        query = "ballast_voyage.master_route_id = :master_route_id OR laden_voyage.master_route_id = :master_route_id"
+        return [ query, { master_route_id: @master_route_id } ]
       end
 
       def voyage_type_field(type)
@@ -93,6 +94,7 @@ module Analytic
         allow_sort_fields = { 'name' => 'name',
                               'vessel_name' => 'vessels.name',
                               'updated_at' =>  'updated_at',
+                              'created_at' =>  'created_at',
                               'laden_voyage_no' =>  'laden_voyage_no',
                               'ballast_voyage_no' => 'ballast_voyage_no',
                               'init_lng_volume' => 'init_lng_volume',
@@ -101,10 +103,10 @@ module Analytic
                               'edq' => 'edq',
                               'unpumpable' => 'unpumpable',
                               'updated_by_name' => 'updated_by.fullname',
-                              'laden_voyage_port_dept' => 'laden_voyage.port_dept',
-                              'laden_voyage_port_arrival' => 'laden_voyage.port_arrival',
-                              'ballast_voyage_port_arrival' => 'ballast_voyage.port_arrival',
-                              'ballast_voyage_port_dept' => 'ballast_voyage.port_dept',
+                              'laden_voyage_port_dept' => 'laden_voyage_port_dept.name',
+                              'laden_voyage_port_arrival' => 'laden_voyage_port_arrival.name',
+                              'ballast_voyage_port_arrival' => 'ballast_voyage_port_arrival.name',
+                              'ballast_voyage_port_dept' => 'ballast_voyage_port_dept.name',
                               'id' => 'id'
                             }
         allow_sort_fields.fetch(@sort_by, 'id')

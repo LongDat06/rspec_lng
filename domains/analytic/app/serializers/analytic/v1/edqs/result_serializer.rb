@@ -22,6 +22,23 @@ module Analytic
                    :created_at,
                    :updated_at
 
+        attribute :ballast_voyage_port_dept do |object|
+          object.ballast_voyage&.port_dept_name
+        end
+
+        attribute :ballast_voyage_port_arrival do |object|
+          object.ballast_voyage&.port_arrival_name
+        end
+
+        attribute :laden_voyage_port_dept do |object|
+          object.laden_voyage&.port_dept_name
+        end
+
+        attribute :laden_voyage_port_arrival do |object|
+          object.laden_voyage&.port_arrival_name
+        end
+
+
         attribute :laden_voyage do |object|
           HeelResultSerializer.new(object.laden_voyage).serializable_hash
         end

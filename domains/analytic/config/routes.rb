@@ -95,6 +95,7 @@ Analytic::Engine.routes.draw do
 
     namespace :heels do
       resources :calculator, only: [:create]
+      resources :timezone_label, only: [:index]
     end
 
     namespace :edqs do

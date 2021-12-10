@@ -1,16 +1,19 @@
 module Analytic
   module SimServices
     module Importing
+      class ImportSimChannelError < StandardError; end
       class SimChannel
         DATA_CLASS = 'IoSData'.freeze
-        DATA_TYPE = 'ShipData'.freeze
+        #DATA_TYPE = 'ShipData'.freeze
 
         def initialize(
-          imo:, 
+          imo:,
+          data_type:,
           sim_metadata_requester: ExternalServices::Shipdc::MetaData,
           sim_metadata_find_requester: ExternalServices::Shipdc::MetaDataFind
         )
           @imo = imo
+          @data_type = data_type
           @sim_metadata_requester = sim_metadata_requester
           @sim_metadata_find_requester = sim_metadata_find_requester
           @columns_mapping = {}
@@ -43,17 +46,18 @@ module Analytic
         def latest_meta_data_revno
           @latest_meta_data_revno ||= begin
             body = @sim_metadata_requester.new(@imo).fetch
-            body[:metadata].select { |meta| meta[:dataClass] == DATA_CLASS && meta[:dataType] == DATA_TYPE }
+            body[:metadata].select { |meta| meta[:dataClass] == DATA_CLASS && meta[:dataType] == @data_type }
                            .sort_by { |meta| meta[:revNo].to_i }
                            .last
           end
         end
 
         def metadata
+          raise(ImportSimChannelError) if latest_meta_data_revno.blank?
           @metadata ||= begin
             body = @sim_metadata_find_requester.new(@imo, { 
               dataClass: DATA_CLASS, 
-              dataType: DATA_TYPE, 
+              dataType: @data_type, 
               revNo: latest_meta_data_revno[:revNo] 
             }).fetch
             body[:items]

@@ -42,7 +42,7 @@ module Ais
 
       def start_import_sim
         return unless @vessel.target
-        broadcast(:on_vessel_create_successful, @vessel.imo)
+        broadcast(:on_vessel_create_successful, @vessel.imo, @vessel.sim_data_type)
       end
     end
   end

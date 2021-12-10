@@ -3,6 +3,8 @@ module Analytic
     include Mongoid::Document
     include Mongoid::Timestamps::Created
 
+    DEFAULT_DATA_TYPE = 'ShipData'.freeze
+
     belongs_to :sim_metadata, class_name: Analytic::SimMetadata.name, required: false
 
     embeds_one :spec, class_name: Analytic::SimSpec.name, store_as: 'spec'

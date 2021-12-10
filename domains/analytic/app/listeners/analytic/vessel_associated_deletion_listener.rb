@@ -1,9 +1,10 @@
 module Analytic
   class VesselAssociatedDeletionListener
+    include ManageSidekiqJob
+    include CleanShipdcData
     def on_vessel_delete_successful(imo)
-      Analytic::Sim.where(imo_no: imo).delete_all
-      Analytic::Spas.where(imo_no: imo).delete_all
-      Analytic::SimChannel.where(imo_no: imo).delete_all
+      clear_old_related_sim_table(imo)
+      delete_schedule_jobs(imo)
     end
   end
 end

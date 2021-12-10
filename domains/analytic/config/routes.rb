@@ -48,6 +48,7 @@ Analytic::Engine.routes.draw do
       resources :xdf_specs,   only: [:index]
     end
 
+    resources :datasets, only: [:index]
     namespace :voyages do
       resources :routes, only: [:index] do
         collection do

@@ -3,16 +3,18 @@ module Analytic
     module Importing
       class SimMetadata
         DATA_CLASS = 'IoSData'.freeze
-        DATA_TYPE = 'ShipData'.freeze
+        #DATA_TYPE = 'ShipData'.freeze
 
         attr_reader :columns_mapping, :sim_meta_data
 
         def initialize(
-          imo_no:, 
+          imo_no:,
+          data_type:, 
           revno:,
           sim_metadata_find_requester: ExternalServices::Shipdc::MetaDataFind
         )
           @imo = imo_no
+          @data_type = data_type
           @revno = revno
           @sim_metadata_find_requester = sim_metadata_find_requester
           @columns_mapping = {}
@@ -23,7 +25,7 @@ module Analytic
           @sim_meta_data = Analytic::SimMetadata.new(
             imo_no: @imo, 
             dataclass: DATA_CLASS, 
-            datatype: DATA_TYPE, 
+            datatype: @data_type, 
             revisionno: @revno,
             created_at: Time.current.utc
           )
@@ -46,7 +48,7 @@ module Analytic
           @metadata ||= begin
             body = @sim_metadata_find_requester.new(@imo, { 
               dataClass: DATA_CLASS, 
-              dataType: DATA_TYPE, 
+              dataType: @data_type, 
               revNo: @revno
             }).fetch
             body[:items]

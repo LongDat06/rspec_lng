@@ -8,6 +8,7 @@ module Ais
       attribute :imo, Integer
       attribute :engine_type, String
       attribute :ecdis_email, String
+      attribute :sim_data_type, String
       attribute :target, Boolean
     end
   end

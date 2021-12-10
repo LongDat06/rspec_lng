@@ -3,15 +3,17 @@ module Analytic
     module Importing
       class SimData
         DATA_CLASS = 'IoSData'.freeze
-        DATA_TYPE = 'ShipData'.freeze
+        #DATA_TYPE = 'ShipData'.freeze
 
         def initialize(
-          imo_no:, 
+          imo_no:,
+          data_type:,
           period_from:,
           period_to:,
           ios_data_requester: ExternalServices::Shipdc::IosData
         )
           @imo_no = imo_no
+          @data_type = data_type
           @period_from = period_from
           @period_to = period_to
           @ios_data_requester = ios_data_requester
@@ -30,6 +32,7 @@ module Analytic
           @meta[revno] ||= begin
             Analytic::SimServices::Importing::SimMetadata.new(
               imo_no: @imo_no,
+              data_type: @data_type,
               revno: revno,
             ).()
           end
@@ -90,7 +93,7 @@ module Analytic
 
         def ios_data
           body = @ios_data_requester.new(@imo_no, {
-            dataType: DATA_TYPE,
+            dataType: @data_type,
             from: @period_from.strftime('%FT%TZ'),
             to: @period_to.strftime('%FT%TZ')
           }).fetch

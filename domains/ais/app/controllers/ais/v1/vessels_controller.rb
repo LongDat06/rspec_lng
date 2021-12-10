@@ -5,7 +5,7 @@ module Ais
 
       def create
         authorize Ais::Vessel, policy_class: Ais::VesselsPolicy
-        opts = VesselForms::Register.new(vessel_params)
+        opts = VesselForms::Register.new(create_params)
         vessel = opts.create
         vessel_jsons = Ais::V1::VesselSerializer.new(vessel).serializable_hash
         json_response(vessel_jsons)
@@ -28,7 +28,7 @@ module Ais
 
       def update
         vessel = policy_scope(Vessel, policy_scope_class: Ais::VesselsPolicy::Scope).find(params[:id])
-        vessel.update!(vessel_params)
+        vessel.update!(update_params)
         json_response({})
       end
 
@@ -39,8 +39,12 @@ module Ais
       end
 
       private
-      def vessel_params
+      def update_params
         params.permit(:imo, :engine_type, :target, :ecdis_email)
+      end
+
+      def create_params
+        params.permit(:imo, :engine_type, :target, :ecdis_email, :sim_data_type)
       end
 
       def filter_params

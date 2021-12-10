@@ -6,8 +6,10 @@ module Analytic
       def perform(imo, time, has_retry = true, has_import_ais = false, time_step = 'hour')
         from_time = is_timestep_hour(time_step) ? time.beginning_of_hour : time.beginning_of_day
         to_time = is_timestep_hour(time_step) ? time.end_of_hour : time.end_of_day
+        data_type = Analytic::Vessel.find_by_imo(imo)&.sim_data_type
         sim_ids = Analytic::SimServices::Importing::ImportProcessing.new(
-          imo: imo, 
+          imo: imo,
+          data_type: data_type,
           period_from: from_time,
           period_to: to_time
         ).()

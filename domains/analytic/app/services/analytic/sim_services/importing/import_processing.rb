@@ -4,15 +4,17 @@ module Analytic
       class ImportProcessingError < StandardError; end
       class ImportProcessing
         DATA_CLASS = 'IoSData'.freeze
-        DATA_TYPE = 'ShipData'.freeze
+        #DATA_TYPE = 'ShipData'.freeze
 
         def initialize(
-          imo:, 
+          imo:,
+          data_type:,
           period_from:,
           period_to:,
           ios_data_list_requester: Analytic::ExternalServices::Shipdc::DataList
         )
           @imo = imo
+          @data_type = data_type
           @period_from = period_from
           @period_to = period_to
           @ios_data_list_requester = ios_data_list_requester
@@ -26,7 +28,8 @@ module Analytic
         private
         def import_sim_data
           Analytic::SimServices::Importing::SimData.new(
-            imo_no: @imo, 
+            imo_no: @imo,
+            data_type: @data_type,
             period_from: @period_from,
             period_to: @period_to
           ).()
@@ -41,7 +44,7 @@ module Analytic
             data[:items].select do |item|
               item[:shipId].to_i == @imo &&
               item[:dataClass] == DATA_CLASS &&
-              item[:dataType] == DATA_TYPE
+              item[:dataType] == @data_type
             end
           end
         end

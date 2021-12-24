@@ -22,6 +22,10 @@ module Analytic
         admin_or_user?
       end
 
+      def finalize?
+        admin_or_user?
+      end
+
     end
   end
 end

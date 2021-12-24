@@ -119,6 +119,8 @@ module Analytic
           end
           Math.sqrt(1.0 - (numerator  / denominator)).round(4)
           end
+        rescue
+          nil
         end
 
         def sample_size

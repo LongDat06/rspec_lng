@@ -18,7 +18,7 @@ module Analytic
                    :author_id,
                    :updated_by_id,
                    :updated_by_name,
-                   :published,
+                   :finalized,
                    :created_at,
                    :updated_at
 

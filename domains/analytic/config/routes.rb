@@ -31,6 +31,7 @@ Analytic::Engine.routes.draw do
       resources :og_speed, only: [:index]
       resources :f_dump_v_open, only: [:index]
       resources :blr_flow, only: [:index]
+      resources :power_curve, only: [:index]
     end
 
     namespace :downloads do
@@ -54,6 +55,13 @@ Analytic::Engine.routes.draw do
         collection do
           get :fetch_first_ports
           get :fetch_second_ports
+        end
+      end
+      resources :summary, only: [:index, :show] do
+        collection do
+          get :arrival_ports, to: 'summary#ports', defaults: { type: :arrival }
+          get :dept_ports, to: 'summary#ports', defaults: { type: :dept }
+          get :export
         end
       end
     end
@@ -99,7 +107,9 @@ Analytic::Engine.routes.draw do
     end
 
     namespace :edqs do
-      resources :result, only: [:index, :create, :update, :show, :destroy]
+      resources :result, only: [:index, :create, :update, :show, :destroy] do
+        post :finalize, on: :member
+      end
     end
 
     namespace :masters do

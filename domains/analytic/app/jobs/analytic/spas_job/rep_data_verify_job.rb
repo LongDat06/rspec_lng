@@ -5,6 +5,7 @@ module Analytic
 
       def perform(imo, time, has_retry = true, has_import_ais = false)
         spas_ids = Analytic::SpasServices::Importing::ImportProcessing.new(imo: imo, period_time: time).()
+        Analytic::VoyageSummaryServices::Importing::VoyageSummaryData.new(spas_ids).()
         Analytic::SpasServices::LastDeparture.new(imo).()
         Analytic::SpasServices::ProvideDestinationData.new(spas_ids).() if has_import_ais
       rescue Analytic::SpasServices::Importing::ImportProcessingError => e

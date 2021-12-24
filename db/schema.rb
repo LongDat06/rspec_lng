@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_30_051619) do
+ActiveRecord::Schema.define(version: 2021_12_07_085125) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -26,7 +26,7 @@ ActiveRecord::Schema.define(version: 2021_11_30_051619) do
     t.float "edq"
     t.bigint "laden_voyage_id"
     t.bigint "ballast_voyage_id"
-    t.boolean "published", default: false, null: false
+    t.boolean "finalized", default: false, null: false
     t.bigint "author_id"
     t.bigint "updated_by_id"
     t.datetime "created_at", precision: 6, null: false
@@ -152,6 +152,30 @@ ActiveRecord::Schema.define(version: 2021_11_30_051619) do
     t.index ["port_1"], name: "index_analytic_routes_on_port_1"
     t.index ["port_1_id", "port_2_id", "pacific_route"], name: "port_route", unique: true
     t.index ["updated_by_id"], name: "index_analytic_routes_on_updated_by_id"
+  end
+
+  create_table "analytic_voyage_summaries", force: :cascade do |t|
+    t.integer "imo", null: false
+    t.string "voyage_no", null: false
+    t.string "voyage_leg", null: false
+    t.string "port_dept"
+    t.datetime "atd_lt"
+    t.datetime "atd_utc"
+    t.string "port_arrival"
+    t.datetime "ata_utc"
+    t.datetime "ata_lt"
+    t.integer "duration"
+    t.integer "distance"
+    t.float "average_speed"
+    t.integer "cargo_volume_at_port_of_arrival"
+    t.float "lng_consumption"
+    t.float "mgo_consumption"
+    t.float "average_boil_off_rate"
+    t.integer "actual_heel"
+    t.integer "adq"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["imo", "voyage_no", "voyage_leg"], name: "analytic_voyage_summaries_uniq_idx", unique: true
   end
 
   create_table "ecdis_points", force: :cascade do |t|

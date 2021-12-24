@@ -2,6 +2,7 @@ module Analytic
   module V1
     module Edqs
       class ResultController < BaseController
+        before_action :get_edq_result, only: [:show, :destroy, :finalize]
 
         def index
           authorize Analytic::EdqResult, policy_class: Analytic::Edqs::ResultPolicy
@@ -29,17 +30,20 @@ module Analytic
         end
 
         def show
-          result = Analytic::EdqResult.find(params[:id])
-          authorize result, policy_class: Analytic::Edqs::ResultPolicy
-          serializable_hash = ResultSerializer.new(result).serializable_hash
+          authorize @edq_result, policy_class: Analytic::Edqs::ResultPolicy
+          serializable_hash = ResultSerializer.new(@edq_result).serializable_hash
           json_response(serializable_hash)
-
         end
 
         def destroy
-          result = Analytic::EdqResult.find(params[:id])
-          authorize result, policy_class: Analytic::Edqs::ResultPolicy
-          result.destroy!
+          authorize @edq_result, policy_class: Analytic::Edqs::ResultPolicy
+          @edq_result.destroy!
+          json_response({})
+        end
+
+        def finalize
+          authorize @edq_result, policy_class: Analytic::Edqs::ResultPolicy
+          Analytic::EdqServices::Finalization.new(edq_result: @edq_result).call
           json_response({})
         end
 
@@ -85,6 +89,10 @@ module Analytic
 
         def update_params
           create_params.merge(id: params[:id])
+        end
+
+        def get_edq_result
+          @edq_result = Analytic::EdqResult.find(params[:id])
         end
 
       end

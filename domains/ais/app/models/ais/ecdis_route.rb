@@ -10,6 +10,9 @@ module Ais
     scope :of_month, ->(time) {
       where("received_at <= ? AND received_at >= ?", time, time - 1.month) if time.present?
     }
+    scope :date_range, -> (from, to) { 
+      where("received_at > ? AND received_at < ?", from.to_datetime.beginning_of_day, to.to_datetime.end_of_day)  
+    }
 
     belongs_to :vessel, class_name: :Vessel, foreign_key: :imo, primary_key: :imo
     has_many :ecdis_points, ->() { order(id: :asc) }

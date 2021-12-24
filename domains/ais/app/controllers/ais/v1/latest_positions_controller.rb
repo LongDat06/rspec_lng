@@ -4,8 +4,9 @@ module Ais
       VESSEL_PER_PAGE = 100
 
       def index
-        page_number = (params[:page] || 1).to_i
-        pagy, vessels = pagy_countless(Vessel.all, items: VESSEL_PER_PAGE)
+        relation = Vessel.all
+        relation = relation.where(imo: params[:imo]) if params[:imo].present?
+        pagy, vessels = pagy_countless(relation, items: VESSEL_PER_PAGE)
         latest_position = ExternalServices::Csm::LatestPosition.new({
           imos: vessels.pluck(:imo)
         }).fetch

@@ -101,8 +101,13 @@ module Ais
           eta_wpno: eta_wpno,
           optimized: optimized,
           budget: budget,
-          received_at: @received_at
+          received_at: @received_at,
+          imported_checksum: sha256_checksum_imported
         )
+      end
+
+      def sha256_checksum_imported
+        Digest::SHA256.file(@filepath).hexdigest
       end
 
       def point_rows

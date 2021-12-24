@@ -13,5 +13,6 @@ module Ais
 
     belongs_to :vessel, class_name: :Vessel, foreign_key: :imo, primary_key: :imo
     has_many :ecdis_points, ->() { order(id: :asc) }
+    validates :imported_checksum, presence: true, uniqueness: true
   end
 end

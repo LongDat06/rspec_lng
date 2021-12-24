@@ -33,8 +33,13 @@ module Ais
           vessel: @vessel,
           format_file: 'jrc',
           file_name: @filename,
-          received_at: @received_at
+          received_at: @received_at,
+          imported_checksum: sha256_checksum_imported
         )
+      end
+
+      def sha256_checksum_imported
+        Digest::SHA256.file(@filepath).hexdigest
       end
 
       def point_rows

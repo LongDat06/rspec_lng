@@ -214,6 +214,12 @@ ActiveRecord::Schema.define(version: 2021_11_30_051619) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "tests", force: :cascade do |t|
+    t.jsonb "result", default: {}
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "tokens", force: :cascade do |t|
     t.text "crypted_token", default: "", null: false
     t.datetime "created_at", precision: 6, null: false

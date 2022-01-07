@@ -2,7 +2,7 @@ module Analytic
   module V1
     module Management
       class RoutesController < BaseController
-        before_action :set_route, only: [:update, :destroy, :show]
+        before_action :set_route, only: [:update, :destroy]
         before_action :add_authorize, only: [:index, :create, :import, :fetch_invalid_record_file, :export]
 
         def index

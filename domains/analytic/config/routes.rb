@@ -32,6 +32,9 @@ Analytic::Engine.routes.draw do
       resources :f_dump_v_open, only: [:index]
       resources :blr_flow, only: [:index]
       resources :power_curve, only: [:index]
+      namespace :voyage_summary do
+        resources :summaries, only: [:index]
+      end
     end
 
     namespace :downloads do

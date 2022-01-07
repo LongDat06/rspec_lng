@@ -62,5 +62,11 @@ module Analytic
     def ata_lt_display
       ata_lt&.strftime(I18n.t('analytic.format_datetime'))
     end
+
+    def get_vessel_names
+      capitalize_name = self.vessel.name.split(" ").map(&:chr).join("")
+      merge_voyage_no = [capitalize_name, "_", self.voyage_no, self.voyage_leg].join("")
+      [merge_voyage_no, self.vessel.name]
+    end
   end
 end

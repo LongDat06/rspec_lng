@@ -54,11 +54,22 @@ module Analytic
       end
 
       def distance
-        @distance ||= Analytic::Spas.where(
-          { "imo_no": @imo,
-            "spec.jsmea_voy_voyageinformation_voyageno": @voyage_no,
-            "spec.jsmea_voy_voyageinformation_leg": @voyage_leg }
-        ).sum('spec.jsmea_voy_distanceandtime_day_sog')&.round(0)
+        @distance ||= Analytic::Spas.collection.aggregate(
+          [
+            {
+              "$match": { imo_no: @imo,
+                          "spec.jsmea_voy_voyageinformation_voyageno": @voyage_no,
+                          "spec.jsmea_voy_voyageinformation_leg": @voyage_leg }
+            },
+            {
+              "$group": { "_id": '$spec.ts',
+                          "distance": { "$last": '$spec.jsmea_voy_distanceandtime_day_sog' } }
+            },
+            {
+              "$group": { "_id": nil, "total": { "$sum": '$distance' } }
+            }
+          ], allow_disk_use: true
+        ).first.try(:[], :total)&.round(0)
       end
 
       def average_speed
@@ -146,37 +157,64 @@ module Analytic
             'imo_no' => @imo,
             'spec.ts' => { '$gte' => from_time, '$lte' => to_time }
           } }
-
-          group = { "$group": {
-            _id: nil,
-            lng_consumption_fields: {
-              "$push": {
-                'jsmea_mac_ship_fg_flowcounter_fgc': '$spec.jsmea_mac_ship_fg_flowcounter_fgc',
-                'jsmea_mac_boiler_fgline_fg_flowcounter_fgc': '$spec.jsmea_mac_boiler_fgline_fg_flowcounter_fgc',
-                'jsmea_mac_dieselgeneratorset_fg_total_flowcounter_fgc': '$spec.jsmea_mac_dieselgeneratorset_fg_total_flowcounter_fgc'
-              }
-            },
-            mgo_consumption_fields: {
-              "$push": {
-                'jsmea_mac_ship_fg_flowcounter_fgc': '$spec.jsmea_mac_ship_fg_flowcounter_fgc',
-                'jsmea_mac_ship_total_include_gcu_fc': '$spec.jsmea_mac_ship_total_include_gcu_fc',
-                'jsmea_mac_boiler_mgoline_mgo_flowcounter_foc': '$spec.jsmea_mac_boiler_mgoline_mgo_flowcounter_foc',
-                'jsmea_mac_dieselgeneratorset_total_flowcounter_foc': '$spec.jsmea_mac_dieselgeneratorset_total_flowcounter_foc',
-                'jsmea_mac_dieselgeneratorset_fg_total_flowcounter_fgc': '$spec.jsmea_mac_dieselgeneratorset_fg_total_flowcounter_fgc'
-
-              }
-            },
-            average_boil_off_rate_fields: {
-              "$push": { 'jsmea_mac_cargotk_bor_include_fv': '$spec.jsmea_mac_cargotk_bor_include_fv' }
+          group_ts = {
+             "$group": {
+               _id: '$spec.ts',
+               'jsmea_mac_ship_fg_flowcounter_fgc': {
+                  '$last': '$spec.jsmea_mac_ship_fg_flowcounter_fgc'
+               },
+                'jsmea_mac_boiler_fgline_fg_flowcounter_fgc': {
+                 '$last': '$spec.jsmea_mac_boiler_fgline_fg_flowcounter_fgc'
+               },
+                'jsmea_mac_dieselgeneratorset_fg_total_flowcounter_fgc': {
+                 '$last': '$spec.jsmea_mac_dieselgeneratorset_fg_total_flowcounter_fgc'
+               },
+                'jsmea_mac_ship_total_include_gcu_fc': {
+                 '$last': '$spec.jsmea_mac_ship_total_include_gcu_fc'
+               },
+                'jsmea_mac_boiler_mgoline_mgo_flowcounter_foc': {
+                 '$last': '$spec.jsmea_mac_boiler_mgoline_mgo_flowcounter_foc'
+               },
+                'jsmea_mac_dieselgeneratorset_total_flowcounter_foc': {
+                 '$last': '$spec.jsmea_mac_dieselgeneratorset_total_flowcounter_foc'
+               },
+                'jsmea_mac_cargotk_bor_include_fv': {
+                 '$last': '$spec.jsmea_mac_cargotk_bor_include_fv'
+               }
             }
-          } }
+          }
+          group = {
+            "$group": {
+              _id: nil,
+              lng_consumption_fields: {
+                "$push": {
+                  'jsmea_mac_ship_fg_flowcounter_fgc': '$jsmea_mac_ship_fg_flowcounter_fgc',
+                  'jsmea_mac_boiler_fgline_fg_flowcounter_fgc': '$jsmea_mac_boiler_fgline_fg_flowcounter_fgc',
+                  'jsmea_mac_dieselgeneratorset_fg_total_flowcounter_fgc': '$jsmea_mac_dieselgeneratorset_fg_total_flowcounter_fgc'
+                }
+              },
+              mgo_consumption_fields: {
+                "$push": {
+                  'jsmea_mac_ship_fg_flowcounter_fgc': '$jsmea_mac_ship_fg_flowcounter_fgc',
+                  'jsmea_mac_ship_total_include_gcu_fc': '$jsmea_mac_ship_total_include_gcu_fc',
+                  'jsmea_mac_boiler_mgoline_mgo_flowcounter_foc': '$jsmea_mac_boiler_mgoline_mgo_flowcounter_foc',
+                  'jsmea_mac_dieselgeneratorset_total_flowcounter_foc': '$jsmea_mac_dieselgeneratorset_total_flowcounter_foc',
+                  'jsmea_mac_dieselgeneratorset_fg_total_flowcounter_fgc': '$jsmea_mac_dieselgeneratorset_fg_total_flowcounter_fgc'
+
+                }
+              },
+              average_boil_off_rate_fields: {
+                "$push": { 'jsmea_mac_cargotk_bor_include_fv': '$jsmea_mac_cargotk_bor_include_fv' }
+              }
+            }
+          }
 
           project = { "$project": {
             lng_consumption_fields: 1,
             mgo_consumption_fields: 1,
             average_boil_off_rate_fields: 1
           } }
-          sim_data = Analytic::Sim.collection.aggregate([match, group, project]).first
+          sim_data = Analytic::Sim.collection.aggregate([match, group_ts, group, project], allow_disk_use: true).first
           return if sim_data.nil?
 
           {

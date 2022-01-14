@@ -65,7 +65,7 @@ module Analytic
           end
           return if arr.blank?
 
-          (arr.sum / arr.length).to_f
+          -1 * (arr.sum / arr.length).to_f
         end
       end
 
@@ -76,29 +76,36 @@ module Analytic
       end
 
       def closest_sim_data
-        project = {
-          "$project": {
-            actual_speed: '$spec.jsmea_nav_gnss_sog',
-            actual_foc: { "$cond": [engine_xdf?,
-                                    '$spec.jsmea_mac_ship_total_include_gcu_fc',
-                                    { "$add": [{ '$convert': { input: '$spec.jsmea_mac_boiler_fgline_fg_flowcounter_fgc',
-                                                               to: 'double', onError: nil } },
-                                               { '$convert': { input: '$spec.jsmea_mac_boiler_total_flowcounter_foc',
-                                                               to: 'double', onError: nil } }] }] }
+        @closest_sim_data ||= begin
+          project = {
+            "$project": {
+              actual_speed: '$jsmea_nav_gnss_sog',
+              actual_foc: { "$cond": [engine_xdf?,
+                                      '$jsmea_mac_ship_total_include_gcu_fc',
+                                      { "$add": [{ '$convert': { input: '$jsmea_mac_boiler_fgline_fg_flowcounter_fgc',
+                                                                to: 'double', onError: nil } },
+                                                 { '$convert': { input: '$jsmea_mac_boiler_total_flowcounter_foc',
+                                                                to: 'double', onError: nil } },
+                                                 { '$convert': { input: '$jsmea_mac_dieselgeneratorset_total_flowcounter_foc',
+                                                                to: 'double', onError: nil } }] }] }
+            }
           }
-        }
-        group = {
-          '$group' => {
-            '_id' => { 'hour' => { '$hour' => '$spec.ts' }, 'day' => { '$dayOfMonth' => '$spec.ts' },
-                       'month' => { '$month' => '$spec.ts' }, 'year' => { '$year' => '$spec.ts' } },
-            'spec' => { '$last' => '$spec' }
+          group = {
+            '$group' => {
+              '_id' => '$spec.ts',
+              'jsmea_nav_gnss_sog' => { '$last' => '$spec.jsmea_nav_gnss_sog' },
+              'jsmea_mac_ship_total_include_gcu_fc' => { '$last' => '$spec.jsmea_mac_ship_total_include_gcu_fc' },
+              'jsmea_mac_boiler_fgline_fg_flowcounter_fgc' => { '$last' => '$spec.jsmea_mac_boiler_fgline_fg_flowcounter_fgc' },
+              'jsmea_mac_boiler_total_flowcounter_foc' => { '$last' => '$spec.jsmea_mac_boiler_total_flowcounter_foc' },
+              'jsmea_mac_dieselgeneratorset_total_flowcounter_foc' => { '$last' => '$spec.jsmea_mac_dieselgeneratorset_total_flowcounter_foc' },
+            }
           }
-        }
-        Analytic::VoyageSummaryServices::ProvideVoyageClosestData.new(imo: imo,
-                                                                      ata: ata,
-                                                                      atd: atd,
-                                                                      project: project,
-                                                                      group: group).call
+          Analytic::VoyageSummaryServices::ProvideVoyageClosestData.new(imo: imo,
+                                                                        ata: ata,
+                                                                        atd: atd,
+                                                                        project: project,
+                                                                        group: group).call
+        end
       end
 
       def gap_calc(actual_speed, actual_foc)

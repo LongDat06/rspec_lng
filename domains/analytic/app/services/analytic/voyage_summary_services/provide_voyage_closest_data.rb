@@ -32,11 +32,15 @@ module Analytic
       end
 
       def sim_data_closest_ata
-        @sim_data_closest_ata ||= sim_closest_time(@ata)
+        return @sim_data_closest_ata if defined? @sim_data_closest_ata
+
+        @sim_data_closest_ata = sim_closest_time(@ata)
       end
 
       def sim_data_closest_atd
-        @sim_data_closest_atd ||= sim_closest_time(@atd)
+        return @sim_data_closest_atd if defined? @sim_data_closest_atd
+
+        @sim_data_closest_atd = sim_closest_time(@atd)
       end
 
       def sim_data_in_closest_range_atd_ata
@@ -53,7 +57,7 @@ module Analytic
           aggregates << match
           aggregates << @group if @group.present?
           aggregates << @project if @project.present?
-          Analytic::Sim.collection.aggregate(aggregates)
+          Analytic::Sim.collection.aggregate(aggregates, allow_disk_use: true)
         end
       end
     end

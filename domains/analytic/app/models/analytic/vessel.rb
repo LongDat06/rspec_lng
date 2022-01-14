@@ -12,5 +12,13 @@ module Analytic
     enumerize :genre_error_code, in: %i[in_processing finished failed]
 
     scope :target, ->(target) { where(target: target) if target.present? }
+
+    def self.get_engine_type(imo)
+      vessel = self.find_by_imo(imo)
+      raise "Can not find out the vessel with imo #{imo}" if vessel.blank?
+      raise "Vessel must be target" unless vessel.target?
+
+      vessel.engine_type
+    end
   end
 end

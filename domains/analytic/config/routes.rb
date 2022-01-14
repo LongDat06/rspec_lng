@@ -34,6 +34,9 @@ Analytic::Engine.routes.draw do
       resources :power_curve, only: [:index]
       namespace :voyage_summary do
         resources :summaries, only: [:index]
+        resources :average_speeds, only: [:index]
+        resources :lng_consumption, only: [:index]
+        resources :mgo_consumption, only: [:index]
       end
     end
 

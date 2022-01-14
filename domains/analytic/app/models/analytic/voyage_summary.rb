@@ -31,6 +31,18 @@ module Analytic
       SQL
     }
 
+    DEFAULT_NUMBER_VOYAGE = 5
+    BOIL_OFF_RATE_CHART = "AverageBoilOffRate"
+    CARGO_VOLUMN_CHART = "CargoVolumn"
+    FORCING_VAPOR_COLUMN_CHART = "ForcingVaporVolumn"
+    AVERAGE_SPEED_CHART = "AverageSpeed"
+    XDF_TANK_TEMPERATURE_CHART = "XdfTankTemperature"
+    STAGE_TANK_TEMPERATURE_CHART = "StageTankTemperature"
+    STAGE_LNG_CONSUMPTION_CHART = "StageLngConsumption"
+    STAGE_MGO_CONSUMPTION_CHART = "StageMgoConsumption"
+    XDF_LNG_CONSUMPTION_CHART = "XdfLngConsumption"
+    XDF_MGO_CONSUMPTION_CHART = "XdfMgoConsumption"
+
     def laden_voyage?
       voyage_leg == 'L'
     end
@@ -63,10 +75,17 @@ module Analytic
       ata_lt&.strftime(I18n.t('analytic.format_datetime'))
     end
 
+    def related_voyages(number_of_voyage = DEFAULT_NUMBER_VOYAGE)
+      all_records = self.class.where(imo: self.imo, voyage_leg: self.voyage_leg, port_dept: self.port_dept, port_arrival: self.port_arrival)
+      all_records = all_records.where.not(id: self.id).order({ata_utc: :desc, voyage_no: :asc}).limit(number_of_voyage)
+      all_records.to_a
+    end
+
     def get_vessel_names
       capitalize_name = self.vessel.name.split(" ").map(&:chr).join("")
       merge_voyage_no = [capitalize_name, "_", self.voyage_no, self.voyage_leg].join("")
       [merge_voyage_no, self.vessel.name]
     end
+
   end
 end

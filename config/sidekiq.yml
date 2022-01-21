@@ -9,7 +9,7 @@ production:
   - ["critical", 5]
   - ["mailers", 5]
   - ["default", 5]
-  - ["downloading_job", 1]
+  - ["downloading_job", 3]
   - ["import_channel_job", 1]
   - ["ecdis_mail_checker", 1]
   - ["sync_vessel", 1]
@@ -21,7 +21,7 @@ production:
   critical: 5
   mailers: 5
   default: 5
-  downloading_job: 1
+  downloading_job: 3
   import_channel_job: 1
   ecdis_mail_checker: 1
   sync_vessel: 1

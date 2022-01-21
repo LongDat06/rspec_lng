@@ -41,8 +41,8 @@ module Analytic
         end
 
         def export
-          Analytic::ManagementJob::ExportingRouteJob.perform_later(current_user.id, params[:port_id], params[:master_route_id], params[:sort_by], params[:sort_order])
-          json_response({})
+          job = Analytic::ManagementJob::ExportingRouteJob.set(wait: 3.seconds).perform_later(params[:port_id], params[:master_route_id], params[:sort_by], params[:sort_order])
+          json_response({job_id: job&.job_id})
         end
 
         private

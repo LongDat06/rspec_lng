@@ -3,7 +3,7 @@
 module Analytic
   class ExportingJobStatusChannel < ApplicationCable::Channel
     def subscribed
-      stream_from "exporting_job_for_#{params[:user_id]}"
+      stream_from "exporting_job_for_#{params[:job_id]}"
     end
 
     def unsubscribed

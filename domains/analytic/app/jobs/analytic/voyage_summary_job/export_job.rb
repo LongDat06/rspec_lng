@@ -4,15 +4,15 @@ module Analytic
       queue_as :downloading_job
       sidekiq_options retry: false
 
-      def perform(user_id, params = {})
+      def perform(params = {})
         url = Analytic::VoyageSummaryServices::Exporting::List.new(params: params).call
-        send_broadcast(user_id, url)
+        send_broadcast(self.job_id, url)
       end
 
       private
 
-      def send_broadcast(user_id, url)
-        ActionCable.server.broadcast("exporting_job_for_#{user_id}", { msg: "done", url: url })
+      def send_broadcast(job_id, url)
+        ActionCable.server.broadcast("exporting_job_for_#{job_id}", { msg: "done", url: url })
       end
     end
   end

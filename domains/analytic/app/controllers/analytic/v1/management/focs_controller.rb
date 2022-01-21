@@ -40,8 +40,8 @@ module Analytic
         end
 
         def export
-          Analytic::ManagementJob::ExportingFocJob.perform_later(current_user.id, params[:imo], params[:sort_by], params[:sort_order])
-          json_response({})
+          job = Analytic::ManagementJob::ExportingFocJob.set(wait: 3.seconds).perform_later(params[:imo], params[:sort_by], params[:sort_order])
+          json_response({job_id: job&.job_id})
         end
 
         private

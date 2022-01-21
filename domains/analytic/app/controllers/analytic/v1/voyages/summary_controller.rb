@@ -24,8 +24,8 @@ module Analytic
 
         def export
           authorize nil, policy_class: Analytic::Voyages::SummaryPolicy
-          Analytic::VoyageSummaryJob::ExportJob.perform_later(current_user.id, summary_params)
-          json_response({})
+          job = Analytic::VoyageSummaryJob::ExportJob.set(wait: 3.seconds).perform_later(summary_params)
+          json_response({job_id: job&.job_id})
         end
 
         def ports

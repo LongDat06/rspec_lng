@@ -62,7 +62,7 @@ module Analytic
       end
 
       def channels
-        @channels ||= Analytic::SimChannel.where(imo_no: @imo, :_id.in => exporting_columns).order('iso_std_name' => 1)
+        @channels ||= Analytic::SimChannel.where(imo_no: @imo, :_id.in => exporting_columns).order('local_name' => 1)
       end
 
       def unit_rows

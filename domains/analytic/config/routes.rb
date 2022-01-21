@@ -32,9 +32,18 @@ Analytic::Engine.routes.draw do
       resources :f_dump_v_open, only: [:index]
       resources :blr_flow, only: [:index]
       resources :power_curve, only: [:index]
+      resources :stage_engine, only: [:index]
+      resources :stage_cargo, only: [:index]
+      resources :xdf_engine, only: [:index]
+      resources :xdf_cargo, only: [:index]
+
       namespace :voyage_summary do
         resources :summaries, only: [:index]
+        resources :tank_temperature, only: [:index]
         resources :average_speeds, only: [:index]
+        resources :cargo_volumns, only: [:index]
+        resources :forcing_vapor_volumns, only: [:index]
+        resources :average_boil_off_rates, only: [:index]
         resources :lng_consumption, only: [:index]
         resources :mgo_consumption, only: [:index]
       end

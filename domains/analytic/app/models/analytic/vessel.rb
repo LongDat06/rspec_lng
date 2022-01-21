@@ -20,5 +20,6 @@ module Analytic
 
       vessel.engine_type
     end
+
   end
 end

@@ -7,7 +7,8 @@ module Analytic
         attributes :tcp_curve_points,
                    :tcp_plan_points,
                    :actual_fitting_curve_points,
-                   :actual_plot_points
+                   :actual_plot_points,
+                   :fitting_margin_drop
       end
     end
   end

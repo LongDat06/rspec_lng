@@ -1,12 +1,16 @@
 module Analytic
   module ChartServices
     class PowerCurve
+
+      FILTER_ACTUAL_SPEED = 12
+
       MODELING = Struct.new(
         :id,
         :tcp_curve_points,
         :tcp_plan_points,
         :actual_fitting_curve_points,
         :actual_plot_points,
+        :fitting_margin_drop,
         keyword_init: true
       )
       def initialize(voyage_summary_id:, margin_drop:)
@@ -19,20 +23,19 @@ module Analytic
           tcp_curve_points: tcp_curve_points,
           tcp_plan_points: tcp_plan_points,
           actual_fitting_curve_points: actual_fitting_curve_points,
-          actual_plot_points: actual_plot_points
+          actual_plot_points: actual_plot_points,
+          fitting_margin_drop: fitting_margin_drop
         )
       end
 
       private
 
       def tcp_curve_points
-        x_values = tcp_speed_extend_range
-        x_values.map { |x| point_calc(tcp_curve_quadratic_formula, x) }
+        tcp_speed.zip(tcp_foc)
       end
 
       def tcp_plan_points
-        x_values = tcp_speed_extend_range
-        x_values.map { |x| point_calc(plan_curve_quadratic_formula, x) }
+        drop_speed.zip(tcp_foc)
       end
 
       def actual_plot_points
@@ -41,8 +44,7 @@ module Analytic
 
       def actual_fitting_curve_points
         return [] if adjusted_speeds.nil?
-
-        tcp_speed_extend_range.map { |x| point_calc(actual_fitting_curve_quadratic_formula, x) }
+        adjusted_speeds.zip(tcp_foc)
       end
 
       def actual_speed_and_actual_foc
@@ -60,19 +62,21 @@ module Analytic
         @avg_gap ||= begin
           arr = []
           actual_speed_and_actual_foc.each do |item|
+            next if item[:actual_speed].to_s.to_d < FILTER_ACTUAL_SPEED
+
             gap = gap_calc(item[:actual_speed], item[:actual_foc])
             arr << gap if gap.present?
           end
           return if arr.blank?
 
-          -1 * (arr.sum / arr.length).to_f
+        (arr.sum / arr.length).to_f
         end
       end
 
       def adjusted_speeds
         return if avg_gap.nil?
 
-        @adjusted_speeds ||= tcp_speed.map { |speed| (speed.to_d * (1 - avg_gap.to_d)).to_f }
+        @adjusted_speeds ||= tcp_speed.map { |speed| (speed.to_d * (1 - fitting_margin_drop.to_d)).to_f }
       end
 
       def closest_sim_data
@@ -120,7 +124,11 @@ module Analytic
         x1 = (-b + Math.sqrt(d)) / (2 * a)
         x2 = (-b - Math.sqrt(d)) / (2 * a)
         max_x = [x1, x2].max
-        (1 - (max_x / actual_speed.to_s.to_d)).to_f
+        ((actual_speed.to_s.to_d  / max_x) - 1).to_f
+      end
+
+      def fitting_margin_drop
+        @fitting_margin_drop ||= -1 * avg_gap if avg_gap.present?
       end
 
       def tcp_foc_data
@@ -150,22 +158,6 @@ module Analytic
       def tcp_curve_quadratic_formula
         @tcp_curve_quadratic_formula ||= begin
           x_values = tcp_speed
-          y_values = tcp_foc
-          Analytic::RegressionServices::QuadraticCalculator.new(x_values: x_values, y_values: y_values).call
-        end
-      end
-
-      def plan_curve_quadratic_formula
-        @plan_curve_quadratic_formula ||= begin
-          x_values = drop_speed
-          y_values = tcp_foc
-          Analytic::RegressionServices::QuadraticCalculator.new(x_values: x_values, y_values: y_values).call
-        end
-      end
-
-      def actual_fitting_curve_quadratic_formula
-        @actual_fitting_curve_quadratic_formula ||= begin
-          x_values = adjusted_speeds
           y_values = tcp_foc
           Analytic::RegressionServices::QuadraticCalculator.new(x_values: x_values, y_values: y_values).call
         end

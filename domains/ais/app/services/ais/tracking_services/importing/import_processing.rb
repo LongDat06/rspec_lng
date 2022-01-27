@@ -6,10 +6,10 @@ module Ais
         attr_reader :data_existed
 
         def initialize(
-          imo:, 
-          from_date:, 
-          to_date:, 
-          last_id:, 
+          imo:,
+          from_date:,
+          to_date:,
+          last_id:,
           tracking_requester: ExternalServices::Csm::Tracking
         )
           @imo = imo
@@ -44,7 +44,7 @@ module Ais
               nav_status_code: attributes[:nav_status_code],
               vessel_id: attributes[:vessel_id],
               course: attributes[:course],
-              collection_type: attributes[:collection_type],
+              collection_type: attributes[:collection_type].to_s,
               source: attributes[:source],
               is_valid: attributes[:is_valid],
               imo: @imo.to_i

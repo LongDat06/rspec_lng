@@ -71,14 +71,16 @@ module Analytic
             end
 
             def count_without_blank(field_name)
-              {"$cond": [ { "$and": [ { "$ne": [field_name, "" ] },
+              {"$cond": [ { "$and": [ { "$ne": [{"$trim": {input: { '$convert': { input: field_name,
+                                                                to: 'string'}} }}, "" ] },
                                       { "$ne": [field_name, nil ] }
                                     ]
                           }, 1, 0] }
             end
 
             def calculate_without_blank(field_name)
-              {"$cond": [ { "$and": [ { "$ne": [field_name, "" ] },
+              {"$cond": [ { "$and": [ { "$ne": [{"$trim": {input: { '$convert': { input: field_name,
+                                                                to: 'string'}} }}, "" ] },
                                       { "$ne": [field_name, nil ] }
                                     ]
                           }, field_name, 0] }

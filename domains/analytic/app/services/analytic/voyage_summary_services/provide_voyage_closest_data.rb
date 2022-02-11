@@ -1,10 +1,12 @@
 module Analytic
   module VoyageSummaryServices
     class ProvideVoyageClosestData
-      def initialize(imo:, ata:, atd:, project: {}, group: {})
+
+      def initialize(imo:, ata:, atd:, match_param: {}, project: {}, group: {})
         @imo = imo
         @ata = ata
         @atd = atd
+        @match_param = match_param
         @project = project
         @group = group
       end
@@ -39,8 +41,8 @@ module Analytic
           to_time = sim_data_closest_ata.spec['ts']
           match = { '$match' => {
             'imo_no' => @imo,
-            'spec.ts' => { '$gte' => from_time, '$lte' => to_time }
-          } }
+            'spec.ts' => { '$gte' => from_time, '$lte' => to_time },
+          }.merge(@match_param) }
           aggregates = []
           aggregates << match
           aggregates << @group if @group.present?

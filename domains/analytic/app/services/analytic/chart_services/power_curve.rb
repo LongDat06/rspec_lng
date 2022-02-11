@@ -1,9 +1,7 @@
 module Analytic
   module ChartServices
     class PowerCurve
-
       FILTER_ACTUAL_SPEED = 12
-
       MODELING = Struct.new(
         :id,
         :tcp_curve_points,
@@ -39,7 +37,9 @@ module Analytic
       end
 
       def actual_plot_points
-        actual_speed_and_actual_foc.map { |item| [item[:actual_speed], item[:actual_foc]] }
+        actual_speed_and_actual_foc.map do |item|
+          [item[:actual_speed], item[:actual_foc]]
+        end
       end
 
       def actual_fitting_curve_points
@@ -62,8 +62,6 @@ module Analytic
         @avg_gap ||= begin
           arr = []
           actual_speed_and_actual_foc.each do |item|
-            next if item[:actual_speed].to_s.to_d < FILTER_ACTUAL_SPEED
-
             gap = gap_calc(item[:actual_speed], item[:actual_foc])
             arr << gap if gap.present?
           end
@@ -76,19 +74,18 @@ module Analytic
       def adjusted_speeds
         return if avg_gap.nil?
 
-        @adjusted_speeds ||= tcp_speed.map { |speed| (speed.to_d * (1 - fitting_margin_drop.to_d)).to_f }
+        @adjusted_speeds ||= tcp_speed.map { |speed| (speed.to_d / (1 + fitting_margin_drop.to_d)).to_f }
       end
 
       def closest_sim_data
         @closest_sim_data ||= begin
+          match_param = {'spec.jsmea_nav_gnss_sog' => { '$gte' => FILTER_ACTUAL_SPEED}}
           project = {
             "$project": {
               actual_speed: '$jsmea_nav_gnss_sog',
               actual_foc: { "$cond": [engine_xdf?,
                                       '$jsmea_mac_ship_total_include_gcu_fc',
-                                      { "$add": [{ '$convert': { input: '$jsmea_mac_boiler_fgline_fg_flowcounter_fgc',
-                                                                to: 'double', onError: nil } },
-                                                 { '$convert': { input: '$jsmea_mac_boiler_total_flowcounter_foc',
+                                      { "$add": [{ '$convert': { input: '$jsmea_mac_boiler_total_flowcounter_foc',
                                                                 to: 'double', onError: nil } },
                                                  { '$convert': { input: '$jsmea_mac_dieselgeneratorset_total_flowcounter_foc',
                                                                 to: 'double', onError: nil } }] }] }
@@ -99,7 +96,6 @@ module Analytic
               '_id' => '$spec.ts',
               'jsmea_nav_gnss_sog' => { '$last' => '$spec.jsmea_nav_gnss_sog' },
               'jsmea_mac_ship_total_include_gcu_fc' => { '$last' => '$spec.jsmea_mac_ship_total_include_gcu_fc' },
-              'jsmea_mac_boiler_fgline_fg_flowcounter_fgc' => { '$last' => '$spec.jsmea_mac_boiler_fgline_fg_flowcounter_fgc' },
               'jsmea_mac_boiler_total_flowcounter_foc' => { '$last' => '$spec.jsmea_mac_boiler_total_flowcounter_foc' },
               'jsmea_mac_dieselgeneratorset_total_flowcounter_foc' => { '$last' => '$spec.jsmea_mac_dieselgeneratorset_total_flowcounter_foc' },
             }
@@ -107,6 +103,7 @@ module Analytic
           Analytic::VoyageSummaryServices::ProvideVoyageClosestData.new(imo: imo,
                                                                         ata: ata,
                                                                         atd: atd,
+                                                                        match_param: match_param,
                                                                         project: project,
                                                                         group: group).call
         end
@@ -152,7 +149,7 @@ module Analytic
       end
 
       def drop_speed
-        @drop_speed ||= tcp_speed.map { |x| (x.to_s.to_d * (1 - @margin_drop.to_s.to_d)).to_f }
+        @drop_speed ||= tcp_speed.map { |x| (x.to_s.to_d / (1 + @margin_drop.to_s.to_d)).to_f }
       end
 
       def tcp_curve_quadratic_formula

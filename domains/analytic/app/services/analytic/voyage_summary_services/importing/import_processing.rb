@@ -4,7 +4,6 @@ module Analytic
       class ImportProcessingError < StandardError; end
 
       class ImportProcessing
-
         def initialize(imo:, voyage_no: nil, voyage_leg: nil)
           @imo = imo
           @voyage_no = voyage_no
@@ -31,26 +30,29 @@ module Analytic
                                                 mgo_consumption: item.mgo_consumption,
                                                 average_boil_off_rate: item.average_boil_off_rate,
                                                 actual_heel: item.actual_heel,
-                                                adq: item.adq
-                                              )
+                                                adq: item.adq,
+                                                manual_duration: item.manual_duration,
+                                                manual_average_speed: item.manual_average_speed)
           end
 
-          Analytic::VoyageSummary.import data, on_duplicate_key_update: { conflict_target: %i(imo voyage_no voyage_leg),
-                                                                          columns: update_columns } if data.present?
+          if data.present?
+            Analytic::VoyageSummary.import data, on_duplicate_key_update: { conflict_target: %i[imo voyage_no voyage_leg],
+                                                                            columns: update_columns }
+          end
         end
 
         private
 
         def update_columns
-          %i(port_dept atd_lt atd_utc port_arrival ata_lt ata_utc duration distance average_speed
+          %i[port_dept atd_lt atd_utc port_arrival ata_lt ata_utc duration distance average_speed
              cargo_volume_at_port_of_arrival lng_consumption mgo_consumption average_boil_off_rate
-             actual_heel adq)
+             actual_heel adq manual_duration manual_average_speed]
         end
 
         def voyage_data
           @voyage_data ||= Analytic::VoyageSummaryServices::ProvideVoyageSummaryData.new(imo: @imo,
-                                                                                         voyage_no: @voyage_no,
-                                                                                         voyage_leg: @voyage_leg).()
+                                                                                         voyage_no: @voyage_no&.to_i,
+                                                                                         voyage_leg: @voyage_leg).call
         end
 
         def port_name_format(port)
@@ -60,9 +62,8 @@ module Analytic
         def voyage_no_format(no)
           return if no.blank?
 
-          "%03d" % no.to_i
+          '%03d' % no.to_i
         end
-
       end
     end
   end

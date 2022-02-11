@@ -23,6 +23,8 @@ module Analytic
         :average_boil_off_rate,
         :actual_heel,
         :adq,
+        :manual_duration,
+        :manual_average_speed,
         keyword_init: true
       )
 
@@ -58,7 +60,9 @@ module Analytic
                                 mgo_consumption: addition_data.mgo_consumption,
                                 average_boil_off_rate: addition_data.average_boil_off_rate,
                                 actual_heel: addition_data.actual_heel,
-                                adq: addition_data.adq)
+                                adq: addition_data.adq,
+                                manual_duration: addition_data.manual_duration,
+                                manual_average_speed: addition_data.manual_average_speed)
           data << record
         end
         data

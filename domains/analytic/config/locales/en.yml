@@ -3,6 +3,7 @@ en:
     format_datetime: '%Y-%m-%d %H:%M:%S'
     end_date_after_start_date: must be after the start date
     eta_after_etd_at_least_30_mins: ETA must be after the ETD at least 30 minutes.
+    ata_after_atd_at_least_30_mins: ATA must be after the ATD at least 30 minutes.
     cannot_find_route: System cannot find the route specified.
     voyage_no_invalid_format: "%{value} is not a valid format."
     no_record: "Record does not exist"

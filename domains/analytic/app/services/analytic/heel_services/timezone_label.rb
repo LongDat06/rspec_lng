@@ -14,23 +14,26 @@ module Analytic
       end
 
       private
+
       def fetch_time_zone
         return fetch_port.time_zone if @port_id.present?
 
-        return @time_zone
+        @time_zone
       end
 
       def label
-        return "" if fetch_time_zone.blank?
+        return '' if fetch_time_zone.blank?
 
         label = "#{fetch_time_zone}, UTC #{time_in_zone.formatted_offset}"
-        label << " (DST)" if time_in_zone.dst?
+        label << ' (DST)' if time_in_zone.dst?
         label
       end
 
       def time_in_zone
-        @time_in_zone ||= begin
-          if @time.is_a? Time
+        @time_in_zone ||=  begin
+          return if @time.blank?
+
+          if @time.is_a?(Time) || @time.is_a?(DateTime)
             @time.asctime.in_time_zone(fetch_time_zone)
           else
             Time.find_zone(fetch_time_zone).parse(@time)
@@ -39,7 +42,7 @@ module Analytic
       end
 
       def time_utc
-        time_in_zone.utc
+        time_in_zone&.utc
       end
 
       def fetch_port

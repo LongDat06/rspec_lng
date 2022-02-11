@@ -4,8 +4,10 @@ module Analytic
       DEPATURE_FLAG = '3:DEP'.freeze
       MODELING = Struct.new(
         :duration,
+        :manual_duration,
         :distance,
         :average_speed,
+        :manual_average_speed,
         :cargo_volume_at_port_of_arrival,
         :lng_consumption,
         :mgo_consumption,
@@ -26,8 +28,10 @@ module Analytic
       def call
         MODELING.new(
           duration: duration,
+          manual_duration: manual_duration,
           distance: distance,
           average_speed: average_speed,
+          manual_average_speed: manual_average_speed,
           cargo_volume_at_port_of_arrival: cargo_volume_at_port_of_arrival,
           lng_consumption: lng_consumption,
           mgo_consumption: mgo_consumption,
@@ -50,7 +54,21 @@ module Analytic
       def duration
         return if @atd_utc.blank? || @ata_utc.blank?
 
-        @duration ||= ((@ata_utc.to_f - @atd_utc.to_f) / 1.hour).round(0)
+        @duration ||= duration_in_hours_calc(@atd_utc, @ata_utc)
+      end
+
+      def manual_duration
+        if current_summary.nil? || (current_summary.manual_ata_utc.blank? && current_summary.manual_atd_utc.blank?)
+          return
+        end
+
+        return if apply_ata.blank? || apply_atd.blank?
+
+        duration_in_hours_calc(apply_atd, apply_ata)
+      end
+
+      def duration_in_hours_calc(from_time, to_time)
+        ((to_time.to_f - from_time.to_f) / 1.hour).round(0)
       end
 
       def distance
@@ -75,7 +93,22 @@ module Analytic
       def average_speed
         return if duration.nil? || duration.zero?
 
-        @average_speed ||= (distance / duration.to_f).round(1)
+        @average_speed ||= avg_speed_calc(distance, duration)
+      end
+
+      def manual_average_speed
+        return if current_summary.nil? || (manual_duration.nil? && current_summary.manual_distance.nil?)
+
+        apply_distance = current_summary&.manual_distance || distance
+        apply_duration = manual_duration || duration
+
+        return if apply_duration.nil? || apply_duration.zero?
+
+        avg_speed_calc(apply_distance, apply_duration)
+      end
+
+      def avg_speed_calc(distance, duration)
+        (distance / duration.to_f).round(1)
       end
 
       def cargo_volume_at_port_of_arrival
@@ -122,14 +155,14 @@ module Analytic
       end
 
       def sim_data_next_ballast_voyage
-        return if @ata_utc.nil?
+        return if apply_ata.nil?
 
         @sim_data_next_ballast_voyage ||= begin
           depature = Analytic::Spas.where(
             imo_no: @imo,
             "spec.jsmea_voy_voyageinformation_category": DEPATURE_FLAG,
             "spec.jsmea_voy_voyageinformation_leg": 'B',
-            "spec.jsmea_voy_dateandtime_utc": { "$gt": @ata_utc }
+            "spec.jsmea_voy_dateandtime_utc": { "$gt": apply_ata }
           ).sort({ "spec.jsmea_voy_dateandtime_utc": 1 }).first
           return nil if depature.nil?
 
@@ -139,11 +172,11 @@ module Analytic
       end
 
       def sim_data_closest_ata
-        @sim_data_closest_ata ||= sim_closest_time(@ata_utc)
+        @sim_data_closest_ata ||= sim_closest_time(apply_ata)
       end
 
       def sim_data_closest_atd
-        @sim_data_closest_atd ||= sim_closest_time(@atd_utc)
+        @sim_data_closest_atd ||= sim_closest_time(apply_atd)
       end
 
       def sim_data_in_closest_range_atd_ata
@@ -238,7 +271,7 @@ module Analytic
         values =  lng_consumption_fields.pluck(:jsmea_mac_ship_fg_flowcounter_fgc)
         return if values.all?(&:blank?)
 
-        result = values.map(&:to_f).sum / 24
+        values.map(&:to_f).sum / 24
       end
 
       def lng_consumption_stage_calc(lng_consumption_fields)
@@ -296,19 +329,7 @@ module Analytic
       end
 
       def sim_closest_time(time)
-        return if time.blank?
-
-        where_clause = { imo_no: @imo }
-        lte_cond = { "spec.ts": { "$lte": time } }
-        lte_record = Analytic::Sim.where(where_clause.merge(lte_cond))
-                                  .sort({ "spec.ts": -1 })
-                                  .first
-
-        gte_cond = { "spec.ts": { "$gte": time } }
-        gte_record = Analytic::Sim.where(where_clause.merge(gte_cond))
-                                  .sort({ "spec.ts": 1 })
-                                  .first
-        [lte_record, gte_record].compact.min_by { |item| (item.spec['ts'] - time).abs }
+        Analytic::SimServices::ProvideClosestData.new(imo: @imo, time: time).call
       end
 
       def vessel
@@ -317,6 +338,26 @@ module Analytic
 
       def engine_xdf?
         vessel.engine_type.xdf?
+      end
+
+      def apply_atd
+        current_summary&.manual_atd_utc || @atd_utc
+      end
+
+      def apply_ata
+        current_summary&.manual_ata_utc || @ata_utc
+      end
+
+      def current_summary
+        @current_summary ||= Analytic::VoyageSummary.find_by(imo: @imo,
+                                                             voyage_no: voyage_no_format(@voyage_no),
+                                                             voyage_leg: @voyage_leg)
+      end
+
+      def voyage_no_format(no)
+        return if no.blank?
+
+        '%03d' % no.to_i
       end
     end
   end

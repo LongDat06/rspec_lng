@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_12_07_085125) do
+ActiveRecord::Schema.define(version: 2021_12_27_062456) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -47,8 +47,8 @@ ActiveRecord::Schema.define(version: 2021_12_07_085125) do
     t.float "ballast"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.integer "created_by", null: false
-    t.integer "updated_by", null: false
+    t.integer "created_by"
+    t.integer "updated_by"
     t.bigint "updated_by_id"
     t.bigint "created_by_id"
     t.index ["created_by_id"], name: "index_analytic_focs_on_created_by_id"
@@ -102,6 +102,7 @@ ActiveRecord::Schema.define(version: 2021_12_07_085125) do
     t.string "time_zone"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "country_code"
     t.bigint "updated_by_id"
     t.bigint "created_by_id"
     t.index ["created_by"], name: "index_analytic_master_ports_on_created_by"
@@ -114,7 +115,6 @@ ActiveRecord::Schema.define(version: 2021_12_07_085125) do
     t.integer "created_by"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.string "country_code"
     t.bigint "updated_by_id"
     t.bigint "created_by_id"
     t.index ["created_by"], name: "index_analytic_master_routes_on_created_by"
@@ -123,12 +123,11 @@ ActiveRecord::Schema.define(version: 2021_12_07_085125) do
   end
 
   create_table "analytic_report_files", force: :cascade do |t|
-    t.integer "user_id"
     t.text "file_content_data"
     t.string "source"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["user_id"], name: "index_analytic_report_files_on_user_id"
+    t.integer "user_id"
   end
 
   create_table "analytic_routes", force: :cascade do |t|
@@ -136,21 +135,23 @@ ActiveRecord::Schema.define(version: 2021_12_07_085125) do
     t.string "port_2"
     t.string "pacific_route"
     t.string "detail"
-    t.integer "distance"
+    t.float "distance"
+    t.integer "created_by"
+    t.integer "updated_by"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.integer "created_by", null: false
-    t.integer "updated_by", null: false
     t.integer "port_1_id"
     t.integer "port_2_id"
     t.integer "master_route_id"
     t.bigint "updated_by_id"
     t.bigint "created_by_id"
+    t.index ["created_by"], name: "index_analytic_routes_on_created_by"
     t.index ["created_by_id"], name: "index_analytic_routes_on_created_by_id"
     t.index ["port_1", "port_2", "pacific_route"], name: "index_analytic_routes_on_port_1_and_port_2_and_pacific_route", unique: true
     t.index ["port_1", "port_2"], name: "index_analytic_routes_on_port_1_and_port_2"
     t.index ["port_1"], name: "index_analytic_routes_on_port_1"
-    t.index ["port_1_id", "port_2_id", "pacific_route"], name: "port_route", unique: true
+    t.index ["port_1_id", "port_2_id", "master_route_id"], name: "port_route_index", unique: true
+    t.index ["updated_by"], name: "index_analytic_routes_on_updated_by"
     t.index ["updated_by_id"], name: "index_analytic_routes_on_updated_by_id"
   end
 
@@ -175,6 +176,17 @@ ActiveRecord::Schema.define(version: 2021_12_07_085125) do
     t.integer "adq"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "manual_port_dept"
+    t.string "manual_port_arrival"
+    t.datetime "manual_atd_lt"
+    t.datetime "manual_ata_lt"
+    t.datetime "manual_atd_utc"
+    t.datetime "manual_ata_utc"
+    t.string "manual_ata_time_zone"
+    t.string "manual_atd_time_zone"
+    t.integer "manual_distance"
+    t.integer "manual_duration"
+    t.float "manual_average_speed"
     t.index ["imo", "voyage_no", "voyage_leg"], name: "analytic_voyage_summaries_uniq_idx", unique: true
   end
 
@@ -234,12 +246,6 @@ ActiveRecord::Schema.define(version: 2021_12_07_085125) do
   create_table "roles", force: :cascade do |t|
     t.string "name", default: "", null: false
     t.text "activities", default: [], array: true
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-  end
-
-  create_table "tests", force: :cascade do |t|
-    t.jsonb "result", default: {}
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end

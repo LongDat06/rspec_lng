@@ -28,6 +28,12 @@ module Analytic
           json_response({job_id: job&.job_id})
         end
 
+        def update_manual_fields
+          authorize nil, policy_class: Analytic::Voyages::SummaryPolicy
+          Analytic::VoyageSummaryForms::UpdateManualFields.new(update_manual_fields_params).call
+          json_response({})
+        end
+
         def ports
           allow_params = { arrival: 'arrival_ports', dept: 'dept_ports' }
           data = Analytic::VoyageSummary.send(allow_params[params[:type]])
@@ -47,6 +53,17 @@ module Analytic
             :sort_order,
             :page
           )
+        end
+
+        def update_manual_fields_params
+          params.permit(:id,
+                        :manual_port_dept,
+                        :manual_port_arrival,
+                        :manual_atd_lt,
+                        :manual_ata_lt,
+                        :manual_ata_time_zone,
+                        :manual_atd_time_zone,
+                        :manual_distance)
         end
       end
     end

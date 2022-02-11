@@ -52,7 +52,7 @@ Analytic::Engine.routes.draw do
     namespace :downloads do
       resources :sims, only: [:create]
       resources :histories, only: [:index]
-      resources :templates, only: [:index, :create, :destroy, :update]
+      resources :templates, only: %i[index create destroy update]
     end
 
     resources :sim_channels, only: [:index] do
@@ -72,11 +72,14 @@ Analytic::Engine.routes.draw do
           get :fetch_second_ports
         end
       end
-      resources :summary, only: [:index, :show] do
+      resources :summary, only: %i[index show] do
         collection do
           get :arrival_ports, to: 'summary#ports', defaults: { type: :arrival }
           get :dept_ports, to: 'summary#ports', defaults: { type: :dept }
           get :export
+        end
+        member do
+          post :update_manual_fields
         end
       end
     end
@@ -105,16 +108,15 @@ Analytic::Engine.routes.draw do
     end
 
     resources :vessels, module: :vessels, param: :imo do
-      resources :genres, only: [:index, :import] do
+      resources :genres, only: %i[index import] do
         post 'import', on: :collection
         get 'export_mapping', on: :collection
         get 'export_errors', on: :collection
       end
     end
 
-    post "/temp/upload", to: "temporary_upload#upload"
-    mount Analytic::Uploader::TemporaryUploader.upload_endpoint(:cache) => "/temp/upload"
-
+    post '/temp/upload', to: 'temporary_upload#upload'
+    mount Analytic::Uploader::TemporaryUploader.upload_endpoint(:cache) => '/temp/upload'
 
     namespace :heels do
       resources :calculator, only: [:create]
@@ -122,7 +124,7 @@ Analytic::Engine.routes.draw do
     end
 
     namespace :edqs do
-      resources :result, only: [:index, :create, :update, :show, :destroy] do
+      resources :result, only: %i[index create update show destroy] do
         post :finalize, on: :member
       end
     end
@@ -131,6 +133,5 @@ Analytic::Engine.routes.draw do
       resources :countries, only: [:index]
       resources :timezones, only: [:show], param: :country_code
     end
-
   end
 end

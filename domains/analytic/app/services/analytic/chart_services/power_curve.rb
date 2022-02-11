@@ -181,11 +181,11 @@ module Analytic
       end
 
       def ata
-        voyage_summary.ata_utc
+        voyage_summary.apply_ata_utc
       end
 
       def atd
-        voyage_summary.atd_utc
+        voyage_summary.apply_atd_utc
       end
 
       def vessel

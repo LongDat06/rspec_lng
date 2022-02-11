@@ -16,19 +16,7 @@ module Analytic
       private
 
       def sim_closest_time(time)
-        return if time.blank?
-
-        where_clause = { imo_no: @imo }
-        lte_cond = { "spec.ts": { "$lte": time } }
-        lte_record = Analytic::Sim.where(where_clause.merge(lte_cond))
-                                  .sort({ "spec.ts": -1 })
-                                  .first
-
-        gte_cond = { "spec.ts": { "$gte": time } }
-        gte_record = Analytic::Sim.where(where_clause.merge(gte_cond))
-                                  .sort({ "spec.ts": 1 })
-                                  .first
-        [lte_record, gte_record].compact.min_by { |item| (item.spec['ts'] - time).abs }
+        Analytic::SimServices::ProvideClosestData.new(imo: @imo, time: time).call
       end
 
       def sim_data_closest_ata

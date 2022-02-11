@@ -6,21 +6,21 @@ module Analytic
     validates_presence_of :imo, :voyage_no, :voyage_leg
     validates_uniqueness_of :imo, scope: %i[voyage_no voyage_leg]
 
-    scope :dept_ports, -> {
+    scope :dept_ports, lambda {
       where.not(port_dept: nil).order(:port_dept).distinct.pluck(:port_dept)
     }
 
-    scope :arrival_ports, -> {
+    scope :arrival_ports, lambda {
       where.not(port_arrival: nil).order(:port_arrival).distinct.pluck(:port_arrival)
     }
 
-    scope :with_edq_resuls, -> {
+    scope :with_edq_resuls, lambda {
       joins_edq_results.select('analytic_voyage_summaries.*,
                                 analytic_edq_results.heel as estimated_heel,
                                 analytic_edq_results.edq as estimated_edq')
     }
 
-    scope :joins_edq_results, -> {
+    scope :joins_edq_results, lambda {
       joins(<<~SQL)
         LEFT JOIN analytic_edq_results
         ON analytic_voyage_summaries.imo = analytic_edq_results.imo AND analytic_edq_results.finalized = 't'
@@ -87,5 +87,40 @@ module Analytic
       [merge_voyage_no, self.vessel.name]
     end
 
+    def apply_port_dept
+      read_attribute('apply_port_dept') || manual_port_dept || port_dept
+    end
+
+    def apply_port_arrival
+      read_attribute('apply_port_arrival') || manual_port_arrival || port_arrival
+    end
+
+    def apply_atd_lt
+      read_attribute('apply_atd_lt') || manual_atd_lt || atd_lt
+    end
+
+    def apply_ata_lt
+      read_attribute('apply_ata_lt') || manual_ata_lt || ata_lt
+    end
+
+    def apply_atd_utc
+      read_attribute('apply_atd_utc') || manual_atd_utc || atd_utc
+    end
+
+    def apply_ata_utc
+      read_attribute('apply_ata_utc') || manual_ata_utc || ata_utc
+    end
+
+    def apply_distance
+      read_attribute('apply_distance') || manual_distance || distance
+    end
+
+    def apply_duration
+      read_attribute('apply_duration') || manual_duration || duration
+    end
+
+    def apply_average_speed
+      read_attribute('apply_average_speed') || manual_duration || duration
+    end
   end
 end

@@ -16,6 +16,9 @@ module Analytic
 
     scope :with_edq_resuls, lambda {
       joins_edq_results.select('analytic_voyage_summaries.*,
+                                COALESCE(analytic_voyage_summaries.manual_distance, analytic_voyage_summaries.distance) as apply_distance,
+                                COALESCE(analytic_voyage_summaries.manual_duration, analytic_voyage_summaries.duration) as apply_duration,
+                                COALESCE(analytic_voyage_summaries.manual_average_speed, analytic_voyage_summaries.average_speed) as apply_average_speed,
                                 analytic_edq_results.heel as estimated_heel,
                                 analytic_edq_results.edq as estimated_edq')
     }
@@ -76,8 +79,12 @@ module Analytic
     end
 
     def related_voyages(number_of_voyage = DEFAULT_NUMBER_VOYAGE)
-      all_records = self.class.where(imo: self.imo, voyage_leg: self.voyage_leg, port_dept: self.port_dept, port_arrival: self.port_arrival)
-      all_records = all_records.where.not(id: self.id).order({ata_utc: :desc, voyage_no: :asc}).limit(number_of_voyage)
+      all_records = self.class.where(imo: self.imo, voyage_leg: self.voyage_leg)
+      all_records = all_records.where("COALESCE(manual_port_dept, port_dept) = ?", self.apply_port_dept) if self.apply_port_dept.present?
+      all_records = all_records.where("COALESCE(manual_port_arrival, port_arrival) = ?", self.apply_port_arrival) if self.apply_port_arrival.present?
+      all_records = all_records.where("COALESCE(manual_port_dept, port_dept) IS NULL") if self.apply_port_dept.nil?
+      all_records = all_records.where("COALESCE(manual_port_arrival, port_arrival) IS NULL") if self.apply_port_arrival.nil?
+      all_records = all_records.where.not(id: self.id).order("COALESCE(manual_atd_utc, atd_utc) DESC, voyage_no asc").limit(number_of_voyage)
       all_records.to_a
     end
 
@@ -120,7 +127,7 @@ module Analytic
     end
 
     def apply_average_speed
-      read_attribute('apply_average_speed') || manual_duration || duration
+      read_attribute('apply_average_speed') || manual_average_speed || average_speed
     end
   end
 end

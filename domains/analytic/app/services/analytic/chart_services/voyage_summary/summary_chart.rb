@@ -32,8 +32,8 @@ module Analytic
           return [] if selected_voyage.blank?
           @recent_voyages, selected_res = related_voyages(id: selected_voyage.id, imo: selected_voyage.imo,
                                                    voyage_leg: selected_voyage.voyage_leg,
-                                                   port_dept: selected_voyage.port_dept,
-                                                   port_arrival: selected_voyage.port_arrival)
+                                                   port_dept: selected_voyage.apply_port_dept,
+                                                   port_arrival: selected_voyage.apply_port_arrival)
           response = []
           return [MODELING.new(response_attrs(selected_res, selected_voyage.id))] if recent_voyages.blank?
           all_voyages = recent_voyages + [{}, selected_res]
@@ -66,9 +66,9 @@ module Analytic
             parse_res[:actual_heels] ||= []
             parse_res[:estimated_heels] ||= []
 
-            parse_res[:durations] << voy["duration"]
-            parse_res[:distances] << voy["distance"]
-            parse_res[:speeds] << voy["average_speed"]
+            parse_res[:durations] << voy["apply_duration"]
+            parse_res[:distances] << voy["apply_distance"]
+            parse_res[:speeds] << voy["apply_average_speed"]
             parse_res[:adq] << voy["adq"]
             parse_res[:lng_consumption] << voy["lng_consumption"]
             parse_res[:mgo_consumption] << voy["mgo_consumption"]
@@ -97,13 +97,14 @@ module Analytic
         end
 
         def response_attrs(voyage, selected_voyage_id)
+          return {} if voyage.blank?
           {
             id: voyage["id"],
             voyage_no: voyage.get_vessel_names.first,
-            duration: voyage["duration"],
-            distance: voyage["distance"],
+            duration: voyage["apply_duration"],
+            distance: voyage["apply_distance"],
             adq: voyage["adq"],
-            average_speed: voyage["average_speed"],
+            average_speed: voyage["apply_average_speed"],
             lng_consumption: voyage["lng_consumption"],
             mgo_consumption: voyage["mgo_consumption"],
             avg_boil_off_rate: voyage["average_boil_off_rate"],
@@ -123,8 +124,12 @@ module Analytic
 
         def related_voyages(id:, imo:, voyage_leg:, port_dept:, port_arrival:)
           all_records = Analytic::VoyageSummary.with_edq_resuls
-                            .where(imo: imo, voyage_leg: voyage_leg, port_dept: port_dept, port_arrival: port_arrival)
-          voyages = all_records.where("analytic_voyage_summaries.id <> #{id}").order({ata_utc: :desc, "analytic_voyage_summaries.voyage_no" => :asc}).limit(5)
+                            .where(imo: imo, voyage_leg: voyage_leg)
+          all_records = all_records.where("COALESCE(manual_port_dept, port_dept) = ?", port_dept) if port_dept.present?
+          all_records = all_records.where("COALESCE(manual_port_arrival, port_arrival) = ?", port_arrival) if port_arrival.present?
+          all_records = all_records.where("COALESCE(manual_port_dept, port_dept) IS NULL") if port_dept.nil?
+          all_records = all_records.where("COALESCE(manual_port_arrival, port_arrival) IS NULL") if port_arrival.nil?
+          voyages = all_records.where("analytic_voyage_summaries.id <> #{id}").order("COALESCE(manual_atd_utc, atd_utc) DESC, voyage_no asc").limit(5)
 
           selected_voyage = all_records.find_by_id id
 

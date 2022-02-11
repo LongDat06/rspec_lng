@@ -54,8 +54,8 @@ module Analytic
           day_attrs = {}
 
           voyages.each_with_index do |voyage,  index_voyage|
-            next if voyage.atd_utc.blank? || voyage.ata_utc.blank?
-            sims_data = CHARTS_CLASS[chart_name].new(imo, voyage.atd_utc, voyage.ata_utc).call
+            next if voyage.apply_atd_utc.blank? || voyage.apply_ata_utc.blank?
+            sims_data = CHARTS_CLASS[chart_name].new(imo, voyage.apply_atd_utc, voyage.apply_ata_utc).call
             all_voyages[voyage.get_vessel_names.first] = voyage.get_vessel_names.first
             voyage_props << {key: voyage.get_vessel_names.first, label: voyage.get_vessel_names.first.to_sym}
             voyage_no = voyage.get_vessel_names.first

@@ -82,6 +82,11 @@ Analytic::Engine.routes.draw do
           post :update_manual_fields
         end
       end
+      resources :seasonal_voyage_summaries, only: [:index] do
+        get :fetch_voyage_numbers, on: :collection
+        get :fetch_arrival_ports, on: :collection
+        get :fetch_departure_ports, on: :collection
+      end
     end
 
     namespace :management do

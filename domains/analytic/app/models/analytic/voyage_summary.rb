@@ -70,6 +70,30 @@ module Analytic
       read_attribute('estimated_edq') if laden_voyage?
     end
 
+    def related_voyages(number_of_voyage = DEFAULT_NUMBER_VOYAGE)
+      all_records = self.class.where(imo: self.imo, voyage_leg: self.voyage_leg)
+      all_records = all_records.where("COALESCE(manual_port_dept, port_dept) = ?", self.apply_port_dept) if self.apply_port_dept.present?
+      all_records = all_records.where("COALESCE(manual_port_arrival, port_arrival) = ?", self.apply_port_arrival) if self.apply_port_arrival.present?
+      all_records = all_records.where("COALESCE(manual_port_dept, port_dept) IS NULL") if self.apply_port_dept.nil?
+      all_records = all_records.where("COALESCE(manual_port_arrival, port_arrival) IS NULL") if self.apply_port_arrival.nil?
+      all_records = all_records.where.not(id: self.id).order("COALESCE(manual_atd_utc, atd_utc) DESC, voyage_no asc").limit(number_of_voyage)
+      all_records.to_a
+    end
+
+    def get_vessel_names
+      capitalize_name = self.vessel.name.split(" ").map(&:chr).join("")
+      merge_voyage_no = [capitalize_name, "_", self.voyage_no, self.voyage_leg].join("")
+      [merge_voyage_no, self.vessel.name]
+    end
+
+    def self.arrival_ports
+      self.all.map {|voyage| voyage.apply_port_arrival}.uniq
+    end
+
+    def self.departure_ports
+      self.all.map {|voyage| voyage.apply_port_dept}.uniq
+    end
+
     def atd_lt_display
       atd_lt&.strftime(I18n.t('analytic.format_datetime'))
     end

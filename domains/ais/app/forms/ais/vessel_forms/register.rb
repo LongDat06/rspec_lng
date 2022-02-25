@@ -24,9 +24,9 @@ module Ais
           if vessel.save!
             updated_imo_setting
             update_vessel_name
-            start_import_sim
           end
         end
+        start_import_sim
         vessel.reload
       end
 

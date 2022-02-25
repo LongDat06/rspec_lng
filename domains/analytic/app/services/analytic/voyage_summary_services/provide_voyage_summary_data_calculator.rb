@@ -107,7 +107,7 @@ module Analytic
         apply_distance = current_summary&.manual_distance || distance
         apply_duration = manual_duration || duration
 
-        return if apply_duration.nil? || apply_duration.zero?
+        return if apply_distance.nil? || apply_duration.nil? || apply_duration.zero?
 
         avg_speed_calc(apply_distance, apply_duration)
       end
@@ -348,7 +348,7 @@ module Analytic
       def pacific_voyage
         @pacific_voyage ||= fetching_pacific_voyage(@imo, apply_atd, apply_ata)
       end
- 
+
       def apply_atd
         current_summary&.manual_atd_utc || @atd_utc
       end

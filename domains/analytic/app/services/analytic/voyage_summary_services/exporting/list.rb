@@ -7,7 +7,7 @@ module Analytic
         def initialize(params: {})
           @options = {}
           options[:imo] = params[:imo]
-          options[:from_time] = params[:from_to]
+          options[:from_time] = params[:from_time]
           options[:to_time] = params[:to_time]
           options[:port_dept] = params[:port_dept]
           options[:port_arrival] = params[:port_arrival]

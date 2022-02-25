@@ -24,8 +24,8 @@ module Analytic
 
         def export
           authorize nil, policy_class: Analytic::Voyages::SummaryPolicy
-          job = Analytic::VoyageSummaryJob::ExportJob.set(wait: 3.seconds).perform_later(summary_params)
-          json_response({job_id: job&.job_id})
+          job = Analytic::VoyageSummaryJob::ExportJob.perform_later(summary_params)
+          json_response({job_id: summary_params[:job_id]})
         end
 
         def update_manual_fields
@@ -51,6 +51,7 @@ module Analytic
             :voyage_leg,
             :sort_by,
             :sort_order,
+            :job_id,
             :page
           )
         end

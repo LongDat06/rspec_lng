@@ -6,7 +6,7 @@ module Analytic
 
       def perform(params = {})
         url = Analytic::VoyageSummaryServices::Exporting::List.new(params: params).call
-        send_broadcast(self.job_id, url)
+        send_broadcast(params[:job_id], url)
       end
 
       private

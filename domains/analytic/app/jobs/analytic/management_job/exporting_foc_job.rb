@@ -4,9 +4,9 @@ module Analytic
       queue_as :downloading_job
       sidekiq_options retry: false
 
-      def perform(imo, sort_by, sort_order)
+      def perform(imo, sort_by, sort_order, job_id)
         url = Analytic::ManagementServices::Exporting::Foc.new(imo, sort_by, sort_order).call
-        send_broadcast(self.job_id, url)
+        send_broadcast(job_id, url)
       end
 
       def send_broadcast(job_id, url)

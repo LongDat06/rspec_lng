@@ -49,6 +49,7 @@ module Analytic
             :port_arrival,
             :voyage_no,
             :voyage_leg,
+            :pacific_voyage,
             :sort_by,
             :sort_order,
             :job_id,

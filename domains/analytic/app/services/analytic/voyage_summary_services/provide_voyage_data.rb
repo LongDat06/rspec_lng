@@ -18,7 +18,8 @@ module Analytic
           data = item[:_id]
           MODELING.new(imo: data[:imo],
                        voyage_no: data[:voyage_no],
-                       voyage_leg: data[:voyage_leg])
+                       voyage_leg: data[:voyage_leg]
+                      )
         end
       end
 
@@ -41,7 +42,8 @@ module Analytic
           "$group": {
             "_id": { "imo": "$imo_no",
                      "voyage_no": "$spec.jsmea_voy_voyageinformation_voyageno",
-                     "voyage_leg": "$spec.jsmea_voy_voyageinformation_leg" }
+                     "voyage_leg": "$spec.jsmea_voy_voyageinformation_leg"
+                    }
           }
         }
       end

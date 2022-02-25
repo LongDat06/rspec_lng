@@ -13,7 +13,8 @@ module Analytic
           voyage_data.each do |item|
             Analytic::VoyageSummaryServices::Importing::ImportProcessing.new(imo: item.imo,
                                                                              voyage_no: item.voyage_no,
-                                                                             voyage_leg: item.voyage_leg).()
+                                                                             voyage_leg: item.voyage_leg
+                                                                             ).()
           end
         end
 

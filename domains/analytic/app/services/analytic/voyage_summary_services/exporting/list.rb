@@ -13,6 +13,7 @@ module Analytic
           options[:port_arrival] = params[:port_arrival]
           options[:voyage_no] = params[:voyage_no]
           options[:voyage_leg] = params[:voyage_leg]
+          options[:pacific_voyage] = params[:pacific_voyage]
           options[:sort_by] = params[:sort_by]
           options[:sort_order] = params[:sort_order]
         end
@@ -31,10 +32,13 @@ module Analytic
         attr_reader :options
 
         def csv_enumerator
+          pacific = {'pacific_voyage' => {'true' => 'Yes', 'false' => 'No'}}
           CSV.open(csv_tmp_file, 'w') do |writer|
             writer << mapping_fields.keys
             voyage_summaries.each do |item|
-              writer << mapping_fields.map { |_, field| item.send(field) }
+              writer << mapping_fields.map do |_, field|
+                pacific[field].present? ? pacific[field][item.send(field).to_s] : item.send(field)
+              end
             end
           end
         end
@@ -48,6 +52,7 @@ module Analytic
           {
             'Vessel': 'vessel_name',
             'Voyage No.': 'voyage_name',
+            'Pacific Voyage': 'pacific_voyage',
             'Departure Port': 'port_dept',
             'Arrival Port': 'port_arrival',
             'ATD (LT)': 'atd_lt_display',

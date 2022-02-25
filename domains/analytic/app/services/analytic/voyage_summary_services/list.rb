@@ -11,6 +11,7 @@ module Analytic
         @port_arrival = params[:port_arrival]
         @voyage_no = params[:voyage_no]
         @voyage_leg = params[:voyage_leg]
+        @pacific_voyage = params[:pacific_voyage]
         @sort_by = params[:sort_by]
         @sort_order = params[:sort_order]
       end
@@ -33,7 +34,8 @@ module Analytic
           end
           relation = relation.where(voyage_no: @voyage_no) if @voyage_no.present?
           relation = relation.where(voyage_leg: voyage_leg_field(@voyage_leg)) if @voyage_leg.present?
-          relation.order(sort_by_parser => sort_order_parser)
+          relation = relation.where(pacific_voyage: @pacific_voyage) if @pacific_voyage.present?
+          relation.order({sort_by_parser => sort_order_parser})
         end
       end
 
@@ -57,6 +59,7 @@ module Analytic
           'actual_heel' => 'actual_heel',
           'adq' => 'adq',
           'estimated_heel' => estimated_heel_clause,
+          'pacific_voyage' => 'pacific_voyage',
           'estimated_edq' => estimated_edq_clause
         }
         Arel.sql(allow_sort_fields.fetch(@sort_by, 'voyage_no'))

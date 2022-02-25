@@ -16,6 +16,7 @@ module Analytic
             data << Analytic::VoyageSummary.new(imo: item.imo,
                                                 voyage_no: voyage_no_format(item.voyage_no),
                                                 voyage_leg: item.voyage_leg.to_s.upcase,
+                                                pacific_voyage: item.pacific_voyage,
                                                 port_dept: port_name_format(item.port_dept),
                                                 atd_lt: item.atd_lt,
                                                 atd_utc: item.atd_utc,
@@ -44,7 +45,7 @@ module Analytic
         private
 
         def update_columns
-          %i[port_dept atd_lt atd_utc port_arrival ata_lt ata_utc duration distance average_speed
+          %i[pacific_voyage port_dept atd_lt atd_utc port_arrival ata_lt ata_utc duration distance average_speed
              cargo_volume_at_port_of_arrival lng_consumption mgo_consumption average_boil_off_rate
              actual_heel adq manual_duration manual_average_speed]
         end

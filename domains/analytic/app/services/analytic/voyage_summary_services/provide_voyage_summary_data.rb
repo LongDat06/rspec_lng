@@ -8,6 +8,7 @@ module Analytic
         :imo,
         :voyage_no,
         :voyage_leg,
+        :pacific_voyage,
         :port_dept,
         :atd_lt,
         :atd_utc,
@@ -46,6 +47,7 @@ module Analytic
           record = MODELING.new(imo: item[:imo],
                                 voyage_no: item[:voyage_no],
                                 voyage_leg: item[:voyage_leg],
+                                pacific_voyage: addition_data.pacific_voyage,
                                 atd_utc: item[:atd_utc],
                                 ata_utc: item[:ata_utc],
                                 port_dept: item[:port_dept],
@@ -65,6 +67,7 @@ module Analytic
                                 manual_average_speed: addition_data.manual_average_speed)
           data << record
         end
+
         data
       end
 
@@ -126,7 +129,7 @@ module Analytic
           "$group": {
             "_id": { "imo": '$imo_no',
                      "voyage_no": '$spec.jsmea_voy_voyageinformation_voyageno',
-                     "voyage_leg": '$spec.jsmea_voy_voyageinformation_leg' },
+                     "voyage_leg": '$spec.jsmea_voy_voyageinformation_leg'},
             "items": {
               "$push": {
                 "ts": '$spec.ts',

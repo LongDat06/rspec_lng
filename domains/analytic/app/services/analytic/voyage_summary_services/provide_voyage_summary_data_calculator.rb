@@ -1,6 +1,7 @@
 module Analytic
   module VoyageSummaryServices
     class ProvideVoyageSummaryDataCalculator
+      include TrackingPacificVoyage
       DEPATURE_FLAG = '3:DEP'.freeze
       MODELING = Struct.new(
         :duration,
@@ -13,6 +14,7 @@ module Analytic
         :mgo_consumption,
         :average_boil_off_rate,
         :actual_heel,
+        :pacific_voyage,
         :adq,
         keyword_init: true
       )
@@ -37,6 +39,7 @@ module Analytic
           mgo_consumption: mgo_consumption,
           average_boil_off_rate: average_boil_off_rate,
           actual_heel: actual_heel,
+          pacific_voyage: pacific_voyage,
           adq: adq
         )
       end
@@ -77,7 +80,9 @@ module Analytic
             {
               "$match": { imo_no: @imo,
                           "spec.jsmea_voy_voyageinformation_voyageno": @voyage_no,
-                          "spec.jsmea_voy_voyageinformation_leg": @voyage_leg }
+                          "spec.jsmea_voy_voyageinformation_leg": @voyage_leg,
+                          "spec.jsmea_voy_dateandtime_utc": { "$gte": @atd_utc, "$lte": @ata_utc }
+                        }
             },
             {
               "$group": { "_id": '$spec.ts',
@@ -340,6 +345,10 @@ module Analytic
         vessel.engine_type.xdf?
       end
 
+      def pacific_voyage
+        @pacific_voyage ||= fetching_pacific_voyage(@imo, apply_atd, apply_ata)
+      end
+ 
       def apply_atd
         current_summary&.manual_atd_utc || @atd_utc
       end

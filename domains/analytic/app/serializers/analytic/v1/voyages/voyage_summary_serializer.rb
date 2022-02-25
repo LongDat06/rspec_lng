@@ -9,6 +9,7 @@ module Analytic
                    :voyage_name,
                    :voyage_no,
                    :voyage_leg,
+                   :pacific_voyage,
                    :port_dept,
                    :atd_lt,
                    :atd_utc,

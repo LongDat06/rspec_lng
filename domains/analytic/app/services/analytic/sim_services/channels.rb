@@ -49,6 +49,7 @@ module Analytic
       def sort_order_parser
         @sort_order == "desc" ? -1 : 1
       end
+
     end
   end
 end

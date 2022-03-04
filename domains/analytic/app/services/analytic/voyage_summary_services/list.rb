@@ -26,8 +26,17 @@ module Analytic
         @voyage_summaries ||= begin
           relation = Analytic::VoyageSummary.joins_edq_results.joins(:vessel).select(select_fields)
           relation = relation.where(imo: @imo) if @imo.present?
-          relation = relation.where("#{apply_port_dept} = ?", @port_dept) if @port_dept.present?
-          relation = relation.where("#{apply_port_arrival}= ?", @port_arrival) if @port_arrival.present?
+
+          if @port_dept.present?
+            port_dept_query = @port_dept == "-" ? "#{apply_port_dept} IS NULL" : ["#{apply_port_dept} = ?", @port_dept]
+            relation = relation.where(port_dept_query)
+          end
+
+          if @port_arrival.present?
+            port_arrival_query = @port_arrival == "-" ? "#{apply_port_arrival} IS NULL" : ["#{apply_port_arrival} = ?", @port_arrival]
+            relation = relation.where(port_arrival_query)
+          end
+
           if @from_time.present? && @to_time.present?
             relation = relation.where("(#{apply_atd_lt}, #{apply_ata_lt}) OVERLAPS (?,?)", @from_time.to_datetime.beginning_of_day,
                                       @to_time.to_datetime.end_of_day)

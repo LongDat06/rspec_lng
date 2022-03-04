@@ -36,7 +36,7 @@ module Analytic
         end
 
         def fetch_departure_ports
-          json_response(Analytic::VoyageSummary.departure_ports)
+          json_response(Analytic::VoyageSummary.dept_ports)
         end
       end
     end

@@ -6,14 +6,6 @@ module Analytic
     validates_presence_of :imo, :voyage_no, :voyage_leg
     validates_uniqueness_of :imo, scope: %i[voyage_no voyage_leg]
 
-    scope :dept_ports, lambda {
-      where.not(port_dept: nil).order(:port_dept).distinct.pluck(:port_dept)
-    }
-
-    scope :arrival_ports, lambda {
-      where.not(port_arrival: nil).order(:port_arrival).distinct.pluck(:port_arrival)
-    }
-
     scope :with_edq_resuls, lambda {
       joins_edq_results.select('analytic_voyage_summaries.*,
                                 COALESCE(analytic_voyage_summaries.manual_distance, analytic_voyage_summaries.distance) as apply_distance,
@@ -86,12 +78,14 @@ module Analytic
       [merge_voyage_no, self.vessel.name]
     end
 
-    def self.arrival_ports
-      self.all.map {|voyage| voyage.apply_port_arrival}.uniq
+    def self.dept_ports
+      self.all.select("distinct COALESCE(manual_port_dept, port_dept) as apply_port_dept")
+              .order(:apply_port_dept).map {|voyage| voyage["apply_port_dept"]}
     end
 
-    def self.departure_ports
-      self.all.map {|voyage| voyage.apply_port_dept}.uniq
+    def self.arrival_ports
+      self.all.select("distinct COALESCE(manual_port_arrival, port_arrival) as apply_port_arrival")
+              .order(:apply_port_arrival).map {|voyage| voyage["apply_port_arrival"]}
     end
 
     def atd_lt_display

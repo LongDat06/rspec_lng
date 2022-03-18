@@ -38,14 +38,14 @@ Analytic::Engine.routes.draw do
       resources :xdf_cargo, only: [:index]
 
       namespace :voyage_summary do
-        resources :summaries, only: [:index]
-        resources :tank_temperature, only: [:index]
-        resources :average_speeds, only: [:index]
-        resources :cargo_volumns, only: [:index]
-        resources :forcing_vapor_volumns, only: [:index]
-        resources :average_boil_off_rates, only: [:index]
-        resources :lng_consumption, only: [:index]
-        resources :mgo_consumption, only: [:index]
+        get 'summaries/:voyage_id', :to => 'summaries#index'
+        get 'tank_temperature/:voyage_id', :to => 'tank_temperature#index'
+        get 'average_speeds/:voyage_id', :to => 'average_speeds#index'
+        get 'cargo_volumns/:voyage_id', :to => 'cargo_volumns#index'
+        get 'forcing_vapor_volumns/:voyage_id', :to => 'forcing_vapor_volumns#index'
+        get 'average_boil_off_rates/:voyage_id', :to => 'average_boil_off_rates#index'
+        get 'lng_consumption/:voyage_id', :to => 'lng_consumption#index'
+        get 'mgo_consumption/:voyage_id', :to => 'mgo_consumption#index'
       end
     end
 

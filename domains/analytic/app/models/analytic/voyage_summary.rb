@@ -109,7 +109,7 @@ module Analytic
 
     def get_vessel_names
       capitalize_name = self.vessel.name.split(" ").map(&:chr).join("")
-      merge_voyage_no = [capitalize_name, "_", self.voyage_no, self.voyage_leg].join("")
+      merge_voyage_no = [capitalize_name, "_", self.voyage_no, self.voyage_leg, "_", self.leg_id].join("")
       [merge_voyage_no, self.vessel.name]
     end
 

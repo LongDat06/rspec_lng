@@ -2,7 +2,7 @@ module Analytic
   module ChartServices
     module VoyageSummary
       class StageTankTemperatureChart
-        attr_reader :imo, :voyage_no, :voyage_leg
+        attr_reader :voyage_id
 
         MODELING = Struct.new(
           :id,
@@ -21,14 +21,12 @@ module Analytic
           keyword_init: true
         )
 
-        def initialize(imo:, voyage_no:, voyage_leg:, chart_name: nil)
-          @imo = imo
-          @voyage_no = voyage_no
-          @voyage_leg = voyage_leg
+        def initialize(voyage_id:, chart_name: nil)
+          @voyage_id = voyage_id
         end
 
         def call
-          selected_voyage = Analytic::VoyageSummary.find_by(imo: imo, voyage_no: voyage_no, voyage_leg: voyage_leg)
+          selected_voyage = Analytic::VoyageSummary.find_by_id voyage_id
           return [] if selected_voyage.blank?
           voyages = selected_voyage.related_voyages(2)
           voyages << selected_voyage

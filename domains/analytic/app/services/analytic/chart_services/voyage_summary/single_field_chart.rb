@@ -2,7 +2,7 @@ module Analytic
   module ChartServices
     module VoyageSummary
       class SingleFieldChart
-        attr_reader :imo, :voyage_no, :voyage_leg, :chart_name
+        attr_reader :voyage_id, :chart_name
 
         CHARTS_CLASS = {
                           Analytic::VoyageSummary::BOIL_OFF_RATE_CHART => Analytic::ChartServices::VoyageSummary::Query::AverageBoilOffRate,
@@ -30,16 +30,14 @@ module Analytic
           keyword_init: true
         )
 
-        def initialize(imo:, voyage_no:, voyage_leg:, chart_name:, is_positive_number: false)
-          @imo = imo
-          @voyage_no = voyage_no
-          @voyage_leg = voyage_leg
+        def initialize(voyage_id:, chart_name:, is_positive_number: false)
+          @voyage_id = voyage_id
           @chart_name = chart_name
           @is_positive_number = is_positive_number
         end
 
         def call
-          selected_voyage = Analytic::VoyageSummary.find_by(imo: imo, voyage_no: voyage_no, voyage_leg: voyage_leg)
+          selected_voyage = Analytic::VoyageSummary.find_by_id voyage_id
           return [] if selected_voyage.blank?
           voyages = selected_voyage.related_voyages
           voyages << selected_voyage

@@ -2,7 +2,7 @@ module Analytic
   module ChartServices
     module VoyageSummary
       class SummaryChart
-        attr_accessor :imo, :voyage_no, :voyage_leg, :recent_voyages
+        attr_accessor :voyage_id, :recent_voyages
 
         MODELING = Struct.new(
           :id,
@@ -22,13 +22,12 @@ module Analytic
           :is_average,
           keyword_init: true
         )
-        def initialize(imo, voyage_no, voyage_leg)
-          @imo = imo
-          @voyage_no = voyage_no
-          @voyage_leg = voyage_leg
+        def initialize(voyage_id)
+          @voyage_id = voyage_id
         end
+
         def call
-          selected_voyage = Analytic::VoyageSummary.find_by(imo: imo, voyage_no: voyage_no, voyage_leg: voyage_leg)
+          selected_voyage = Analytic::VoyageSummary.find_by_id(voyage_id)
           return [] if selected_voyage.blank?
           @recent_voyages, selected_res = related_voyages(id: selected_voyage.id, imo: selected_voyage.imo,
                                                    voyage_leg: selected_voyage.voyage_leg,

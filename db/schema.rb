@@ -59,15 +59,17 @@ ActiveRecord::Schema.define(version: 2022_03_16_012825) do
     t.float "speed"
     t.float "laden"
     t.float "ballast"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
     t.integer "created_by"
     t.integer "updated_by"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
     t.bigint "updated_by_id"
     t.bigint "created_by_id"
+    t.index ["created_by"], name: "index_analytic_focs_on_created_by"
     t.index ["created_by_id"], name: "index_analytic_focs_on_created_by_id"
     t.index ["imo", "speed"], name: "index_analytic_focs_on_imo_and_speed", unique: true
     t.index ["imo"], name: "index_analytic_focs_on_imo"
+    t.index ["updated_by"], name: "index_analytic_focs_on_updated_by"
     t.index ["updated_by_id"], name: "index_analytic_focs_on_updated_by_id"
   end
 
@@ -135,11 +137,12 @@ ActiveRecord::Schema.define(version: 2022_03_16_012825) do
   end
 
   create_table "analytic_report_files", force: :cascade do |t|
+    t.integer "user_id"
     t.text "file_content_data"
     t.string "source"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.integer "user_id"
+    t.index ["user_id"], name: "index_analytic_report_files_on_user_id"
   end
 
   create_table "analytic_routes", force: :cascade do |t|
@@ -205,10 +208,8 @@ ActiveRecord::Schema.define(version: 2022_03_16_012825) do
     t.integer "manual_distance"
     t.integer "manual_duration"
     t.float "manual_average_speed"
-    t.integer "voyage_leg_no", default: 1
     t.boolean "pacific_voyage", default: false
     t.integer "leg_id", default: 1
-    t.boolean "disable_reimport", default: false, null: false
     t.index ["imo", "voyage_no", "voyage_leg", "leg_id"], name: "analytic_voyage_summaries_4fields_uniq_idx", unique: true
   end
 
@@ -270,34 +271,6 @@ ActiveRecord::Schema.define(version: 2022_03_16_012825) do
     t.text "activities", default: [], array: true
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-  end
-
-  create_table "shipdc_import_logs", force: :cascade do |t|
-    t.integer "imo", null: false
-    t.string "type", null: false
-    t.datetime "time", null: false
-    t.string "time_step", null: false
-    t.boolean "has_import_ais", default: false, null: false
-    t.boolean "has_retry", default: true, null: false
-    t.string "s3_object_key"
-    t.string "checksum"
-    t.string "job_id"
-    t.string "status", null: false
-    t.string "last_error_msg"
-    t.datetime "enqueued_at"
-    t.datetime "scheduled_at"
-    t.datetime "run_at"
-    t.datetime "done_at"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["checksum"], name: "index_shipdc_import_logs_on_checksum"
-    t.index ["imo"], name: "index_shipdc_import_logs_on_imo"
-    t.index ["job_id"], name: "index_shipdc_import_logs_on_job_id"
-    t.index ["s3_object_key"], name: "index_shipdc_import_logs_on_s3_object_key"
-    t.index ["status"], name: "index_shipdc_import_logs_on_status"
-    t.index ["time"], name: "index_shipdc_import_logs_on_time"
-    t.index ["time_step"], name: "index_shipdc_import_logs_on_time_step"
-    t.index ["type"], name: "index_shipdc_import_logs_on_type"
   end
 
   create_table "tokens", force: :cascade do |t|

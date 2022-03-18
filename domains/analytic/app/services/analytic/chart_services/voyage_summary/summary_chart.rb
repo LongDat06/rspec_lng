@@ -66,16 +66,16 @@ module Analytic
             parse_res[:actual_heels] ||= []
             parse_res[:estimated_heels] ||= []
 
-            parse_res[:durations] << voy["apply_duration"]
-            parse_res[:distances] << voy["apply_distance"]
-            parse_res[:speeds] << voy["apply_average_speed"]
-            parse_res[:adq] << voy["adq"]
-            parse_res[:lng_consumption] << voy["lng_consumption"]
-            parse_res[:mgo_consumption] << voy["mgo_consumption"]
-            parse_res[:average_boil_off_rates] << voy["average_boil_off_rate"]
-            parse_res[:edq] << voy["estimated_edq"]
-            parse_res[:actual_heels] << voy["actual_heel"]
-            parse_res[:estimated_heels] << voy["estimated_heel"]
+            parse_res[:durations] << voy.apply_duration
+            parse_res[:distances] << voy.apply_distance
+            parse_res[:speeds] << voy.apply_average_speed
+            parse_res[:adq] << voy.adq
+            parse_res[:lng_consumption] << voy.lng_consumption
+            parse_res[:mgo_consumption] << voy.mgo_consumption
+            parse_res[:average_boil_off_rates] << voy.average_boil_off_rate
+            parse_res[:edq] << voy.estimated_edq
+            parse_res[:actual_heels] << voy.actual_heel
+            parse_res[:estimated_heels] << voy.estimated_heel
           end
 
           {
@@ -99,19 +99,19 @@ module Analytic
         def response_attrs(voyage, selected_voyage_id)
           return {} if voyage.blank?
           {
-            id: voyage["id"],
+            id: voyage.id,
             voyage_no: voyage.get_vessel_names.first,
-            duration: voyage["apply_duration"],
-            distance: voyage["apply_distance"],
-            adq: voyage["adq"],
-            average_speed: voyage["apply_average_speed"],
-            lng_consumption: voyage["lng_consumption"],
-            mgo_consumption: voyage["mgo_consumption"],
-            avg_boil_off_rate: voyage["average_boil_off_rate"],
-            edq: voyage["estimated_edq"],
+            duration: voyage.apply_duration,
+            distance: voyage.apply_distance,
+            adq: voyage.adq,
+            average_speed: voyage.apply_average_speed,
+            lng_consumption: voyage.lng_consumption,
+            mgo_consumption: voyage.mgo_consumption,
+            avg_boil_off_rate: voyage.average_boil_off_rate,
+            edq: voyage.estimated_edq,
             vessel_name: voyage.get_vessel_names.last,
-            actual_heel: voyage["actual_heel"],
-            estimated_heel: voyage["estimated_heel"],
+            actual_heel: voyage.actual_heel,
+            estimated_heel: voyage.estimated_heel,
             selected: voyage.id == selected_voyage_id,
             is_average: false
           }

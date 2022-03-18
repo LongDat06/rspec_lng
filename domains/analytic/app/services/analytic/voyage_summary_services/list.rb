@@ -44,7 +44,10 @@ module Analytic
           relation = relation.where(voyage_no: @voyage_no) if @voyage_no.present?
           relation = relation.where(voyage_leg: voyage_leg_field(@voyage_leg)) if @voyage_leg.present?
           relation = relation.where(pacific_voyage: @pacific_voyage) if @pacific_voyage.present?
-          relation.order({sort_by_parser => sort_order_parser})
+
+          order_params = {sort_by_parser => sort_order_parser}
+          order_params[:leg_id] ||= :asc
+          relation.order(order_params)
         end
       end
 
@@ -53,6 +56,7 @@ module Analytic
           'vessel_name' => 'vessels.name',
           'voyage_no' => 'voyage_no',
           'voyage_leg' => 'voyage_leg',
+          'leg_id' => 'leg_id',
           'voyage_name' => 'concat(voyage_no, voyage_leg)',
           'apply_port_dept' => apply_port_dept,
           'apply_atd_lt' => apply_atd_lt,

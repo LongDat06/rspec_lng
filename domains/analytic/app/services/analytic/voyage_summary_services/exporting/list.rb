@@ -52,6 +52,7 @@ module Analytic
           {
             'Vessel': 'vessel_name',
             'Voyage No.': 'voyage_name',
+            'Leg Id': 'leg_id',
             'Pacific Voyage': 'pacific_voyage',
             'Departure Port': 'port_dept',
             'Arrival Port': 'port_arrival',

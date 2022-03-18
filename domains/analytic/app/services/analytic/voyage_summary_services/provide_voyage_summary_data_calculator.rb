@@ -19,12 +19,14 @@ module Analytic
         keyword_init: true
       )
 
-      def initialize(imo:, voyage_no:, voyage_leg:, atd_utc:, ata_utc:)
+      def initialize(imo:, voyage_no:, voyage_leg:, leg_id:, atd_utc:, ata_utc:, panama_transit:)
         @imo = imo
         @voyage_no = voyage_no
         @voyage_leg = voyage_leg
+        @leg_id = leg_id
         @atd_utc = atd_utc
         @ata_utc = ata_utc
+        @panama_transit = panama_transit
       end
 
       def call
@@ -143,7 +145,6 @@ module Analytic
 
       def actual_heel
         return if !ballast_voyage? || sim_data_closest_atd.nil?
-
         num = sim_data_closest_atd.spec['jsmea_mac_cargotk_total_volume_ave']
         num.numeric? ? num.round(0) : nil
       end
@@ -152,15 +153,15 @@ module Analytic
         return if !landen_voyage? || cargo_volume_at_port_of_arrival.nil? || sim_data_next_ballast_voyage.nil?
 
         cargo_volume_at_port_of_sim_data_next_ballast_voyage = sim_data_next_ballast_voyage.spec['jsmea_mac_cargotk_total_volume_ave']
-
         return if cargo_volume_at_port_of_sim_data_next_ballast_voyage.blank?
         return unless cargo_volume_at_port_of_sim_data_next_ballast_voyage.numeric?
 
-        cargo_volume_at_port_of_arrival - cargo_volume_at_port_of_sim_data_next_ballast_voyage.round(0)
+        ((@leg_id == 2 && @panama_transit) || !@panama_transit) ?
+          cargo_volume_at_port_of_arrival - cargo_volume_at_port_of_sim_data_next_ballast_voyage.round(0) : nil
       end
 
       def sim_data_next_ballast_voyage
-        return if apply_ata.nil?
+        return if apply_ata.blank?
 
         @sim_data_next_ballast_voyage ||= begin
           depature = Analytic::Spas.where(
@@ -360,7 +361,8 @@ module Analytic
       def current_summary
         @current_summary ||= Analytic::VoyageSummary.find_by(imo: @imo,
                                                              voyage_no: voyage_no_format(@voyage_no),
-                                                             voyage_leg: @voyage_leg)
+                                                             voyage_leg: @voyage_leg,
+                                                             leg_id: @leg_id)
       end
 
       def voyage_no_format(no)

@@ -4,7 +4,8 @@ module Analytic
     belongs_to :vessel, class_name: :Vessel, foreign_key: :imo, primary_key: :imo
 
     validates_presence_of :imo, :voyage_no, :voyage_leg
-    validates_uniqueness_of :imo, scope: %i[voyage_no voyage_leg]
+    validates_uniqueness_of :imo, scope: %i[voyage_no voyage_leg leg_id]
+    attr_accessor :apply_atd_utc_first_leg, :apply_ata_utc_second_leg
 
     scope :with_edq_resuls, lambda {
       joins_edq_results.select('analytic_voyage_summaries.*,
@@ -146,6 +147,19 @@ module Analytic
 
     def apply_average_speed
       read_attribute('apply_average_speed') || manual_average_speed || average_speed
+    end
+
+    def self.fetch_whole_voyage(param_id)
+      voyage = Analytic::VoyageSummary.with_edq_resuls.find(param_id)
+      whole_voyage = Analytic::VoyageSummary.where(imo: voyage.imo, voyage_no: voyage.voyage_no, voyage_leg: voyage.voyage_leg).order(:leg_id)
+      if whole_voyage.size == 1
+        voyage.apply_atd_utc_first_leg = voyage.apply_atd_utc
+        voyage.apply_ata_utc_second_leg = voyage.apply_ata_utc
+      else
+        voyage.apply_atd_utc_first_leg = whole_voyage.first.apply_atd_utc
+        voyage.apply_ata_utc_second_leg = whole_voyage.last.apply_ata_utc
+      end
+      voyage
     end
   end
 end

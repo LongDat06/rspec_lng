@@ -16,6 +16,7 @@ module Analytic
             data << Analytic::VoyageSummary.new(imo: item.imo,
                                                 voyage_no: voyage_no_format(item.voyage_no),
                                                 voyage_leg: item.voyage_leg.to_s.upcase,
+                                                leg_id: item.leg_id,
                                                 pacific_voyage: item.pacific_voyage,
                                                 port_dept: port_name_format(item.port_dept),
                                                 atd_lt: item.atd_lt,
@@ -36,10 +37,9 @@ module Analytic
                                                 manual_average_speed: item.manual_average_speed)
           end
 
-          if data.present?
-            Analytic::VoyageSummary.import data, on_duplicate_key_update: { conflict_target: %i[imo voyage_no voyage_leg],
-                                                                            columns: update_columns }
-          end
+          Analytic::VoyageSummary.import data, on_duplicate_key_update: { conflict_target: %i(imo voyage_no voyage_leg leg_id),
+                                                                          columns: update_columns } if data.present?
+
         end
 
         private
@@ -54,6 +54,7 @@ module Analytic
           @voyage_data ||= Analytic::VoyageSummaryServices::ProvideVoyageSummaryData.new(imo: @imo,
                                                                                          voyage_no: @voyage_no&.to_i,
                                                                                          voyage_leg: @voyage_leg).call
+
         end
 
         def port_name_format(port)

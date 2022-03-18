@@ -135,9 +135,9 @@ module Analytic
                                                                   COALESCE(analytic_voyage_summaries.manual_distance, analytic_voyage_summaries.distance) as apply_distance,
                                                                   COALESCE(analytic_voyage_summaries.manual_duration, analytic_voyage_summaries.duration) as apply_duration,
                                                                   COALESCE(analytic_voyage_summaries.manual_average_speed, analytic_voyage_summaries.average_speed) as apply_average_speed,
-                                                                  concat(voyage_no, voyage_leg) as full_voyage_no,
+                                                                  concat(voyage_no, voyage_leg, '_', leg_id) as full_voyage_no,
                                                                   vessels.name as vessel_name, duration, distance, average_speed, mgo_consumption")
-                                                          .order(voyage_no: :desc, voyage_leg: :desc)
+                                                          .order(voyage_no: :desc, voyage_leg: :desc, leg_id: :asc)
 
           voyages = voyages.where("analytic_voyage_summaries.imo IN (?)", imos) if imos.present?
           if voyage_ids.present?

@@ -55,7 +55,7 @@ module Analytic
 
           voyages.each_with_index do |voyage,  index_voyage|
             next if voyage.apply_atd_utc.blank? || voyage.apply_ata_utc.blank?
-            sims_data = CHARTS_CLASS[chart_name].new(imo, voyage.apply_atd_utc, voyage.apply_ata_utc).call
+            sims_data = CHARTS_CLASS[chart_name].new(voyage.imo, voyage.apply_atd_utc, voyage.apply_ata_utc).call
             all_voyages[voyage.get_vessel_names.first] = voyage.get_vessel_names.first
             voyage_props << {key: voyage.get_vessel_names.first, label: voyage.get_vessel_names.first.to_sym}
             voyage_no = voyage.get_vessel_names.first

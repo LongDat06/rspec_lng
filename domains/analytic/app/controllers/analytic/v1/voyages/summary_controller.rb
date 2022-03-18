@@ -16,7 +16,7 @@ module Analytic
         end
 
         def show
-          summary = Analytic::VoyageSummary.with_edq_resuls.find(params[:id])
+          summary = Analytic::VoyageSummary.fetch_whole_voyage(params[:id])
           authorize summary, policy_class: Analytic::Voyages::SummaryPolicy
           serializable_hash = VoyageSummarySerializer.new(summary).serializable_hash
           json_response(serializable_hash)

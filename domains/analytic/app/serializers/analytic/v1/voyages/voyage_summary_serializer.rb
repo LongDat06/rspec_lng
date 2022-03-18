@@ -9,6 +9,7 @@ module Analytic
                    :voyage_name,
                    :voyage_no,
                    :voyage_leg,
+                   :leg_id,
                    :pacific_voyage,
                    :port_dept,
                    :atd_lt,
@@ -46,7 +47,9 @@ module Analytic
                    :manual_atd_time_zone,
                    :manual_distance,
                    :manual_duration,
-                   :manual_average_speed
+                   :manual_average_speed,
+                   :apply_atd_utc_first_leg,
+                   :apply_ata_utc_second_leg
       end
     end
   end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_12_27_062456) do
+ActiveRecord::Schema.define(version: 2022_03_16_012825) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -22,10 +22,10 @@ ActiveRecord::Schema.define(version: 2021_12_27_062456) do
     t.float "init_lng_volume"
     t.float "unpumpable"
     t.float "cosuming_lng_of_laden_voyage"
-    t.float "heel"
+    t.float "cosuming_lng_of_ballast_voyage"
     t.float "edq"
-    t.bigint "laden_voyage_id"
-    t.bigint "ballast_voyage_id"
+    t.bigint "laden_voyage_leg1_id"
+    t.bigint "ballast_voyage_leg1_id"
     t.boolean "finalized", default: false, null: false
     t.bigint "author_id"
     t.bigint "updated_by_id"
@@ -33,10 +33,24 @@ ActiveRecord::Schema.define(version: 2021_12_27_062456) do
     t.datetime "updated_at", precision: 6, null: false
     t.string "laden_voyage_no", null: false
     t.string "ballast_voyage_no", null: false
+    t.boolean "laden_pa_transit", default: false, null: false
+    t.boolean "ballast_pa_transit", default: false, null: false
+    t.float "landen_fuel_consumption_in_pa"
+    t.float "ballast_fuel_consumption_in_pa"
+    t.float "cosuming_lng_of_laden_voyage_leg1"
+    t.float "cosuming_lng_of_laden_voyage_leg2"
+    t.float "cosuming_lng_of_ballast_voyage_leg1"
+    t.float "cosuming_lng_of_ballast_voyage_leg2"
+    t.bigint "laden_voyage_leg2_id"
+    t.bigint "ballast_voyage_leg2_id"
+    t.float "estimated_heel_leg1"
+    t.float "estimated_heel_leg2"
     t.index ["author_id"], name: "index_analytic_edq_results_on_author_id"
-    t.index ["ballast_voyage_id"], name: "index_analytic_edq_results_on_ballast_voyage_id"
+    t.index ["ballast_voyage_leg1_id"], name: "index_analytic_edq_results_on_ballast_voyage_leg1_id"
+    t.index ["ballast_voyage_leg2_id"], name: "index_analytic_edq_results_on_ballast_voyage_leg2_id"
     t.index ["imo"], name: "index_analytic_edq_results_on_imo"
-    t.index ["laden_voyage_id"], name: "index_analytic_edq_results_on_laden_voyage_id"
+    t.index ["laden_voyage_leg1_id"], name: "index_analytic_edq_results_on_laden_voyage_leg1_id"
+    t.index ["laden_voyage_leg2_id"], name: "index_analytic_edq_results_on_laden_voyage_leg2_id"
     t.index ["updated_by_id"], name: "index_analytic_edq_results_on_updated_by_id"
   end
 
@@ -74,9 +88,6 @@ ActiveRecord::Schema.define(version: 2021_12_27_062456) do
 
   create_table "analytic_heel_results", force: :cascade do |t|
     t.string "type", null: false
-    t.string "port_dept"
-    t.string "port_arrival"
-    t.string "pacific_route"
     t.datetime "etd", null: false
     t.datetime "eta", null: false
     t.float "estimated_distance", null: false
@@ -91,6 +102,7 @@ ActiveRecord::Schema.define(version: 2021_12_27_062456) do
     t.bigint "port_dept_id"
     t.bigint "port_arrival_id"
     t.bigint "master_route_id"
+    t.float "sea_margin", default: 0.0, null: false
     t.index ["master_route_id"], name: "index_analytic_heel_results_on_master_route_id"
     t.index ["port_arrival_id"], name: "index_analytic_heel_results_on_port_arrival_id"
     t.index ["port_dept_id"], name: "index_analytic_heel_results_on_port_dept_id"
@@ -155,6 +167,12 @@ ActiveRecord::Schema.define(version: 2021_12_27_062456) do
     t.index ["updated_by_id"], name: "index_analytic_routes_on_updated_by_id"
   end
 
+  create_table "analytic_settings", force: :cascade do |t|
+    t.string "code", null: false
+    t.string "value"
+    t.index ["code"], name: "index_analytic_settings_on_code", unique: true
+  end
+
   create_table "analytic_voyage_summaries", force: :cascade do |t|
     t.integer "imo", null: false
     t.string "voyage_no", null: false
@@ -187,7 +205,11 @@ ActiveRecord::Schema.define(version: 2021_12_27_062456) do
     t.integer "manual_distance"
     t.integer "manual_duration"
     t.float "manual_average_speed"
-    t.index ["imo", "voyage_no", "voyage_leg"], name: "analytic_voyage_summaries_uniq_idx", unique: true
+    t.integer "voyage_leg_no", default: 1
+    t.boolean "pacific_voyage", default: false
+    t.integer "leg_id", default: 1
+    t.boolean "disable_reimport", default: false, null: false
+    t.index ["imo", "voyage_no", "voyage_leg", "leg_id"], name: "analytic_voyage_summaries_4fields_uniq_idx", unique: true
   end
 
   create_table "ecdis_points", force: :cascade do |t|
@@ -248,6 +270,34 @@ ActiveRecord::Schema.define(version: 2021_12_27_062456) do
     t.text "activities", default: [], array: true
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "shipdc_import_logs", force: :cascade do |t|
+    t.integer "imo", null: false
+    t.string "type", null: false
+    t.datetime "time", null: false
+    t.string "time_step", null: false
+    t.boolean "has_import_ais", default: false, null: false
+    t.boolean "has_retry", default: true, null: false
+    t.string "s3_object_key"
+    t.string "checksum"
+    t.string "job_id"
+    t.string "status", null: false
+    t.string "last_error_msg"
+    t.datetime "enqueued_at"
+    t.datetime "scheduled_at"
+    t.datetime "run_at"
+    t.datetime "done_at"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["checksum"], name: "index_shipdc_import_logs_on_checksum"
+    t.index ["imo"], name: "index_shipdc_import_logs_on_imo"
+    t.index ["job_id"], name: "index_shipdc_import_logs_on_job_id"
+    t.index ["s3_object_key"], name: "index_shipdc_import_logs_on_s3_object_key"
+    t.index ["status"], name: "index_shipdc_import_logs_on_status"
+    t.index ["time"], name: "index_shipdc_import_logs_on_time"
+    t.index ["time_step"], name: "index_shipdc_import_logs_on_time_step"
+    t.index ["type"], name: "index_shipdc_import_logs_on_type"
   end
 
   create_table "tokens", force: :cascade do |t|
@@ -320,8 +370,10 @@ ActiveRecord::Schema.define(version: 2021_12_27_062456) do
     t.index ["imo"], name: "index_vessels_on_imo", unique: true
   end
 
-  add_foreign_key "analytic_edq_results", "analytic_heel_results", column: "ballast_voyage_id"
-  add_foreign_key "analytic_edq_results", "analytic_heel_results", column: "laden_voyage_id"
+  add_foreign_key "analytic_edq_results", "analytic_heel_results", column: "ballast_voyage_leg1_id"
+  add_foreign_key "analytic_edq_results", "analytic_heel_results", column: "ballast_voyage_leg2_id"
+  add_foreign_key "analytic_edq_results", "analytic_heel_results", column: "laden_voyage_leg1_id"
+  add_foreign_key "analytic_edq_results", "analytic_heel_results", column: "laden_voyage_leg2_id"
   add_foreign_key "analytic_edq_results", "users", column: "author_id"
   add_foreign_key "analytic_edq_results", "users", column: "updated_by_id"
   add_foreign_key "analytic_heel_results", "analytic_master_ports", column: "port_arrival_id"

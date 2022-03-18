@@ -2,7 +2,7 @@ module Ais
   module VesselForms
     class Validation < StandardError; end
     class Register < Base
-      include Wisper::Publisher 
+      include Wisper::Publisher
 
       def create
         if valid?

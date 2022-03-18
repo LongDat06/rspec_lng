@@ -9,9 +9,14 @@ module Analytic
 
       def save!
         if valid?
-          edq_result.assign_attributes(attributes.except(:laden_voyage, :ballast_voyage))
-          edq_result.build_laden_voyage(laden_voyage.attributes) if laden_voyage.present?
-          edq_result.build_ballast_voyage(ballast_voyage.attributes) if ballast_voyage.present?
+          edq_result.assign_attributes(attributes.except(:laden_voyage_leg1,
+                                                         :ballast_voyage_leg1,
+                                                         :laden_voyage_leg2,
+                                                         :ballast_voyage_leg2))
+          edq_result.build_laden_voyage_leg1(laden_voyage_leg1.attributes) if laden_voyage_leg1.present?
+          edq_result.build_ballast_voyage_leg1(ballast_voyage_leg1.attributes) if ballast_voyage_leg1.present?
+          edq_result.build_laden_voyage_leg2(laden_voyage_leg2.attributes) if laden_voyage_leg2.present?
+          edq_result.build_ballast_voyage_leg2(ballast_voyage_leg2.attributes) if ballast_voyage_leg2.present?
           edq_result.save!
         else
           raise(Validation, errors.full_messages.join(', '))

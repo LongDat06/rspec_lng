@@ -10,6 +10,7 @@ module Analytic
                    :port_arrival_id,
                    :master_route_name,
                    :master_route_id,
+                   :sea_margin,
                    :etd,
                    :etd_label,
                    :etd_utc,
@@ -21,7 +22,6 @@ module Analytic
                    :estimated_distance,
                    :voyage_duration,
                    :required_speed,
-                   :estimated_daily_foc,
                    :estimated_daily_foc_season_effect,
                    :estimated_total_foc,
                    :consuming_lng

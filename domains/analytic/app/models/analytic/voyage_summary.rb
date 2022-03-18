@@ -11,13 +11,34 @@ module Analytic
       joins_edq_results.select('analytic_voyage_summaries.*,
                                 COALESCE(analytic_voyage_summaries.manual_distance, analytic_voyage_summaries.distance) as apply_distance,
                                 COALESCE(analytic_voyage_summaries.manual_duration, analytic_voyage_summaries.duration) as apply_duration,
-                                COALESCE(analytic_voyage_summaries.manual_average_speed, analytic_voyage_summaries.average_speed) as apply_average_speed,
-                                analytic_edq_results.heel as estimated_heel,
-                                analytic_edq_results.edq as estimated_edq')
+                                COALESCE(analytic_voyage_summaries.manual_average_speed, analytic_voyage_summaries.average_speed) as apply_average_speed')
+                      .with_estimated_heel
+                      .with_estimated_edq
+    }
+
+    scope :with_estimated_heel, lambda {
+       select(<<~SQL.squish)
+        CASE WHEN analytic_voyage_summaries.voyage_leg = 'B' THEN
+          CASE WHEN analytic_voyage_summaries.leg_id = 1 THEN
+            analytic_edq_results.estimated_heel_leg1
+          ELSE analytic_edq_results.estimated_heel_leg2 END
+        ELSE NULL END as estimated_heel
+      SQL
+    }
+
+    scope :with_estimated_edq, lambda {
+      select(<<~SQL.squish)
+        CASE WHEN analytic_voyage_summaries.voyage_leg = 'L' THEN
+          CASE WHEN (analytic_voyage_summaries.leg_id = 1 AND analytic_edq_results.laden_pa_transit = 'f') OR
+              (analytic_voyage_summaries.leg_id = 2 AND analytic_edq_results.laden_pa_transit = 't')
+            THEN analytic_edq_results.edq
+          ELSE NULL END
+        ELSE NULL END as estimated_edq
+      SQL
     }
 
     scope :joins_edq_results, lambda {
-      joins(<<~SQL)
+      joins(<<~SQL.squish)
         LEFT JOIN analytic_edq_results
         ON analytic_voyage_summaries.imo = analytic_edq_results.imo AND analytic_edq_results.finalized = 't'
           AND ((analytic_voyage_summaries.voyage_leg = 'B' AND

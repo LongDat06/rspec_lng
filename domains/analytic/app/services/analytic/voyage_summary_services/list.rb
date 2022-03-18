@@ -110,13 +110,20 @@ module Analytic
 
       def estimated_heel_clause
         <<~SQL
-          CASE WHEN analytic_voyage_summaries.voyage_leg = 'B' THEN analytic_edq_results.heel ELSE NULL END
+          CASE WHEN analytic_voyage_summaries.voyage_leg = 'B' THEN
+            CASE WHEN analytic_voyage_summaries.leg_id = 1 THEN  analytic_edq_results.estimated_heel_leg1 ELSE analytic_edq_results.estimated_heel_leg2 END
+          ELSE NULL END
         SQL
       end
 
       def estimated_edq_clause
-        <<-SQL
-          CASE WHEN analytic_voyage_summaries.voyage_leg = 'L' THEN analytic_edq_results.edq ELSE NULL END
+        <<~SQL
+          CASE WHEN analytic_voyage_summaries.voyage_leg = 'L' THEN
+            CASE WHEN (analytic_voyage_summaries.leg_id = 1 AND analytic_edq_results.laden_pa_transit = 'f') OR
+               (analytic_voyage_summaries.leg_id = 2 AND analytic_edq_results.laden_pa_transit = 't')
+              THEN analytic_edq_results.edq
+            ELSE NULL END
+          ELSE NULL END
         SQL
       end
 

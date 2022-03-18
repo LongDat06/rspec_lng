@@ -19,6 +19,7 @@ module Analytic
                         :etd,
                         :eta,
                         :foe,
+                        :sea_margin,
                         :voyage_type)
         end
       end

@@ -18,6 +18,7 @@ module Analytic
       attribute :estimated_daily_foc_season_effect,  Float
       attribute :estimated_total_foc,                Float
       attribute :consuming_lng,                      Float
+      attribute :sea_margin,                         Float
 
       validates_presence_of :port_dept_id,
                             :port_arrival_id,
@@ -31,6 +32,7 @@ module Analytic
                             :estimated_daily_foc,
                             :estimated_daily_foc_season_effect,
                             :consuming_lng
+      validates :sea_margin, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 100 }, presence: true
 
     end
   end

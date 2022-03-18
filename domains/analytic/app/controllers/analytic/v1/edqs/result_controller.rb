@@ -59,6 +59,7 @@ module Analytic
                         :voyage_no_type,
                         :master_route_id,
                         :master_route_type,
+                        :panama_transit,
                         :sort_by,
                         :sort_order,
                         :page)
@@ -73,14 +74,26 @@ module Analytic
                         :init_lng_volume,
                         :unpumpable,
                         :cosuming_lng_of_laden_voyage,
-                        :heel,
+                        :cosuming_lng_of_ballast_voyage,
                         :edq,
-                        laden_voyage: heel_voyage_params,
-                        ballast_voyage: heel_voyage_params)
+                        :cosuming_lng_of_laden_voyage_leg1,
+                        :cosuming_lng_of_laden_voyage_leg2,
+                        :cosuming_lng_of_ballast_voyage_leg1,
+                        :cosuming_lng_of_ballast_voyage_leg2,
+                        :laden_pa_transit,
+                        :ballast_pa_transit,
+                        :landen_fuel_consumption_in_pa,
+                        :ballast_fuel_consumption_in_pa,
+                        :estimated_heel_leg1,
+                        :estimated_heel_leg2,
+                        laden_voyage_leg1: heel_voyage_params,
+                        ballast_voyage_leg1: heel_voyage_params,
+                        laden_voyage_leg2: heel_voyage_params,
+                        ballast_voyage_leg2: heel_voyage_params)
         end
 
         def heel_voyage_params
-          [:port_dept_id, :port_arrival_id, :master_route_id,
+          [:port_dept_id, :port_arrival_id, :master_route_id, :sea_margin,
            :etd, :etd_time_zone, :eta, :eta_time_zone, :estimated_distance,
            :voyage_duration, :required_speed, :estimated_daily_foc,
            :estimated_daily_foc_season_effect, :estimated_total_foc,

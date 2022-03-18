@@ -138,5 +138,12 @@ Analytic::Engine.routes.draw do
       resources :countries, only: [:index]
       resources :timezones, only: [:show], param: :country_code
     end
+
+    resources :settings do
+      collection do
+        post 'lng_consumption_in_panama', to: 'settings#update_lng_consumption_in_panama'
+        get 'lng_consumption_in_panama', to: 'settings#get_lng_consumption_in_panama'
+      end
+    end
   end
 end

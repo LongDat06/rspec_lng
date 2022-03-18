@@ -13,7 +13,6 @@ module Analytic
                                     :estimated_distance,
                                     :voyage_duration,
                                     :required_speed,
-                                    :estimated_daily_foc,
                                     :estimated_daily_foc_season_effect,
                                     :estimated_total_foc,
                                     :consuming_lng, :id)
@@ -36,7 +35,6 @@ module Analytic
                              estimated_distance,
                              voyage_duration,
                              required_speed,
-                             estimated_daily_foc,
                              estimated_daily_foc_season_effect,
                              estimated_total_foc,
                              consuming_lng)
@@ -51,6 +49,7 @@ module Analytic
                  :etd,
                  :eta,
                  :foe,
+                 :sea_margin,
                  :voyage_type, to: :submit_params, private: true
 
 
@@ -124,9 +123,9 @@ module Analytic
           @required_speed ||= (estimated_distance / voyage_duration.to_f).round(1)
         end
 
-        def estimated_daily_foc
-          @estimated_daily_foc ||= begin
-            speeds = fetch_all_tcp_foc.pluck(:speed)
+        def estimated_daily_foc_season_effect
+          @estimated_daily_foc_season_effect ||= begin
+            speeds = speed_sea_margin_effect
             foc = fetch_all_tcp_foc.pluck(:foc)
             estimate = Analytic::InterpolationServices::LinearCalculator.new(x_values: speeds,y_values: foc)
                                                                         .call(x: required_speed)
@@ -134,13 +133,10 @@ module Analytic
           end
         end
 
-        def estimated_daily_foc_season_effect
-          @estimated_daily_foc_season_effect ||= begin
-            months_of_winner = [10,11,12,1,2,3]
-            if months_of_winner.include? etd.month
-              (estimated_daily_foc * 1.1).round(1)
-            else
-              estimated_daily_foc
+        def speed_sea_margin_effect
+          speed_sea_margin_effect ||= begin
+            fetch_all_tcp_foc.pluck(:speed).map do |speed|
+                speed/(1 + sea_margin * 0.01)
             end
           end
         end

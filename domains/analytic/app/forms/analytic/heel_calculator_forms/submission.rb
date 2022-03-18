@@ -12,11 +12,13 @@ module Analytic
       attribute :etd,             Time
       attribute :eta,             Time
       attribute :foe,             Float
+      attribute :sea_margin,      Float
       attribute :voyage_type,     String
 
 
       validates_presence_of :imo, :port_dept_id, :port_arrival_id, :master_route_id, :etd , :eta
       validates :foe, numericality: { other_than: 0 }, presence: true
+      validates :sea_margin, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 100 }, presence: true
       validates :voyage_type, inclusion: { in: %w(ballast laden) }, presence: true
 
       validate :eta_after_etd

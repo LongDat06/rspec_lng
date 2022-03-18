@@ -5,23 +5,38 @@ module Analytic
       include ActiveModel::Validations
       include Virtus.model
 
-      attribute :imo,                            Integer
-      attribute :name,                           String
-      attribute :foe,                            Float
-      attribute :init_lng_volume,                Float
-      attribute :unpumpable,                     Float
-      attribute :cosuming_lng_of_laden_voyage,   Float
-      attribute :heel,                           Float
-      attribute :edq,                            Float
-      attribute :laden_voyage_no,                String
-      attribute :ballast_voyage_no,              String
-      attribute :laden_voyage,                   HeelResult
-      attribute :ballast_voyage,                 HeelResult
-      attribute :author_id,                      Integer
-      attribute :updated_by_id,                  Integer
+      attribute :imo,                                 Integer
+      attribute :name,                                String
+      attribute :foe,                                 Float
+      attribute :init_lng_volume,                     Float
+      attribute :unpumpable,                          Float
+      attribute :cosuming_lng_of_laden_voyage,        Float
+      attribute :cosuming_lng_of_ballast_voyage,      Float
+      attribute :edq,                                 Float
+      attribute :cosuming_lng_of_laden_voyage_leg1,   Float
+      attribute :cosuming_lng_of_laden_voyage_leg2,   Float
+      attribute :cosuming_lng_of_ballast_voyage_leg1, Float
+      attribute :cosuming_lng_of_ballast_voyage_leg2, Float
+      attribute :laden_pa_transit,                    Boolean
+      attribute :ballast_pa_transit,                  Boolean
+      attribute :laden_voyage_no,                     String
+      attribute :ballast_voyage_no,                   String
+      attribute :laden_voyage_leg1,                   HeelResult
+      attribute :ballast_voyage_leg1,                 HeelResult
+      attribute :laden_voyage_leg2,                   HeelResult
+      attribute :ballast_voyage_leg2,                 HeelResult
+      attribute :landen_fuel_consumption_in_pa,       Float
+      attribute :ballast_fuel_consumption_in_pa,      Float
+      attribute :estimated_heel_leg1,                 Float
+      attribute :estimated_heel_leg2,                 Float
+      attribute :author_id,                           Integer
+      attribute :updated_by_id,                       Integer
 
       validates_presence_of :imo
+      validates_inclusion_of :laden_pa_transit, in: [true, false]
+      validates_inclusion_of :ballast_pa_transit, in: [true, false]
       validates :foe, numericality: { other_than: 0 }, presence: true
+
 
       validates :laden_voyage_no, presence: true,
                                   format: { with: /\A\d{3}\z/,
@@ -34,21 +49,23 @@ module Analytic
                             :unpumpable,
                             :cosuming_lng_of_laden_voyage, if: :edq_present?
 
-      validates :laden_voyage, presence: true, if: -> { edq_present? || ballast_voyage.blank? }
-      validates :ballast_voyage, presence: true, if: -> { edq_present? || laden_voyage.blank? }
+      validates :laden_voyage_leg1, presence: true, if: -> { edq_present? || ballast_voyage_leg1.blank? || laden_voyage_leg2.present? }
+      validates :ballast_voyage_leg1, presence: true, if: -> { edq_present? || laden_voyage_leg1.blank? || ballast_voyage_leg2.present? }
+      validates :laden_voyage_leg2, presence: true, if: -> { laden_pa_transit  }
+      validates :ballast_voyage_leg2, presence: true, if: -> { ballast_pa_transit }
       validate :heels_result_validate
 
       private
         def heels_result_validate
-          errors.add(:laden_voyage, laden_voyage.errors.full_messages.join(', ')) if laden_voyage.present? && !laden_voyage.valid?
-          errors.add(:ballast_voyage, ballast_voyage.errors.full_messages.join(', ')) if ballast_voyage.present? && !ballast_voyage.valid?
+          errors.add(:laden_voyage_leg1, laden_voyage_leg1.errors.full_messages.join(', ')) if laden_voyage_leg1.present? && !laden_voyage_leg1.valid?
+          errors.add(:ballast_voyage_leg1, ballast_voyage_leg1.errors.full_messages.join(', ')) if ballast_voyage_leg1.present? && !ballast_voyage_leg1.valid?
+          errors.add(:laden_voyage_leg2, laden_voyage_leg2.errors.full_messages.join(', ')) if laden_voyage_leg2.present? && !laden_voyage_leg2.valid?
+          errors.add(:ballast_voyage_leg2, ballast_voyage_leg2.errors.full_messages.join(', ')) if ballast_voyage_leg2.present? && !ballast_voyage_leg2.valid?
         end
 
         def edq_present?
           init_lng_volume.present? ||
           unpumpable.present? ||
-          cosuming_lng_of_laden_voyage.present? ||
-          heel.present? ||
           edq.present?
         end
     end

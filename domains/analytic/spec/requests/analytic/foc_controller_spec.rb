@@ -1,16 +1,18 @@
 require 'rails_helper'
-require_relative '/Users/admin/Documents/lng-backend/domains/analytic/spec/support/controller_macros'
 
 RSpec.describe "FocControllers", type: :request do
-  # byebug
-  before :each do
-    login_user
-  end
-
-  describe "GET /index" do
-    it "index" do
-      # expect(response).to be_successful
-      puts "dsadasdasd"
+  describe 'POST /login' do
+    let(:user) { FactoryBot.create(:user, email: 'dat.huynh@dounets.com', password: '123456') }
+    it 'authenticates the user' do
+      post '/identity/v1/auth', params: {  email: 'dat.huynh@dounets.com', password: '123456'}
+      expect(response).to have_http_status(:created)
+      expect(json).to eq({
+                           'id' => user.id,
+                           'email' => 'dat.huynh@dounets.com',
+                           'token' => AuthenticationTokenService.call(user.id)
+                         })
     end
+
+
   end
 end
